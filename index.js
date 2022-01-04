@@ -25,7 +25,7 @@ sqlCon.connect(function(err) {
 //const query = util.promisify(sqlCon.query).bind(sqlCon);
 
 const app = express();
-app.use(cors()); // Allow Access from all domains
+//app.use(cors()); // Allow Access from all domains
 
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -37,9 +37,15 @@ app.get("/", (req,res) => {
     res.send("Hello World");
 })
 
+
+
+
+
 /**
  * Gets all movies from the database table "movie"
  */
+
+/*
 app.get('/home', function(req, res) {
     console.log('Home page opened');
     let sql = 'SELECT * from movie';
@@ -60,6 +66,7 @@ app.get('/home', function(req, res) {
  * Searches for a movie from the omdbAPI with the users given title and year(optional).
  * This function finds only 1 movie MAX.
  */
+/*
 app.get('/search', function(req, res) {
     console.log('Searching movie from external API');
     var q = url.parse(req.url, true).query;
@@ -93,6 +100,7 @@ app.get('/search', function(req, res) {
 /**
  * Authors tool for adding movies to the database.
  */
+/*
 app.post('/saveDataToDb', function(req, res) {
     console.log('Saving data to database');
 
@@ -148,6 +156,7 @@ app.post('/saveDataToDb', function(req, res) {
 /**
  * Checks if the users given username and password are indeed correct.
  */
+/*
 app.post('/accountValidate', function(req, res) {
     console.log("Validating user credentials.");
     let dataReceived = req.body;
@@ -195,6 +204,7 @@ app.post('/accountValidate', function(req, res) {
  * Creates an account for the user.
  * Hashes the password and check the correct validation of the username/password.
  */
+/*
 app.post('/createAccount', function(req, res) {
     console.log("Creating an account");
     let dataReceived = req.body;
@@ -253,6 +263,7 @@ function validateCredential(credentialToValidate) {
 /**
  * Saves the movies data to the users database. Finds the movies data from the external API.
  */
+/*
 app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
     console.log("Saving movie to users database.");
 
@@ -357,6 +368,7 @@ app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
 /**
  * Finds all movies that the user has on the database.
  */
+/*
 app.get('/mymovies', urlencodedParser, function(req, res) {
     console.log('Fetching users movies');
     var q = url.parse(req.url, true).query;
@@ -375,6 +387,7 @@ app.get('/mymovies', urlencodedParser, function(req, res) {
     })()
 });
 
+*/
 // Server listening to port 8080.
 app.listen(port, ()=>{
     console.log('Listening at port http://localhost:%s', port);
