@@ -1,10 +1,11 @@
+
 let port = process.env.PORT || 3000;
-//const url = require('url');
+const url = require('url');
 //const util = require('util');
 const express = require('express');
 //const mysql = require('mysql'); // For database.
 //const cors = require('cors'); // For all access for all domains.
-//const request = require('request'); // For external API calls.
+const request = require('request'); // For external API calls.
 //const bcrypt = require('bcryptjs'); // Password hash crypt.
 
 /*
@@ -27,10 +28,10 @@ sqlCon.connect(function(err) {
 const app = express();
 //app.use(cors()); // Allow Access from all domains
 
-//var bodyParser = require('body-parser');
-//var urlencodedParser = bodyParser.urlencoded({extended: false});
-//app.use(bodyParser.urlencoded({extended: false}));
-//app.use(bodyParser.json());
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded({extended: false});
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 
 app.get("/", (req,res) => {
@@ -66,7 +67,7 @@ app.get('/home', function(req, res) {
  * Searches for a movie from the omdbAPI with the users given title and year(optional).
  * This function finds only 1 movie MAX.
  */
-/*
+
 app.get('/search', function(req, res) {
     console.log('Searching movie from external API');
     var q = url.parse(req.url, true).query;
@@ -75,7 +76,7 @@ app.get('/search', function(req, res) {
     console.log('Movie name: ' + movieName + ' MovieYear: ' + movieYear);
 
     // Check if we have year input from the user, if we got one then we perform a search with it.
-    if (movieYear != null && movieYear != NaN && movieYear > 0 && movieYear <
+    if (movieYear != null && !isNaN(movieYear) && movieYear > 0 && movieYear <
         9999) {
         request('http://www.omdbapi.com/?t=' + movieName + '&y=' + movieYear +
             '&apikey=1376e1b1', function(error, response, body) {
