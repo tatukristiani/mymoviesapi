@@ -53,6 +53,7 @@ app.get('/home', (req, res) => {
         if(err) throw err;
         console.log(res);
     })
+    res.send("Hellou!");
 
 
     /*(async () => {
