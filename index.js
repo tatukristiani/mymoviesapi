@@ -29,8 +29,7 @@ const client = new Client({
 
 client.connect()
     .then(() => console.log("Connected successfully!"))
-    .catch(error => console.log(error))
-    .finally(() => client.end());
+    .catch(error => console.log(error));
 
 
 
@@ -44,11 +43,11 @@ app.get("/", (req,res) => {
  */
 app.get('/home', (request, response) => {
     console.log('Home page opened');
-    client.connect()
-        .then(() => client.query("SELECT * FROM movie"))
-        .then(results => response.send(results))
-        .catch(error => console.log(error))
-        .finally(() => client.end());
+    (async () => {
+        let results = await client.query("SELECT * FROM movie").then(results => console.log(results.rows));
+        response.send(results);
+    })();
+
 
     /*(async () => {
         try {
