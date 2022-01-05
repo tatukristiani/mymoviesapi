@@ -1,13 +1,29 @@
 
 let port = process.env.PORT || 3000;
 const url = require('url');
-//const util = require('util');
+const util = require('util');
 const express = require('express');
+const { Client } = require('pg');
 //const mysql = require('mysql'); // For database.
-//const cors = require('cors'); // For all access for all domains.
+const cors = require('cors'); // For all access for all domains.
 const request = require('request'); // For external API calls.
-//const bcrypt = require('bcryptjs'); // Password hash crypt.
+const bcrypt = require('bcryptjs'); // Password hash crypt.
 
+
+var sqlCon = new Client({
+    host: 'ec2-54-172-219-6.compute-1.amazonaws.com',
+    user: 'fcncirfhfkwocb',
+    password: '16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4',
+    database: 'ddhdsglt7t3ubs'
+})
+
+sqlCon.connect(function(error) {
+    if(error) {
+        console.log("Error connecting to database!");
+    } else {
+        console.log("Connected to database!");
+    }
+});
 /*
 // Create connection to database. Current database is a local one.
 var sqlCon = mysql.createConnection({
@@ -23,10 +39,10 @@ sqlCon.connect(function(err) {
     console.log('Connected to MySQL!');
 });
 */
-//const query = util.promisify(sqlCon.query).bind(sqlCon);
+const query = util.promisify(sqlCon.query).bind(sqlCon);
 
 const app = express();
-//app.use(cors()); // Allow Access from all domains
+app.use(cors()); // Allow Access from all domains
 
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -39,14 +55,11 @@ app.get("/", (req,res) => {
 })
 
 
-
-
-
 /**
  * Gets all movies from the database table "movie"
  */
 
-/*
+
 app.get('/home', function(req, res) {
     console.log('Home page opened');
     let sql = 'SELECT * from movie';
@@ -67,7 +80,6 @@ app.get('/home', function(req, res) {
  * Searches for a movie from the omdbAPI with the users given title and year(optional).
  * This function finds only 1 movie MAX.
  */
-
 app.get('/search', function(req, res) {
     console.log('Searching movie from external API');
     var q = url.parse(req.url, true).query;
