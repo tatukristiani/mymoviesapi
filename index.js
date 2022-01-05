@@ -44,8 +44,15 @@ app.get("/", (req,res) => {
 app.get('/home', (request, response) => {
     console.log('Home page opened');
     (async () => {
-        let results = await client.query("SELECT * FROM movie").then(results => console.log(results.rows));
-        response.send(results);
+        try {
+            let results = await client.query("SELECT * FROM movie");
+            let data = JSON.stringify(results);
+            console.log("Data received")
+            response.send(data);
+        } catch(err) {
+            console.log("Database error!" + err);
+        }
+
     })();
 
 
