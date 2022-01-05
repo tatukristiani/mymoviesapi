@@ -18,12 +18,6 @@ const client = new Client({
 
 client.connect();
 
-var sqlCon = new Client({
-    host: 'ec2-54-172-219-6.compute-1.amazonaws.com',
-    user: 'fcncirfhfkwocb',
-    password: '16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4',
-    database: 'ddhdsglt7t3ubs'
-})
 /*
 // Create connection to database. Current database is a local one.
 var sqlCon = mysql.createConnection({
