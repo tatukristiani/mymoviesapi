@@ -10,7 +10,7 @@ const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
 
 const client = new Client({
-    connectionString: 'dbname=ddhdsglt7t3ubs host=ec2-54-172-219-6.compute-1.amazonaws.com port=5432 user=fcncirfhfkwocb password=16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4 sslmode=require',
+    connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     }
