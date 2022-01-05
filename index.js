@@ -1,11 +1,11 @@
 let port = process.env.PORT || 3000;
-const url = require('url');
-const util = require('util');
+//const url = require('url');
+//const util = require('util');
 const express = require('express');
 //const mysql = require('mysql'); // For database.
-const cors = require('cors'); // For all access for all domains.
-const request = require('request'); // For external API calls.
-const bcrypt = require('bcryptjs'); // Password hash crypt.
+//const cors = require('cors'); // For all access for all domains.
+//const request = require('request'); // For external API calls.
+//const bcrypt = require('bcryptjs'); // Password hash crypt.
 
 /*
 // Create connection to database. Current database is a local one.
@@ -27,10 +27,10 @@ sqlCon.connect(function(err) {
 const app = express();
 //app.use(cors()); // Allow Access from all domains
 
-var bodyParser = require('body-parser');
+//var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({extended: false});
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({extended: false}));
+//app.use(bodyParser.json());
 
 
 app.get("/", (req,res) => {
