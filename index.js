@@ -46,14 +46,15 @@ app.get("/", (req,res) => {
 /**
  * Gets all movies from the database table "movie"
  */
-app.get('/home', (req, res) => {
+app.get('/home', (request, response) => {
     console.log('Home page opened');
 
     client.query('SELECT NOW()', (err,res) => {
+        console.log("Searching");
         if(err) throw err;
         console.log(res);
     })
-    res.send("Hellou!");
+    response.send("Hellou!");
 
 
     /*(async () => {
