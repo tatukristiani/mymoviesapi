@@ -54,30 +54,8 @@ app.get('/home', (request, response) => {
         }
 
     })();
-
-
-    /*(async () => {
-        try {
-            let result = await client.query(sql);
-            let jsonObj = JSON.stringify(result);
-            console.log('Home responded')
-            res.send(jsonObj);
-        } catch (err) {
-            console.log('Database error!' + err);
-        }
-    })();
-*/
 });
 
-/*
-async function testHome() {
-    await client.connect();
-    console.log("Connected successfully");
-    const results = await client.query("SELECT * FROM movie");
-    console.table(results.rows);
-    await client.end();
-}
-*/
 
 /**
  * Searches for a movie from the omdbAPI with the users given title and year(optional).
@@ -220,7 +198,6 @@ app.post('/accountValidate', function(req, res) {
  * Creates an account for the user.
  * Hashes the password and check the correct validation of the username/password.
  */
-/*
 app.post('/createAccount', function(req, res) {
     console.log("Creating an account");
     let dataReceived = req.body;
@@ -238,13 +215,13 @@ app.post('/createAccount', function(req, res) {
         (async () => {
             try {
                 let sql = "SELECT username FROM users WHERE username = " + user;
-                let accountExists = await query(sql);
+                let accountExists = await client.query(sql);
 
 
                 if(JSON.stringify(accountExists).length < 3) {
                     sql = "INSERT INTO users(username,password,user_level) VALUES(" +
                         user + ", " + pass + ", 'user')";
-                    await query(sql);
+                    await client.query(sql);
                     res.send(true);
                 }
                 else {
