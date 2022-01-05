@@ -10,6 +10,14 @@ const request = require('request'); // For external API calls.
 //const bcrypt = require('bcryptjs'); // Password hash crypt.
 let port = process.env.PORT || 3000;
 
+const app = express();
+app.use(cors()); // Allow Access from all domains
+app.use(express.json());
+
+//var bodyParser = require('body-parser');
+//var urlencodedParser = bodyParser.urlencoded({extended: false});
+//app.use(bodyParser.urlencoded({extended: false}));
+//app.use(bodyParser.json());
 
 const client = new Client({
     host: 'ec2-54-172-219-6.compute-1.amazonaws.com',
@@ -28,14 +36,6 @@ client.connect(err => {
     }
 })
 
-const app = express();
-app.use(cors()); // Allow Access from all domains
-app.use(express.json());
-
-//var bodyParser = require('body-parser');
-//var urlencodedParser = bodyParser.urlencoded({extended: false});
-//app.use(bodyParser.urlencoded({extended: false}));
-//app.use(bodyParser.json());
 
 
 app.get("/", (req,res) => {
@@ -49,10 +49,13 @@ app.get("/", (req,res) => {
 app.get('/home', (request, response) => {
     console.log('Home page opened');
 
-    client.query('SELECT NOW()', (err,res) => {
+    client.query('SELECT * FROM movie', (err,res) => {
         console.log("Searching");
-        if(err) throw err;
-        console.log(res);
+        if(err) {
+            console.log(err.stack);
+        } else {
+            console.log(res.rows[0]);
+        }
     })
     response.send("Hellou!");
 
