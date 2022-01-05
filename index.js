@@ -20,21 +20,17 @@ app.use(express.json());
 //app.use(bodyParser.json());
 
 const client = new Client({
-    host: 'ec2-54-172-219-6.compute-1.amazonaws.com',
-    port: '5432',
-    user: 'fcncirfhfkwocb',
-    password: '16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4',
-    database: 'ddhdsglt7t3ubs',
-    uri: 'postgres://fcncirfhfkwocb:16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4@ec2-54-172-219-6.compute-1.amazonaws.com:5432/ddhdsglt7t3ubs'
+    user: "fcncirfhfkwocb",
+    password: "16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4",
+    host: "ec2-54-172-219-6.compute-1.amazonaws.com",
+    port: 5432,
+    database: "ddhdsglt7t3ubs"
 })
 
-client.connect(err => {
-    if(err) {
-        console.error("Connection error", err.stack);
-    } else {
-        console.log("Connected to database")
-    }
-})
+client.connect()
+    .then(() => console.log("Connected successfully!"))
+    .catch(error => console.log(error.stack))
+    .finally(() => client.end());
 
 
 
@@ -48,17 +44,11 @@ app.get("/", (req,res) => {
  */
 app.get('/home', (request, response) => {
     console.log('Home page opened');
-
-    client.query('SELECT * FROM movie', (err,res) => {
-        console.log("Searching");
-        if(err) {
-            console.log(err.stack);
-        } else {
-            console.log(res.rows[0]);
-        }
-    })
-    response.send("Hellou!");
-
+    client.connect()
+        .then(() => client.query("SELECT * FROM movie"))
+        .then(results => response.send(results))
+        .catch(error => console.log(error))
+        .finally(() => client.end());
 
     /*(async () => {
         try {
@@ -72,6 +62,16 @@ app.get('/home', (request, response) => {
     })();
 */
 });
+
+/*
+async function testHome() {
+    await client.connect();
+    console.log("Connected successfully");
+    const results = await client.query("SELECT * FROM movie");
+    console.table(results.rows);
+    await client.end();
+}
+*/
 
 /**
  * Searches for a movie from the omdbAPI with the users given title and year(optional).
