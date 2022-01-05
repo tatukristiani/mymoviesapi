@@ -28,7 +28,7 @@ const app = express();
 //app.use(cors()); // Allow Access from all domains
 
 //var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({extended: false});
+//var urlencodedParser = bodyParser.urlencoded({extended: false});
 //app.use(bodyParser.urlencoded({extended: false}));
 //app.use(bodyParser.json());
 
