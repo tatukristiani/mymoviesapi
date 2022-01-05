@@ -12,35 +12,27 @@ let port = process.env.PORT || 3000;
 
 
 const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    host: 'ec2-54-172-219-6.compute-1.amazonaws.com',
+    port: '5432',
+    user: 'fcncirfhfkwocb',
+    password: '16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4',
+    database: 'ddhdsglt7t3ubs',
+    uri: 'postgres://fcncirfhfkwocb:16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4@ec2-54-172-219-6.compute-1.amazonaws.com:5432/ddhdsglt7t3ubs'
 })
 
-
-
-/*
-// Create connection to database. Current database is a local one.
-var sqlCon = mysql.createConnection({
-    host: 'localhost',
-    user: 'movieSoftware',
-    password: 'moviesoftware',
-    database: 'movies_db',
-});
-
-// Connect to database
-sqlCon.connect(function(err) {
-    if (err) throw err;
-    console.log('Connected to MySQL!');
-});
-*/
+client.connect(err => {
+    if(err) {
+        console.error("Connection error", err.stack);
+    } else {
+        console.log("Connected to database")
+    }
+})
 
 const app = express();
 app.use(cors()); // Allow Access from all domains
 app.use(express.json());
 
-var bodyParser = require('body-parser');
+//var bodyParser = require('body-parser');
 //var urlencodedParser = bodyParser.urlencoded({extended: false});
 //app.use(bodyParser.urlencoded({extended: false}));
 //app.use(bodyParser.json());
@@ -57,16 +49,11 @@ app.get("/", (req,res) => {
 app.get('/home', (req, res) => {
     console.log('Home page opened');
 
-    try {
-        client.query('SELECT * FROM movie;', (err,res) => {
-            if(err) throw err;
-            for(let row of res.rows) {
-                console.log(JSON.stringify(row));
-            }
-        })
-    }catch(error) {
+    client.query('SELECT NOW()', (err,res) => {
+        if(err) throw err;
+        console.log(res);
+    })
 
-    }
 
     /*(async () => {
         try {
@@ -79,7 +66,6 @@ app.get('/home', (req, res) => {
         }
     })();
 */
-    //client.end();
 });
 
 /**
