@@ -10,7 +10,7 @@ const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
 
 const client = new Client({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: 'dbname=ddhdsglt7t3ubs host=ec2-54-172-219-6.compute-1.amazonaws.com port=5432 user=fcncirfhfkwocb password=16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4 sslmode=require',
     ssl: {
         rejectUnauthorized: false
     }
@@ -51,13 +51,10 @@ app.get("/", (req,res) => {
 /**
  * Gets all movies from the database table "movie"
  */
-
-
-app.get('/home', function(req, res) {
+app.get('/home', (req, res) => {
     console.log('Home page opened');
-    let sql = 'SELECT * FROM movie;';
 
-    client.query(sql,(err,res) => {
+    client.query('SELECT * FROM movie;', (err,res) => {
         if(err) throw err;
         for(let row of res.rows) {
             console.log(JSON.stringify(row));
