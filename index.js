@@ -62,7 +62,7 @@ app.get("/", (req,res) => {
 
 app.get('/home', function(req, res) {
     console.log('Home page opened');
-    let sql = 'SELECT * from movie';
+    let sql = 'SELECT * FROM movie';
 
     (async () => {
         try {
