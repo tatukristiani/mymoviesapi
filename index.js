@@ -29,7 +29,7 @@ const client = new Client({
 
 client.connect()
     .then(() => console.log("Connected successfully!"))
-    .catch(error => console.log(error.stack))
+    .catch(error => console.log(error))
     .finally(() => client.end());
 
 
