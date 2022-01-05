@@ -1,13 +1,15 @@
 
-let port = process.env.PORT || 3000;
 const url = require('url');
-const util = require('util');
+//const util = require('util');
 const express = require('express');
+const process = require('process');
 const { Client } = require('pg');
 //const mysql = require('mysql'); // For database.
 const cors = require('cors'); // For all access for all domains.
 const request = require('request'); // For external API calls.
-const bcrypt = require('bcryptjs'); // Password hash crypt.
+//const bcrypt = require('bcryptjs'); // Password hash crypt.
+let port = process.env.PORT || 3000;
+
 
 const client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -16,7 +18,7 @@ const client = new Client({
     }
 })
 
-client.connect();
+
 
 /*
 // Create connection to database. Current database is a local one.
@@ -36,11 +38,12 @@ sqlCon.connect(function(err) {
 
 const app = express();
 app.use(cors()); // Allow Access from all domains
+app.use(express.json());
 
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({extended: false});
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+//var urlencodedParser = bodyParser.urlencoded({extended: false});
+//app.use(bodyParser.urlencoded({extended: false}));
+//app.use(bodyParser.json());
 
 
 app.get("/", (req,res) => {
@@ -54,12 +57,17 @@ app.get("/", (req,res) => {
 app.get('/home', (req, res) => {
     console.log('Home page opened');
 
-    client.query('SELECT * FROM movie;', (err,res) => {
-        if(err) throw err;
-        for(let row of res.rows) {
-            console.log(JSON.stringify(row));
-        }
-    })
+    try {
+        client.query('SELECT * FROM movie;', (err,res) => {
+            if(err) throw err;
+            for(let row of res.rows) {
+                console.log(JSON.stringify(row));
+            }
+        })
+    }catch(error) {
+
+    }
+
     /*(async () => {
         try {
             let result = await client.query(sql);
@@ -71,7 +79,7 @@ app.get('/home', (req, res) => {
         }
     })();
 */
-    client.end();
+    //client.end();
 });
 
 /**
