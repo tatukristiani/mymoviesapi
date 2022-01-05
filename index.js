@@ -46,7 +46,7 @@ app.get('/home', (request, response) => {
     (async () => {
         try {
             let results = await client.query("SELECT * FROM movie");
-            let data = JSON.stringify(results);
+            let data = JSON.stringify(results.rows);
             console.log("Data received")
             response.send(data);
         } catch(err) {
