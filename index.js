@@ -9,6 +9,14 @@ const cors = require('cors'); // For all access for all domains.
 const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
 
+const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
+})
+
+client.connect();
 
 var sqlCon = new Client({
     host: 'ec2-54-172-219-6.compute-1.amazonaws.com',
@@ -16,14 +24,6 @@ var sqlCon = new Client({
     password: '16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4',
     database: 'ddhdsglt7t3ubs'
 })
-
-sqlCon.connect(function(error) {
-    if(error) {
-        console.log("Error connecting to database!");
-    } else {
-        console.log("Connected to database!");
-    }
-});
 /*
 // Create connection to database. Current database is a local one.
 var sqlCon = mysql.createConnection({
@@ -39,7 +39,6 @@ sqlCon.connect(function(err) {
     console.log('Connected to MySQL!');
 });
 */
-const query = util.promisify(sqlCon.query).bind(sqlCon);
 
 const app = express();
 app.use(cors()); // Allow Access from all domains
@@ -62,18 +61,26 @@ app.get("/", (req,res) => {
 
 app.get('/home', function(req, res) {
     console.log('Home page opened');
-    let sql = 'SELECT * FROM movie';
+    let sql = 'SELECT * FROM movie;';
 
-    (async () => {
+    client.query(sql,(err,res) => {
+        if(err) throw err;
+        for(let row of res.rows) {
+            console.log(JSON.stringify(row));
+        }
+    })
+    /*(async () => {
         try {
-            let result = await query(sql);
+            let result = await client.query(sql);
             let jsonObj = JSON.stringify(result);
+            console.log('Home responded')
             res.send(jsonObj);
         } catch (err) {
             console.log('Database error!' + err);
         }
     })();
-
+*/
+    client.end();
 });
 
 /**
