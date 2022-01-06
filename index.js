@@ -164,10 +164,10 @@ app.post('/accountValidate', function(req, res) {
             let resultString = JSON.stringify(results.rows);
 
             if(resultString.length > 0) {
-                let usernameDB = resultString[0].username;
-                let passwordDB = resultString[0].password;
+                let usernameDB = resultString.username;
+                let passwordDB = resultString.password;
 
-                if(usernameDB === username) {
+                if(usernameDB == username) {
                     res.send(true);
                 } else {
                     res.send(false);
