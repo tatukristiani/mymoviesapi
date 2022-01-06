@@ -10,10 +10,7 @@ const bcrypt = require('bcryptjs'); // Password hash crypt.
 let port = process.env.PORT || 3000;
 
 const app = express();
-app.use(cors({
-    origin: '*'
-}));
-
+app.use(cors());
 app.use(express.json());
 
 var bodyParser = require('body-parser');
@@ -34,11 +31,10 @@ client.connect()
     .catch(error => console.log(error));
 
 
-
-app.all('/', function(req,res,next) {
+app.all('/*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    next()
+    next();
 });
 
 app.get("/", (req,res) => {
@@ -156,6 +152,13 @@ app.post('/saveDataToDb', function(req, res) {
 });
 
  */
+
+app.options('/accountValidate', function (req,res,next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+});
+
 /**
  * Checks if the users given username and password are indeed correct.
  */
