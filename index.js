@@ -162,10 +162,9 @@ app.post('/accountValidate', function(req, res) {
         try {
             let checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + username + `'`;
             let results = await client.query(checkQuery);
-            let resultString = JSON.stringify(results.rows);
 
-            if(resultString.length > 0) {
-                let usernameDB = resultString.username;
+            if(JSON.stringify(results.rows) > 0) {
+                let usernameDB = JSON.stringify(results.rows).username;
                 //let passwordDB = resultString.password;
 
                 let resultString = {
