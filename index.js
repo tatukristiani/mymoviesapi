@@ -156,6 +156,7 @@ app.post('/accountValidate', function(req, res) {
     let password = dataReceived.password; // String of password
 
 
+
     // Check from database if user is valid
     (async () => {
         try {
@@ -167,10 +168,13 @@ app.post('/accountValidate', function(req, res) {
                 let usernameDB = results.rows.username;
                 //let passwordDB = resultString.password;
 
+                let resultString = {
+                    response: username + ", " + usernameDB;
+                }
                 if(usernameDB == username) {
-                    res.send(true);
+                    res.send(resultString);
                 } else {
-                    res.send(false);
+                    res.send(resultString);
                 }
                 /*
                 bcrypt.compare(password,passwordDB, function(error,response) {
