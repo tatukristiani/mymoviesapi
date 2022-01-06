@@ -155,8 +155,6 @@ app.post('/accountValidate', function(req, res) {
     let username = dataReceived.username; // String of username
     let password = dataReceived.password; // String of password
 
-
-
     // Check from database if user is valid
     (async () => {
         try {
@@ -164,10 +162,12 @@ app.post('/accountValidate', function(req, res) {
             let results = await client.query(checkQuery);
             let rows = results.rows;
 
+            // Should give 1 row of data if user is registered.
             if(rows.length > 0) {
                 let usernameDB = rows[0].username;
                 let passwordDB = rows[0].password;
 
+                // Compares the inserted password to the one in database.
                 bcrypt.compare(password,passwordDB, function(error,response) {
                     if(response && usernameDB == username) {
                         res.send(true);
@@ -178,42 +178,6 @@ app.post('/accountValidate', function(req, res) {
             } else {
                 res.send(false);
             }
-
-
-                /*
-                bcrypt.compare(password,passwordDB, function(error,response) {
-                    if(response == true && usernameDB == username) {
-                        res.send(true);
-                    } else {
-                        res.send(false);
-                    }
-                });
-
-                 */
-
-            /*
-            let checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + user + `'`;
-            let result = await client.query(checkQuery);
-            let resultString = JSON.stringify(result.rows);
-
-            // Check if we got the username, 3 because it gives 2 when there is no user by the username that was searched and username must be at least 4 characters.
-            if (resultString.length > 1) {
-                let usernameDb = resultString[0].username;
-                var hashPass = resultString[0].password;
-
-                // Using the bcrypts compare method to check if the password in the database matches with the one given by the user.
-                bcrypt.compare(password, hashPass, function(error, response) {
-                    if(response === true && usernameDb === username) {
-                        res.send(true);
-                    }
-                    else if(response === false) {
-                        res.send(false);
-                    }
-                });
-            } else {
-                res.send(false);
-            }
-        */
         } catch (error) {
             console.log(error);
             res.send(false);
@@ -288,7 +252,7 @@ function validateCredential(credentialToValidate) {
 /**
  * Saves the movies data to the users database. Finds the movies data from the external API.
  */
-/*
+
 app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
     console.log("Saving movie to users database.");
 
@@ -319,17 +283,17 @@ app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
         jsonObj = JSON.parse(body);
 
         // Variables for saving the movie to database.
-        name = '"' + jsonObj.Title + '"';
+        name = `'` + jsonObj.Title + `'`;
         year = jsonObj.Year;
-        imageID = '"' + jsonObj.imdbID + '"';
+        imageID = `'` + jsonObj.imdbID + `'`;
         runtimeToFloat = parseFloat(jsonObj.Runtime).toFixed(2);
-        genre = '"' + jsonObj.Genre + '"';
-        director = '"' + jsonObj.Director + '"';
-        actor = '"' + jsonObj.Actors + '"';
-        plot = '"' + jsonObj.Plot + '"';
-        poster = '"' + jsonObj.Poster + '"';
+        genre = `'` + jsonObj.Genre + `'`;
+        director = `'` + jsonObj.Director + `'`;
+        actor = `'` + jsonObj.Actors + `'`;
+        plot = `'` + jsonObj.Plot + `'`;
+        poster = `'` + jsonObj.Poster + `'`;
 
-        let searchUser = '"' + username + '"';
+        let searchUser = `'` + username + `'`;
         let userID; // For the users ID.
         let movieID; // For the movies ID.
 
@@ -337,46 +301,43 @@ app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
         (async () => {
             try {
                 // Check if the movie is already in the database.
-                let sql = 'SELECT * FROM movie WHERE name = ' + name + ' AND year = ' +
-                    year;
-                let result = await query(sql);
-                let resultString = JSON.stringify(result);
+                let sql = `SELECT * FROM movie WHERE name =` + name + ` AND year = ` + year;
+                let result = await client.query(sql);
+                let rows = result.rows;
 
                 // If the movie is not in database, we save it there.
-                if (resultString.length < 3) {
+                if (rows.length < 1) {
                     // Add movie to database
-                    sql = 'INSERT into movie(name,year,imageID,runtimeMin,genre,director,actors,plot,poster)'
-                        + ' VALUES(' + name + ', ' + year + ', ' + imageID + ', ' +
-                        runtimeToFloat + ', ' + genre + ', ' + director + ', ' + actor +
-                        ', ' + plot + ', ' + poster + ')';
-                    await query(sql);
-                    console.log('SQL to add database: ' + sql);
+                    sql = `INSERT into movie(name,year,imageID,runtimeMin,genre,director,actors,plot,poster)`
+                        + ` VALUES(` + name + `, ` + year + `, ` + imageID + `, `+
+                        runtimeToFloat + `, ` + genre + `, ` + director + `, ` + actor +
+                        `, ` + plot + `, ` + poster + `)`;
+                    await client.query(sql);
                 }
 
                 // Search for usernames ID
-                sql = 'SELECT id FROM users WHERE username = ' + searchUser;
-                result = await query(sql);
-                userID = result[0].id;
+                sql = `SELECT id FROM users WHERE username = ` + searchUser;
+                result = await client.query(sql);
+                userID = result.rows[0].id;
 
                 // Search for movies ID
-                sql = 'SELECT id FROM movie WHERE name = ' + name + ' AND year = ' +
+                sql = `SELECT id FROM movie WHERE name = ` + name + ` AND year = ` +
                     year;
-                result = await query(sql);
-                movieID = result[0].id;
-                console.log(movieID);
+                result = await client.query(sql);
+                movieID = result.rows[0].id;
 
                 // First we check if the movie is already in the users database.
-                sql = "SELECT * from user_movie WHERE userID = " + userID + " AND movieID = " + movieID;
-                let confirmMovieDoesntExists = await query(sql);
+                sql = `SELECT * FROM user_movie WHERE userID = ` + userID + ` AND movieID = ` + movieID;
+                let confirmMovieDoesntExists = await client.query(sql);
 
-                // If we wound out that the user doesn't have this movie we save it.
-                if(JSON.stringify(confirmMovieDoesntExists).length < 3) {
+                // If we found out that the user doesn't have this movie we save it.
+                if(confirmMovieDoesntExists.rows.length < 1) {
 
                     // Then add this movie to the user_movie table.
-                    sql = 'INSERT INTO user_movie(userID,movieID) VALUES(' + userID +
-                        ', ' +
-                        movieID + ')';
-                    await query(sql);
+                    sql = `INSERT INTO user_movie(userID,movieID) VALUES(` + userID +
+                        `, ` +
+                        movieID + `)`;
+                    await client.query(sql);
                     res.send(movieName + ' successfully added to your movies!');
                 }
                 else {
