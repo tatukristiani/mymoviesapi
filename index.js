@@ -218,7 +218,7 @@ app.post('/createAccount', function(req, res) {
                 //let results = await client.query(query);
 
                 //if(JSON.stringify(results.rows).length < 3) {
-                let insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `'` + user + `' , ` + `'` + pass + `', 'user')`;
+                let insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `' + user + ' ,  + '` + pass + `', 'user')`;
                 responseString = {
                     response: insertQuery
                 }
