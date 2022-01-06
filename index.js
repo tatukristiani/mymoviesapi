@@ -163,18 +163,14 @@ app.post('/accountValidate', function(req, res) {
             let checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + username + `'`;
             let results = await client.query(checkQuery);
 
-            if(JSON.stringify(results.rows) > 0) {
                 let usernameDB = JSON.stringify(results.rows).username;
                 //let passwordDB = resultString.password;
 
                 let resultString = {
                     response: username + ", " + usernameDB
                 }
-                if(usernameDB == username) {
-                    res.send(resultString);
-                } else {
-                    res.send(resultString);
-                }
+
+                res.send(resultString);
                 /*
                 bcrypt.compare(password,passwordDB, function(error,response) {
                     if(response == true && usernameDB == username) {
@@ -185,10 +181,6 @@ app.post('/accountValidate', function(req, res) {
                 });
 
                  */
-            }
-            else {
-                res.send(false);
-            }
 
             /*
             let checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + user + `'`;
