@@ -211,6 +211,12 @@ app.post('/createAccount', function(req, res) {
         let user = '"' + username + '"'; // String of username for db
         let pass = '"' + hashPass + '"'; // String of password for db
 
+        responseString = {
+            response: user + "," + pass
+        }
+
+        res.send(responseString);
+        /*
         // Check from database if user is valid
         (async () => {
             try {
@@ -238,6 +244,9 @@ app.post('/createAccount', function(req, res) {
             response: "Username/Password must be 4-20 characters in length, they can't start or end with a . or _ or have two of them in a row!"
         };
         res.send(responseString);
+    }
+
+         */
     }
 });
 // Function from HelperFunctions, used for double checking the username and password before saving them to database.
