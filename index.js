@@ -214,26 +214,19 @@ app.post('/createAccount', function(req, res) {
         // Check from database if user is valid
         (async () => {
             try {
-                //let query = `SELECT username FROM users WHERE username = ` + `'` + user + `'`;
-                //let results = await client.query(query);
+                let checkQuery = `SELECT username FROM users WHERE username =` + `'` + user + `'`;
+                let results = await client.query(checkQuery);
 
-                //if(JSON.stringify(results.rows).length < 3) {
-                let insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `'` + user + `' , '` + pass + `', 'user')`;
-                await client.query(insertQuery, (err) => {
-                    if (err) {
-                        res.send(false);
-                    } else {
-                        res.send(true);
+                if(JSON.stringify(results.rows).length < 3) {
+                    let insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `'` + user + `' , '` + pass + `', 'user')`;
+                    await client.query(insertQuery);
+                    res.send(true);
+                } else {
+                    responseString = {
+                        response: "This username is already taken. Pick another one."
                     }
-                });
-            //}
-               // else {
-                   // responseString = {
-                      //  response: "This username is already taken. Pick another one."
-                  //  }
-                   // res.send(responseString);
-              //  }
-
+                    res.send(responseString);
+                }
             } catch (error) {
                 console.log(error);
                 res.send(false);
