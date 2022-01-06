@@ -1,23 +1,23 @@
 
 const url = require('url');
-//const util = require('util');
+const util = require('util');
 const express = require('express');
 const process = require('process');
 const { Client } = require('pg');
 //const mysql = require('mysql'); // For database.
 const cors = require('cors'); // For all access for all domains.
 const request = require('request'); // For external API calls.
-//const bcrypt = require('bcryptjs'); // Password hash crypt.
+const bcrypt = require('bcryptjs'); // Password hash crypt.
 let port = process.env.PORT || 3000;
 
 const app = express();
 app.use(cors()); // Allow Access from all domains
 app.use(express.json());
 
-//var bodyParser = require('body-parser');
-//var urlencodedParser = bodyParser.urlencoded({extended: false});
-//app.use(bodyParser.urlencoded({extended: false}));
-//app.use(bodyParser.json());
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded({extended: false});
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 const client = new Client({
     user: "fcncirfhfkwocb",
