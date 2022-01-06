@@ -160,8 +160,6 @@ app.post('/accountValidate', function(req, res) {
     let user = username;
 
 
-    res.send(true);
-    /*
     // Check from database if user is valid
     (async () => {
         try {
@@ -170,7 +168,7 @@ app.post('/accountValidate', function(req, res) {
             let resultString = JSON.stringify(result.rows);
 
             // Check if we got the username, 3 because it gives 2 when there is no user by the username that was searched and username must be at least 4 characters.
-            if (resultString.length > 3) {
+            if (resultString.length > 1) {
                 let usernameDb = resultString[0].username;
                 var hashPass = resultString[0].password;
 
@@ -192,8 +190,6 @@ app.post('/accountValidate', function(req, res) {
             res.send(false);
         }
     })();
-
-     */
 });
 
 
