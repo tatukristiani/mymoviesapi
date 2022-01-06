@@ -10,7 +10,7 @@ const bcrypt = require('bcryptjs'); // Password hash crypt.
 let port = process.env.PORT || 3000;
 
 const app = express();
-app.use(cors({origin: 'https://tatukristiani.github.io'}));
+app.use(cors());
 app.use(express.json());
 
 var bodyParser = require('body-parser');
