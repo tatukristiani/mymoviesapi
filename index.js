@@ -214,14 +214,10 @@ app.post('/createAccount', function(req, res) {
         // Check from database if user is valid
         (async () => {
             try {
-                let sql = "SELECT username FROM users WHERE username = " + user;
-                let accountExists = await client.query(sql);
+                let results = await client.query("SELECT username FROM users WHERE username=" + user);
 
-
-                if(JSON.stringify(accountExists).length < 3) {
-                    sql = "INSERT INTO users(username,password,user_level) VALUES(" +
-                        user + ", " + pass + ", 'user')";
-                    await client.query(sql);
+                if(JSON.stringify(results.rows).length < 3) {
+                    await client.query("INSERT INTO users (username,password,user_level) VALUES(" + user + ", " + pass + ", 'user')");
                     res.send(true);
                 }
                 else {
