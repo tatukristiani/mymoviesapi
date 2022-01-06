@@ -168,7 +168,7 @@ app.post('/accountValidate', function(req, res) {
                 let passwordDB = resultString.password;
 
                 bcrypt.compare(password,passwordDB,function(error,response) {
-                    if(response && usernameDB.equals(username)) {
+                    if(response && usernameDB.localeCompare(username)) {
                         res.send(true);
                     } else {
                         res.send(false);
