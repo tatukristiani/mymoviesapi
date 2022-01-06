@@ -151,7 +151,7 @@ app.post('/saveDataToDb', function(req, res) {
  * Checks if the users given username and password are indeed correct.
  */
 app.post('/accountValidate', function(req, res) {
-    res.header("Access-Control-Allow-Headers:", "*");
+    //res.header("Access-Control-Allow-Headers:", "*");
     res.header("Access-Control-Allow-Origin", "*");
 
     let dataReceived = req.body;
