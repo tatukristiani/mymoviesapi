@@ -208,22 +208,25 @@ app.post('/createAccount', function(req, res) {
     if(validateCredential(username) && validateCredential(password)) {
 
         var hashPass = bcrypt.hashSync(password, 12);
-        let user = '"' + username + '"'; // String of username for db
+        let user = '' + username + '"'; // String of username for db
         let pass = '"' + hashPass + '"'; // String of password for db
 
-        responseString = {
-            response: user + "," + pass
-        }
-
-        res.send(responseString);
-        /*
         // Check from database if user is valid
         (async () => {
             try {
-                let results = await client.query("SELECT username FROM users WHERE username=" + user);
+                let query = {
+                    name: 'fetch-user',
+                    text: 'SELECT username FROM users WHERE username = $1',
+                    values:[user],
+                }
+                let results = await client.query(query);
 
                 if(JSON.stringify(results.rows).length < 3) {
-                    await client.query("INSERT INTO users (username,password,user_level) VALUES(" + user + ", " + pass + ", 'user')");
+                    let insertQuery = {
+                        text: 'INSERT INTO users(username,password,user_level) VALUES($1, $2, $3)',
+                        values: [user,pass,'user'],
+                    }
+                    await client.query(insertQuery);
                     res.send(true);
                 }
                 else {
@@ -246,8 +249,8 @@ app.post('/createAccount', function(req, res) {
         res.send(responseString);
     }
 
-         */
-    }
+
+
 });
 // Function from HelperFunctions, used for double checking the username and password before saving them to database.
 function validateCredential(credentialToValidate) {
