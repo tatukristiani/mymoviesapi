@@ -5,12 +5,16 @@ const express = require('express');
 const process = require('process');
 const { Client } = require('pg');
 const cors = require('cors'); // For all access for all domains.
+const corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200,
+}
 const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
 let port = process.env.PORT || 3000;
 
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 var bodyParser = require('body-parser');
