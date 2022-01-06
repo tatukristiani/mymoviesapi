@@ -187,7 +187,7 @@ app.post('/accountValidate', function(req, res) {
 
         } catch (error) {
             console.log(error);
-            res.send('Problems with the database.');
+            res.send(false);
         }
     })();
 });
