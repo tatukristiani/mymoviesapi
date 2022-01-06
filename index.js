@@ -149,7 +149,7 @@ app.post('/saveDataToDb', function(req, res) {
 /**
  * Checks if the users given username and password are indeed correct.
  */
-app.post('/accountValidate', function(req, res) {
+app.post('/accountValidate', cors(), function(req, res) {
     let dataReceived = req.body;
     let username = dataReceived.username; // String of username
     let password = dataReceived.password; // String of password
