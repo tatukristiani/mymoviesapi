@@ -10,13 +10,13 @@ const bcrypt = require('bcryptjs'); // Password hash crypt.
 let port = process.env.PORT || 3000;
 
 const app = express();
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 app.use(bodyParser.urlencoded({extended: false}));
-//app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 const client = new Client({
     user: "fcncirfhfkwocb",
@@ -30,12 +30,6 @@ client.connect()
     .then(() => console.log("Connected successfully!"))
     .catch(error => console.log(error));
 
-
-app.all('/*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    next();
-});
 
 app.get("/", (req,res) => {
     res.send("Hello World");
@@ -157,6 +151,9 @@ app.post('/saveDataToDb', function(req, res) {
  * Checks if the users given username and password are indeed correct.
  */
 app.post('/accountValidate', function(req, res) {
+    res.header("Access-Control-Allow-Headers:", "*");
+    res.header("Access-Control-Allow-Origin", "*");
+
     let dataReceived = req.body;
     let username = dataReceived.username; // String of username
     let password = dataReceived.password; // String of password
