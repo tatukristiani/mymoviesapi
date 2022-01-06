@@ -8,10 +8,10 @@ const { Client } = require('pg');
 const cors = require('cors'); // For all access for all domains.
 const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
-let port = process.env.PORT || 3000;
+let port = 3000;
 
 const app = express();
-app.use(cors()); // Allow Access from all domains
+app.use(cors({origin: 'https://tatukristiani.github.io'})); // Allow Access from all domains
 app.use(express.json());
 
 var bodyParser = require('body-parser');
@@ -381,7 +381,7 @@ app.get('/mymovies', urlencodedParser, function(req, res) {
 });
 
 */
-// Server listening to port 8080.
+
 app.listen(port, ()=>{
     console.log('Listening at port http://localhost:%s', port);
 });
