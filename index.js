@@ -208,8 +208,8 @@ app.post('/createAccount', function(req, res) {
     if(validateCredential(username) && validateCredential(password)) {
 
         var hashPass = bcrypt.hashSync(password, 12);
-        let user = '"' + username + '"'; // String of username for db
-        let pass = '"' + hashPass + '"'; // String of password for db
+        let user = username; // String of username for db
+        let pass = hashPass; // String of password for db
 
         // Check from database if user is valid
         (async () => {
@@ -218,7 +218,7 @@ app.post('/createAccount', function(req, res) {
                 //let results = await client.query(query);
 
                 //if(JSON.stringify(results.rows).length < 3) {
-                let insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `' + user + ' ,  + '` + pass + `', 'user')`;
+                let insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `'` + user + `' ,  + '` + pass + `', 'user')`;
                 responseString = {
                     response: insertQuery
                 }
