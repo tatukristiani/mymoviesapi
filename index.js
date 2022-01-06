@@ -218,14 +218,19 @@ app.post('/createAccount', function(req, res) {
                 //let results = await client.query(query);
 
                 //if(JSON.stringify(results.rows).length < 3) {
-                    let insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `'` + user + `' , ` + `'` + pass + `', 'user')`;
-                    await client.query(insertQuery,(err) => {
-                        if(err) {
-                            res.send(false);
-                        } else {
-                            res.send(true);
-                        }
-                    });
+                let insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `'` + user + `' , ` + `'` + pass + `', 'user')`;
+                responseString = {
+                    response: insertQuery
+                }
+                res.send(insertQuery);
+
+                    //await client.query(insertQuery,(err) => {
+                      //  if(err) {
+                            //res.send(false);
+                       // } else {
+                          //  res.send(true);
+                        //}
+                    //});
                 //}
                // else {
                    // responseString = {
