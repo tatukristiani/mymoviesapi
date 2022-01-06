@@ -12,6 +12,7 @@ let port = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.options('*', cors());
 
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -147,17 +148,10 @@ app.post('/saveDataToDb', function(req, res) {
 });
 
  */
-
-app.options('/accountValidate', function(req,res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader('Access-Control-Allow-Methods', '*');
-    res.setHeader("Access-Control-Allow-Headers", "*");
-    res.end();
-})
 /**
  * Checks if the users given username and password are indeed correct.
  */
-app.post('/accountValidate', function(req, res) {
+app.post('/accountValidate', cors(), function(req, res) {
     let dataReceived = req.body;
     let username = dataReceived.username; // String of username
     let password = dataReceived.password; // String of password
