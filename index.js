@@ -167,10 +167,14 @@ app.post('/accountValidate', function(req, res) {
             if(rows.length > 0) {
                 let usernameDB = rows[0].username;
                 let passwordDB = rows[0].password;
-                let resultString = {
-                    response: usernameDB + ", " + passwordDB
-                }
-                res.send(resultString);
+
+                bcrypt.compare(password,passwordDB, function(error,response) {
+                    if(response && usernameDB == username) {
+                        res.send(true);
+                    } else {
+                        res.send(false);
+                    }
+                })
             } else {
                 res.send(false);
             }
