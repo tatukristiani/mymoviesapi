@@ -169,7 +169,7 @@ app.post('/accountValidate', function(req, res) {
                 //let passwordDB = resultString.password;
 
                 let resultString = {
-                    response: username + ", " + usernameDB;
+                    response: username + ", " + usernameDB
                 }
                 if(usernameDB == username) {
                     res.send(resultString);
