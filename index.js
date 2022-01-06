@@ -155,14 +155,20 @@ app.post('/accountValidate', function(req, res) {
     let username = dataReceived.username; // String of username
     let password = dataReceived.password; // String of password
 
-    let user = username;
 
-
-    res.send(true);
-    /*
     // Check from database if user is valid
     (async () => {
         try {
+            let checkQuery = `SELECT username FROM users WHERE username =` + `'` + username + `'`;
+            let results = await client.query(checkQuery);
+
+            if(JSON.stringify(results.rows).length > 0) {
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
+            /*
             let checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + user + `'`;
             let result = await client.query(checkQuery);
             let resultString = JSON.stringify(result.rows);
@@ -184,14 +190,12 @@ app.post('/accountValidate', function(req, res) {
             } else {
                 res.send(false);
             }
-
+        */
         } catch (error) {
             console.log(error);
             res.send(false);
         }
     })();
-
-     */
 });
 
 
