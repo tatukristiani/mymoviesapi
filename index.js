@@ -154,7 +154,7 @@ app.post('/saveDataToDb', function(req, res) {
  * Checks if the users given username and password are indeed correct.
  */
 app.post('/accountValidate', function(req, res) {
-    res.setHeader("Access-Control-Allow-Origin", 'http://tatukristiani.github.io');
+    res.setHeader("Access-Control-Allow-Origin", 'https://tatukristiani.github.io:443');
     res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
     let dataReceived = req.body;
