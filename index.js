@@ -5,14 +5,16 @@ const express = require('express');
 const process = require('process');
 const { Client } = require('pg');
 const cors = require('cors'); // For all access for all domains.
+const corsOptions = {
+    origin: true
+}
 const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
 let port = process.env.PORT || 3000;
 
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
-app.options('*', cors());
 
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -151,7 +153,7 @@ app.post('/saveDataToDb', function(req, res) {
 /**
  * Checks if the users given username and password are indeed correct.
  */
-app.post('/accountValidate', cors(), function(req, res) {
+app.post('/accountValidate', function(req, res) {
     let dataReceived = req.body;
     let username = dataReceived.username; // String of username
     let password = dataReceived.password; // String of password
