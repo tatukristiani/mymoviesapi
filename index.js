@@ -371,5 +371,5 @@ app.get('/mymovies', urlencodedParser, function(req, res) {
 
 
 app.listen(port, ()=>{
-    console.log('Listening at port http://localhost:%s', port);
+    console.log('Listening at port https://moviesoftwareapi.herokuapp.com:%s', port);
 });
