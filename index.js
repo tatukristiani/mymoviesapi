@@ -159,10 +159,11 @@ app.post('/accountValidate', function(req, res) {
     // Check from database if user is valid
     (async () => {
         try {
-            let checkQuery = `SELECT username FROM users WHERE username =` + `'` + username + `'`;
+            let checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + username + `'`;
             let results = await client.query(checkQuery);
+            let resultString = JSON.stringify(results.rows);
 
-            if(JSON.stringify(results.rows).length > 0) {
+            if(resultString.length > 0) {
                 res.send(true);
             }
             else {
