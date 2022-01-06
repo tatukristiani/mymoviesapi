@@ -252,7 +252,6 @@ function validateCredential(credentialToValidate) {
 /**
  * Saves the movies data to the users database. Finds the movies data from the external API.
  */
-
 app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
     console.log("Saving movie to users database.");
 
@@ -275,7 +274,6 @@ app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
     let actor;
     let plot;
     let poster;
-
 
     // We get the movies information from the API
     request(uri, function(error, response, body) {
@@ -354,17 +352,15 @@ app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
 /**
  * Finds all movies that the user has on the database.
  */
-/*
 app.get('/mymovies', urlencodedParser, function(req, res) {
-    console.log('Fetching users movies');
     var q = url.parse(req.url, true).query;
-    let user = '"' + q.user + '"';
+    let user = `'` + q.user + `'`;
 
     (async () => {
         try {
-            let sql = "SELECT * FROM movie WHERE movie.id in (SELECT movieID FROM user_movie WHERE userID in (SELECT users.id FROM users WHERE username = " + user + "))";
-            let result = await query(sql);
-            let jsonObj = JSON.stringify(result);
+            let sql = `SELECT * FROM movie WHERE movie.id IN (SELECT movieID FROM user_movie WHERE userID IN (SELECT users.id FROM users WHERE username = ` + user + `))`;
+            let result = await client.query(sql);
+            let jsonObj = result.rows;
             res.send(jsonObj);
         }catch(error) {
             console.log(error);
@@ -373,7 +369,6 @@ app.get('/mymovies', urlencodedParser, function(req, res) {
     })()
 });
 
-*/
 
 app.listen(port, ()=>{
     console.log('Listening at port http://localhost:%s', port);
