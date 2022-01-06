@@ -16,7 +16,7 @@ app.use(express.json());
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
 const client = new Client({
     user: "fcncirfhfkwocb",
@@ -152,12 +152,6 @@ app.post('/saveDataToDb', function(req, res) {
 });
 
  */
-
-app.options('/accountValidate', function (req,res,next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    next();
-});
 
 /**
  * Checks if the users given username and password are indeed correct.
