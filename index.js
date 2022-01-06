@@ -164,11 +164,21 @@ app.post('/accountValidate', function(req, res) {
             let resultString = JSON.stringify(results.rows);
 
             if(resultString.length > 0) {
-                res.send(true);
+                let usernameDB = resultString.username;
+                let passwordDB = resultString.password;
+
+                bcrypt.compare(password,passwordDB,function(error,response) {
+                    if(response && usernameDB.equals(username)) {
+                        res.send(true);
+                    } else {
+                        res.send(false);
+                    }
+                });
             }
             else {
                 res.send(false);
             }
+
             /*
             let checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + user + `'`;
             let result = await client.query(checkQuery);
