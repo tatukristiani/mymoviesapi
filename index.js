@@ -5,16 +5,12 @@ const express = require('express');
 const process = require('process');
 const { Client } = require('pg');
 const cors = require('cors'); // For all access for all domains.
-const corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200,
-}
 const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
 let port = process.env.PORT || 3000;
 
 const app = express();
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 var bodyParser = require('body-parser');
@@ -150,13 +146,18 @@ app.post('/saveDataToDb', function(req, res) {
     }
 });
 
+ */
+
+app.options('/accountValidate', function(req,res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.end();
+})
 /**
  * Checks if the users given username and password are indeed correct.
  */
 app.post('/accountValidate', function(req, res) {
-    res.setHeader("Access-Control-Allow-Origin", 'https://tatukristiani.github.io:443');
-    res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT,DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
     let dataReceived = req.body;
     let username = dataReceived.username; // String of username
     let password = dataReceived.password; // String of password
