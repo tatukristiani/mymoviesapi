@@ -277,9 +277,10 @@ app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
         jsonObj = JSON.parse(body);
 
         let jsonPlot = jsonObj.Plot.replace(/'/g, '');
+        let jsonTitle = jsonObj.Title.replace(/'/g,'');
 
         // Variables for saving the movie to database.
-        name = `'` + jsonObj.Title + `'`;
+        name = `'` + jsonTitle + `'`;
         year = jsonObj.Year;
         imageID = `'` + jsonObj.imdbID + `'`;
         runtimeToFloat = parseFloat(jsonObj.Runtime).toFixed(2);
