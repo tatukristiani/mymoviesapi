@@ -276,6 +276,8 @@ app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
         //console.log('Server response: ' + body);
         jsonObj = JSON.parse(body);
 
+        let jsonPlot = jsonObj.Plot.replace(/'/g, '');
+
         // Variables for saving the movie to database.
         name = `'` + jsonObj.Title + `'`;
         year = jsonObj.Year;
@@ -284,7 +286,7 @@ app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
         genre = `'` + jsonObj.Genre + `'`;
         director = `'` + jsonObj.Director + `'`;
         actor = `'` + jsonObj.Actors + `'`;
-        plot = `'` + jsonObj.Plot + `'`;
+        plot = `'` + jsonPlot + `'`;
         poster = `'` + jsonObj.Poster + `'`;
 
         let searchUser = `'` + username + `'`;
