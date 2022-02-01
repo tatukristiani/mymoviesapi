@@ -1,7 +1,5 @@
 // Kurssin muuttujat
-const secrets = require('config/secrets.js');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
 const url = require('url');
 const util = require('util');
@@ -175,7 +173,7 @@ app.post('/accountValidate', function(req, res) {
                 // Compares the inserted password to the one in database.
                 bcrypt.compare(password,passwordDB, function(error,response) {
                     if(response && usernameDB == username) {
-                        const accessToken = jwt.sign({username: username, password: password}, secrets.jwtSecret, {expiresIn: "1h"});
+                        const accessToken = jwt.sign({username: username, password: password}, process.env.JWT_SECRET, {expiresIn: "1h"});
                         res.status(200).json({accessToken: accessToken});
                         //res.send(true);
                     } else {
