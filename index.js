@@ -175,7 +175,7 @@ app.post('/accountValidate', function(req, res) {
                         res.status(202).json({accessToken: accessToken}); // Access Token
                     } else {
                         //res.send(false);
-                        res.status(401).json({response: false});
+                        res.status(200).json({response: false});
                     }
                 })
             } else {
