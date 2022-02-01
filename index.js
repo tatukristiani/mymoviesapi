@@ -171,7 +171,7 @@ app.post('/accountValidate', function(req, res) {
                     if(response && usernameDB == username) {
                         const accessToken = jwt.sign({username: username}, token, {expiresIn: "1h"});
                         //res.json({accessToken: accessToken});
-                        res.send(accessToken);
+                        res.status(202).json({accessToken: accessToken});
                     } else {
                         res.send(false);
                     }
