@@ -175,7 +175,8 @@ app.post('/accountValidate', function(req, res) {
                         res.status(202).json({accessToken: accessToken}); // Access Token
                     } else {
                         //res.send(false);
-                        res.status(204);
+                        res.status(401);
+                        res.send("Invalid credentials");
                     }
                 })
             } else {
