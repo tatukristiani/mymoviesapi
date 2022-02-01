@@ -153,11 +153,6 @@ app.post('/accountValidate', function(req, res) {
     let username = dataReceived.username; // String of username
     let password = dataReceived.password; // String of password
 
-    let user = {
-        username: username,
-        password: password
-    };
-
     // Check from database if user is valid
     (async () => {
         try {
@@ -174,7 +169,8 @@ app.post('/accountValidate', function(req, res) {
                 bcrypt.compare(password,passwordDB, function(error,response) {
                     if(response && usernameDB == username) {
                         const accessToken = jwt.sign({username: username, password: password}, process.env.JWT_SECRET, {expiresIn: "1h"});
-                        res.status(200).json({accessToken: accessToken});
+                        res.header("Access-Control-Allow-Origin", "*");
+                        res.json({accessToken: accessToken});
                         //res.send(true);
                     } else {
                         res.send(false);
