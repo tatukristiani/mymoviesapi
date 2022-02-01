@@ -1,3 +1,7 @@
+// Kurssin muuttujat
+const secrets = require('config/secrets.js');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const url = require('url');
 const util = require('util');
@@ -151,6 +155,11 @@ app.post('/accountValidate', function(req, res) {
     let username = dataReceived.username; // String of username
     let password = dataReceived.password; // String of password
 
+    let user = {
+        username: username,
+        password: password
+    };
+
     // Check from database if user is valid
     (async () => {
         try {
@@ -166,7 +175,9 @@ app.post('/accountValidate', function(req, res) {
                 // Compares the inserted password to the one in database.
                 bcrypt.compare(password,passwordDB, function(error,response) {
                     if(response && usernameDB == username) {
-                        res.send(true);
+                        const accessToken = jwt.sign({username: username}, secrets.jwtSecret, {expiresIn: "1h"});
+                        res.status(202).json({accessToken: accessToken});
+                        //res.send(true);
                     } else {
                         res.send(false);
                     }
