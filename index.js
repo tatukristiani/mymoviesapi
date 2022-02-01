@@ -175,8 +175,8 @@ app.post('/accountValidate', function(req, res) {
                 // Compares the inserted password to the one in database.
                 bcrypt.compare(password,passwordDB, function(error,response) {
                     if(response && usernameDB == username) {
-                        const accessToken = jwt.sign({username: username}, secrets.jwtSecret, {expiresIn: "1h"});
-                        res.status(202).json({accessToken: accessToken});
+                        const accessToken = jwt.sign({username: username, password: password}, secrets.jwtSecret, {expiresIn: "1h"});
+                        res.status(200).json({accessToken: accessToken});
                         //res.send(true);
                     } else {
                         res.send(false);
