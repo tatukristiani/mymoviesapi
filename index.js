@@ -1,5 +1,5 @@
 // Kurssin muuttujat
-const jwt = require('jsonwebtoken');
+//const jwt = require('jsonwebtoken');
 
 const url = require('url');
 const util = require('util');
@@ -168,10 +168,9 @@ app.post('/accountValidate', function(req, res) {
                 // Compares the inserted password to the one in database.
                 bcrypt.compare(password,passwordDB, function(error,response) {
                     if(response && usernameDB == username) {
-                        const accessToken = jwt.sign({username: username, password: password}, process.env.JWT_SECRET, {expiresIn: "1h"});
-                        res.header("Access-Control-Allow-Origin", "*");
-                        res.json({accessToken: accessToken});
-                        //res.send(true);
+                        //const accessToken = jwt.sign({username: username, password: password}, process.env.JWT_SECRET, {expiresIn: "1h"});
+                        //res.json({accessToken: accessToken});
+                        res.send(true);
                     } else {
                         res.send(false);
                     }
