@@ -1,6 +1,5 @@
 // Kurssin muuttujat Access token json varten
 const jwt = require('jsonwebtoken');
-const secret = process.env.JWT_SECRET
 
 const url = require('url');
 const util = require('util');
@@ -11,6 +10,8 @@ const cors = require('cors'); // For all access for all domains.
 const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
 let port = process.env.PORT || 3000;
+
+const secret = process.env.JWT_SECRET; // Access token json varten
 
 const app = express();
 app.use(express.json());
@@ -170,7 +171,7 @@ app.post('/accountValidate', function(req, res) {
                 bcrypt.compare(password,passwordDB, function(error,response) {
                     if(response && usernameDB == username) {
                         const accessToken = jwt.sign({username: username}, secret, {expiresIn: "1h"}); // Access Token
-                        //res.json({accessToken: accessToken});
+                        //res.send(true);
                         res.status(202).json({accessToken: accessToken}); // Access Token
                     } else {
                         res.send(false);
