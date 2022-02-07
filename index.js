@@ -173,18 +173,14 @@ app.post('/api/user', function(req, res) {
                     if(response && usernameDB == username) {
                         res.status(200).json({"message": "User credentials authenticated."});
                     } else {
-                        //res.status(401).json({"error": "Invalid credentials."});
-                        res.send({username: username, another: usernameDB});
+                        res.status(401).json({"error": "Invalid credentials."});
                     }
                 })
             } else {
-                //res.status(401).json({"error": "Invalid credentials."});
-                res.send({rows: rows});
-                //res.send(false);
+                res.status(401).json({"error": "Invalid credentials."});
             }
         } catch (error) {
             res.status(500).json({"error": error.message});
-            //res.send(false);
         }
     })();
 });
