@@ -63,6 +63,7 @@ app.get('/home', (request, response) => {
  * Searches for a movie from the omdbAPI with the users given title and year(optional).
  * This function finds only 1 movie MAX.
  */
+/*
 app.get('/search', function(req, res) {
     console.log('Searching movie from external API');
     var q = url.parse(req.url, true).query;
@@ -92,10 +93,13 @@ app.get('/search', function(req, res) {
     }
 });
 
+*/
+
 
 /**
  * Authors tool for adding movies to the database.
  */
+/*
 app.post('/saveDataToDb', function(req, res) {
 
     // get JSON-object from the http-body
@@ -145,11 +149,49 @@ app.post('/saveDataToDb', function(req, res) {
         })();
     }
 });
+*/
 
+app.post('/api/user', function(req, res) {
+    let data = req.body;
+    let username = data.username; // String of username
+    let password = data.password; // String of password
+
+    // Check from database if user is valid
+    (async () => {
+        try {
+            let checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + username + `'`;
+            let results = await client.query(checkQuery);
+            let rows = results.rows;
+
+            // Should give 1 row of data if user is registered.
+            if(rows.length > 0) {
+                let usernameDB = rows[0].username;
+                let passwordDB = rows[0].password;
+
+                // Compares the inserted password to the one in database.
+                bcrypt.compare(password,passwordDB, function(error,response) {
+                    if(response && usernameDB == username) {
+                        res.status(200).json({"message": "User credentials authenticated."});
+                    } else {
+                        res.status(401).json({"error": "Invalid credentials."});
+                        //res.send(false);
+                    }
+                })
+            } else {
+                res.status(401).json({"error": "Invalid credentials."});
+                //res.send(false);
+            }
+        } catch (error) {
+            res.status(500).json({"error": error.message});
+            //res.send(false);
+        }
+    })();
+});
 
 /**
  * Checks if the users given username and password are indeed correct.
  */
+/*
 app.post('/accountValidate', function(req, res) {
     let dataReceived = req.body;
     let username = dataReceived.username; // String of username
@@ -186,12 +228,13 @@ app.post('/accountValidate', function(req, res) {
         }
     })();
 });
-
+*/
 
 /**
  * Creates an account for the user.
  * Hashes the password and check the correct validation of the username/password.
  */
+/*
 app.post('/createAccount', function(req, res) {
     console.log("Creating an account");
     let dataReceived = req.body;
@@ -241,7 +284,9 @@ app.post('/createAccount', function(req, res) {
         res.send(responseString);
     }
 });
+*/
 
+/*
 // Function from HelperFunctions, used for double checking the username and password before saving them to database.
 function validateCredential(credentialToValidate) {
     // Regex used won't accept strings that start/end with a . or _ or have two of them in a row
@@ -250,10 +295,13 @@ function validateCredential(credentialToValidate) {
     let pattern = new RegExp(regex);
     return pattern.test(credentialToValidate);
 }
+*/
+
 
 /**
  * Saves the movies data to the users database. Finds the movies data from the external API.
  */
+/*
 app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
     console.log("Saving movie to users database.");
 
@@ -354,9 +402,13 @@ app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
     });
 });
 
+*/
+
+
 /**
  * Finds all movies that the user has on the database.
  */
+/*
 app.get('/mymovies', urlencodedParser, function(req, res) {
     var q = url.parse(req.url, true).query;
     let user = `'` + q.user + `'`;
@@ -373,7 +425,31 @@ app.get('/mymovies', urlencodedParser, function(req, res) {
         }
     })()
 });
+*/
 
+/*
+// Test routes & functions for school
+function authenticateToken(req,res,next) {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, secret, (err: any, user: any) => {
+        console.log(err)
+
+        if (err) return res.sendStatus(403)
+
+        req.user = user
+
+        next()
+    })
+}
+app.post('/api/event', authenticateToken, urlencodedParser, function(req,res) {
+
+})
+
+ */
 
 app.listen(port, ()=>{
     console.log('Listening at port https://moviesoftwareapi.herokuapp.com:%s', port);
