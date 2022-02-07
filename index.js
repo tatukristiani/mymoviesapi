@@ -178,7 +178,8 @@ app.post('/api/user', function(req, res) {
                     }
                 })
             } else {
-                res.status(401).json({"error": "Invalid credentials."});
+                //res.status(401).json({"error": "Invalid credentials."});
+                res.send({rows: rows});
                 //res.send(false);
             }
         } catch (error) {
