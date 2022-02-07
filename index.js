@@ -173,8 +173,8 @@ app.post('/api/user', function(req, res) {
                     if(response && usernameDB == username) {
                         res.status(200).json({"message": "User credentials authenticated."});
                     } else {
-                        res.status(401).json({"error": "Invalid credentials."});
-                        //res.send(false);
+                        //res.status(401).json({"error": "Invalid credentials."});
+                        res.send({username: username, another: usernameDB});
                     }
                 })
             } else {
