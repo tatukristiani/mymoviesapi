@@ -450,7 +450,7 @@ function authenticateToken(req,res,next) {
 }
 
 app.post('/api/event', authenticateToken, urlencodedParser, function(req,res) {
-
+    res.send({response: "It worked!"})
 })
 
 
