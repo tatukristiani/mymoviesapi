@@ -157,26 +157,26 @@ app.post('/saveDataToDb', function(req, res) {
 });
 */
 
-app.post('/api/user', function(req, res) {
-    let data = req.body;
-    let username = data.username; // String of username
-    let password = data.password; // String of password
+app.post('/api/login', function(req, res) {
+    const data = req.body;
+    const username = data.username; // String of username
+    const password = data.password; // String of password
 
     // Check from database if user is valid
     (async () => {
         try {
-            let checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + username + `'`;
-            let results = await client.query(checkQuery);
-            let rows = results.rows;
+            const checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + username + `'`;
+            const results = await client.query(checkQuery);
+            const rows = results.rows;
 
             // Should give 1 row of data if user is registered.
             if(rows.length > 0) {
-                let usernameDB = rows[0].username;
-                let passwordDB = rows[0].password;
+                const usernameDB = rows[0].username;
+                const passwordDB = rows[0].password;
 
                 // Compares the inserted password to the one in database.
                 bcrypt.compare(password,passwordDB, function(error,response) {
-                    if(response && usernameDB == username) {
+                    if(response && usernameDB === username) {
                         res.status(200).json({"message": "User credentials authenticated."});
                     } else {
                         res.status(401).json({"error": "Invalid credentials."});
@@ -196,25 +196,25 @@ app.post('/api/user', function(req, res) {
  */
 
 app.post('/accountValidate', function(req, res) {
-    let dataReceived = req.body;
-    let username = dataReceived.username; // String of username
-    let password = dataReceived.password; // String of password
+    const dataReceived = req.body;
+    const username = dataReceived.username; // String of username
+    const password = dataReceived.password; // String of password
 
     // Check from database if user is valid
     (async () => {
         try {
-            let checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + username + `'`;
-            let results = await client.query(checkQuery);
-            let rows = results.rows;
+            const checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + username + `'`;
+            const results = await client.query(checkQuery);
+            const rows = results.rows;
 
             // Should give 1 row of data if user is registered.
             if(rows.length > 0) {
-                let usernameDB = rows[0].username;
-                let passwordDB = rows[0].password;
+                const usernameDB = rows[0].username;
+                const passwordDB = rows[0].password;
 
                 // Compares the inserted password to the one in database.
                 bcrypt.compare(password,passwordDB, function(error,response) {
-                    if(response && usernameDB == username) {
+                    if(response && usernameDB === username) {
                         const accessToken = jwt.sign({username: username}, secret, {expiresIn: "1h"}); // Access Token
                         //res.send(true);
                         res.status(202).json({accessToken: accessToken}); // Access Token
@@ -237,59 +237,48 @@ app.post('/accountValidate', function(req, res) {
  * Creates an account for the user.
  * Hashes the password and check the correct validation of the username/password.
  */
-/*
-app.post('/createAccount', function(req, res) {
-    console.log("Creating an account");
-    let dataReceived = req.body;
-    let username = dataReceived.username;
-    let password = dataReceived.password;
-    let responseString;
+app.post('/api/register', function(req, res) {
+    const dataReceived = req.body;
+    const username = dataReceived.username;
+    const password = dataReceived.password;
 
     // 1. Validates username & password
     if(validateCredential(username) && validateCredential(password)) {
 
         // 2. Hashes the password
-        var hashPass = bcrypt.hashSync(password, 12);
-        let user = username; // String of username for db
-        let pass = hashPass; // String of password for db
+        const hashPass = bcrypt.hashSync(password, 12);
+        const user = username; // String of username for db
+        const pass = hashPass; // String of password for db
 
         // 3. Check if username already exists and acts accordingly.
         (async () => {
             try {
                 // 4. Checks if the username already exists.
-                let checkQuery = `SELECT username FROM users WHERE username =` + `'` + user + `'`;
-                let results = await client.query(checkQuery);
+                const checkQuery = `SELECT username FROM users WHERE username =` + `'` + user + `'`;
+                const results = await client.query(checkQuery);
 
                 // 5. If username does not exists -> save the user to database & send a boolean value of true as response.
                 if(JSON.stringify(results.rows).length < 3) {
-                    let insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `'` + user + `' , '` + pass + `', 'user')`;
+                    const insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `'` + user + `' , '` + pass + `', 'user')`;
                     await client.query(insertQuery);
-                    res.send(true);
+                    res.status(201).json({"message": "Account was successfully created!"})
                 }
 
                 // 6. If the username is taken sends a string of information about it as response.
                 else {
-                    responseString = {
-                        response: "This username is already taken. Pick another one."
-                    }
-                    res.send(responseString);
+                    res.status(403).json({"error": "The username is already taken. Pick another one."});
                 }
             } catch (error) {
-                console.log(error);
-                res.send(false);
+                res.status(500).json({"error": error.message});
             }
         })();
     }
     else {
-        responseString = {
-            response: "Username/Password must be 4-20 characters in length, they can't start or end with a . or _ or have two of them in a row!"
-        };
-        res.send(responseString);
+        res.status(403).json({"error": "Username/Password must be 4-20 characters in length, they can't start or end with a . or _ or have two of them in a row!"});
     }
 });
-*/
 
-/*
+
 // Function from HelperFunctions, used for double checking the username and password before saving them to database.
 function validateCredential(credentialToValidate) {
     // Regex used won't accept strings that start/end with a . or _ or have two of them in a row
@@ -298,7 +287,7 @@ function validateCredential(credentialToValidate) {
     let pattern = new RegExp(regex);
     return pattern.test(credentialToValidate);
 }
-*/
+
 
 
 /**
