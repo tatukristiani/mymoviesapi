@@ -15,7 +15,13 @@ let port = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+//app.use(cors());
+
+app.use(function(req,res,next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    next();
+})
 
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -188,7 +194,7 @@ app.post('/api/user', function(req, res) {
 /**
  * Checks if the users given username and password are indeed correct.
  */
-/*
+
 app.post('/accountValidate', function(req, res) {
     let dataReceived = req.body;
     let username = dataReceived.username; // String of username
@@ -225,7 +231,7 @@ app.post('/accountValidate', function(req, res) {
         }
     })();
 });
-*/
+
 
 /**
  * Creates an account for the user.
@@ -424,7 +430,7 @@ app.get('/mymovies', urlencodedParser, function(req, res) {
 });
 */
 
-/*
+
 // Test routes & functions for school
 function authenticateToken(req,res,next) {
     const authHeader = req.headers['authorization']
@@ -432,7 +438,7 @@ function authenticateToken(req,res,next) {
 
     if (token == null) return res.sendStatus(401)
 
-    jwt.verify(token, secret, (err: any, user: any) => {
+    jwt.verify(token, secret, (err, user) => {
         console.log(err)
 
         if (err) return res.sendStatus(403)
@@ -442,11 +448,12 @@ function authenticateToken(req,res,next) {
         next()
     })
 }
+
 app.post('/api/event', authenticateToken, urlencodedParser, function(req,res) {
 
 })
 
- */
+
 
 app.listen(port, ()=>{
     console.log('Listening at port https://moviesoftwareapi.herokuapp.com:%s', port);
