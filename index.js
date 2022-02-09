@@ -241,25 +241,28 @@ app.post('/api/register', function(req, res) {
     const dataReceived = req.body;
     const username = dataReceived.username;
     const password = dataReceived.password;
+    const email = dataReceived.email;
+    const isUsernameValid = validateCredential(username);
+    const isPasswordValid = validateCredential(password);
+    const isEmailValid = validateEmail(email);
 
     // 1. Validates username & password
-    if(validateCredential(username) && validateCredential(password)) {
+    if(isUsernameValid && isPasswordValid && isEmailValid) {
 
         // 2. Hashes the password
         const hashPass = bcrypt.hashSync(password, 12);
-        const user = username; // String of username for db
         const pass = hashPass; // String of password for db
 
         // 3. Check if username already exists and acts accordingly.
         (async () => {
             try {
                 // 4. Checks if the username already exists.
-                const checkQuery = `SELECT username FROM users WHERE username =` + `'` + user + `'`;
+                const checkQuery = `SELECT username FROM users WHERE username =` + `'` + username + `'`;
                 const results = await client.query(checkQuery);
 
                 // 5. If username does not exists -> save the user to database & send a boolean value of true as response.
                 if(JSON.stringify(results.rows).length < 3) {
-                    const insertQuery = `INSERT INTO users(username,password,user_level) VALUES(` + `'` + user + `' , '` + pass + `', 'user')`;
+                    const insertQuery = `INSERT INTO users(username,password,user_level,email) VALUES(` + `'` + username + `' , '` + pass + `', 'user' , '` + email + `')`;
                     await client.query(insertQuery);
                     res.status(201).json({"message": "Account was successfully created!"})
                 }
@@ -272,14 +275,22 @@ app.post('/api/register', function(req, res) {
                 res.status(500).json({"error": error.message});
             }
         })();
-    }
-    else {
+
+    } else if(!isEmailValid){
+        res.status(403).json({"error": "Email address must be a valid email! i.e. example@email.com"});
+    } else {
         res.status(403).json({"error": "Username/Password must be 4-20 characters in length, they can't start or end with a . or _ or have two of them in a row!"});
     }
 });
 
+// Validates email, accepts simple format  xxx@yyy.zzz
+function validateEmail(email) {
+    const regex = ".+\\@.+\\..+";
+    let pattern = new RegExp(regex);
+    return pattern.test(email);
+}
 
-// Function from HelperFunctions, used for double checking the username and password before saving them to database.
+// Validates credential(username & password).
 function validateCredential(credentialToValidate) {
     // Regex used won't accept strings that start/end with a . or _ or have two of them in a row
     // Length of string must be at least 4 characters and MAX 20 characters.
