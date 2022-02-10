@@ -449,21 +449,10 @@ function authenticateToken(req,res,next) {
     })
 }
 
-app.post('/api/event', urlencodedParser, function(req,res) {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
+app.post('/api/event', authenticateToken, urlencodedParser, function(req,res) {
 
-    if (token == null) return res.sendStatus(401)
+    res.send("user (decoded) " + JSON.stringify(req.user));
 
-    jwt.verify(token, secret, (err, user) => {
-        console.log(err)
-
-        if (err) return res.sendStatus(403)
-
-        req.user = user
-
-        res.send("token: " + JSON.stringify(token))
-    })
 })
 
 
