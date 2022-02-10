@@ -462,7 +462,7 @@ app.post('/api/event', urlencodedParser, function(req,res) {
 
         req.user = user
 
-        res.send("token: " + token)
+        res.send("token: " + JSON.stringify(token))
     })
 })
 
