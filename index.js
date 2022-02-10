@@ -76,7 +76,7 @@ app.get('/api/home', (req,res) => {
                 //console.log(body);
                 //console.log('Search with year completed.');
                 movies.push(body);
-                res.send(movies);
+                res.send(JSON.stringify(movies));
             });
         } catch(error) {
             res.status(500).json({"message": "error getting movies"})
