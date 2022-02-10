@@ -214,7 +214,7 @@ app.post('/accountValidate', function(req, res) {
 
                 // Compares the inserted password to the one in database.
                 bcrypt.compare(password,passwordDB, function(error,response) {
-                    if(response && usernameDB === username) {
+                    if(response && usernameDB == username) {
                         const accessToken = jwt.sign({username: username}, secret, {expiresIn: "1h"}); // Access Token
                         //res.send(true);
                         res.status(202).json({accessToken: accessToken}); // Access Token
@@ -449,8 +449,21 @@ function authenticateToken(req,res,next) {
     })
 }
 
-app.post('/api/event', authenticateToken, urlencodedParser, function(req,res) {
-    res.send({"token": "hello"});
+app.post('/api/event', urlencodedParser, function(req,res) {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, secret, (err, user) => {
+        console.log(err)
+
+        if (err) return res.sendStatus(403)
+
+        req.user = user
+
+        res.send("token: " + token)
+    })
 })
 
 
