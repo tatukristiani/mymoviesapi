@@ -1,5 +1,4 @@
 // Kurssin muuttujat Access token json varten
-
 const jwt = require('jsonwebtoken');
 const secret = "fOzHnFjg0FmM6O/dTVXd/4sGqxgkBdcNwNp00J+QYxm6WljQui0i1Uwk0yp70fQEVIVKNUqM8vYqYgUDWeO0w/GsjgH0QuaoyfbSoHWLrrrIFwIvQR7V7zm535HaOnHzC6QmKElDneqU1MMGPFDxepGD5TaRZ+uGVdhYg26s/azEngpf+FKNJTZYAXebx/ByAmdVhIuVIRok0NJLLZZe/njZOh7jBdcOJZq7GBedTASSdpK7CgKtplE8PwGQ8QrPhiW5besygWKuoDF90ap591+/vN1lMCEam6KfBPxi9D1GTjUMe5cjgpz34NvqP9+sXns+UkejzY5tqBdstl64VQ==";
 
@@ -12,13 +11,14 @@ const cors = require('cors'); // For all access for all domains.
 const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
 const requests = require('./movieAPI/request');
-let port = process.env.PORT || 3000;
-
+const bodyParser = require('body-parser');
+const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 /*
 app.use(function(req,res,next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -27,10 +27,7 @@ app.use(function(req,res,next) {
 })
  */
 
-const bodyParser = require('body-parser');
-const urlencodedParser = bodyParser.urlencoded({extended: false});
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+
 
 const client = new Client({
     user: "fcncirfhfkwocb",
@@ -70,12 +67,16 @@ app.get('/home', (request, response) => {
 
 app.get('/api/home', (req,res) => {
 
+    let movies = [];
+    let page = 1;
+
     (async () => {
         try {
-            request(requests.fetchActionMovies, function(error, response, body) {
+            request(requests.fetchTrending + requests.pages + page, function(error, response, body) {
                 //console.log(body);
                 //console.log('Search with year completed.');
-                res.send(body);
+                movies.push(body);
+                res.send(movies);
             });
         } catch(error) {
             res.status(500).json({"message": "error getting movies"})
@@ -474,7 +475,7 @@ app.post('/api/event', authenticateToken, urlencodedParser, function(req,res) {
 })
 
 
-
+const port = process.env.PORT || 4000;
 app.listen(port, ()=>{
     console.log('Listening at port https://moviesoftwareapi.herokuapp.com:%s', port);
 });
