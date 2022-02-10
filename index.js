@@ -1,7 +1,10 @@
 // Kurssin muuttujat Access token json varten
+import requests from "./movieAPI/request";
+
 const jwt = require('jsonwebtoken');
 const secret = "fOzHnFjg0FmM6O/dTVXd/4sGqxgkBdcNwNp00J+QYxm6WljQui0i1Uwk0yp70fQEVIVKNUqM8vYqYgUDWeO0w/GsjgH0QuaoyfbSoHWLrrrIFwIvQR7V7zm535HaOnHzC6QmKElDneqU1MMGPFDxepGD5TaRZ+uGVdhYg26s/azEngpf+FKNJTZYAXebx/ByAmdVhIuVIRok0NJLLZZe/njZOh7jBdcOJZq7GBedTASSdpK7CgKtplE8PwGQ8QrPhiW5besygWKuoDF90ap591+/vN1lMCEam6KfBPxi9D1GTjUMe5cjgpz34NvqP9+sXns+UkejzY5tqBdstl64VQ==";
 
+require('dotenv').config();
 const url = require('url');
 const util = require('util');
 const express = require('express');
@@ -24,6 +27,7 @@ app.use(function(req,res,next) {
 })
 
 var bodyParser = require('body-parser');
+import axios from './movieAPI/axios';
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -42,7 +46,7 @@ client.connect()
 
 
 app.get("/", (req,res) => {
-    res.send("Hello World");
+    res.send("REST API STATE = ONLINE");
 })
 
 
@@ -64,6 +68,17 @@ app.get('/home', (request, response) => {
     })();
 });
 
+app.get('/api/home', (request,response) => {
+
+    (async () => {
+        try {
+            const result = await axios.get(requests.fetchActionMovies);
+            response.send(result);
+        } catch(error) {
+            response.status(500).json({"message": "error getting movies"})
+        }
+    })();
+});
 
 /**
  * Searches for a movie from the omdbAPI with the users given title and year(optional).
