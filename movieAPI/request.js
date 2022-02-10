@@ -12,4 +12,4 @@ const requests = {
     fetchPoster: "https://image.tmdb.org/t/p/original/"
 }
 
-export default requests;
+module.exports = requests;
