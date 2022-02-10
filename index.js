@@ -70,12 +70,14 @@ app.get('/api/home', (req,res) => {
     (async () => {
         try {
             request(requests.fetchTrending, function(error, response, body) {
-                //console.log(body);
-                //console.log('Search with year completed.');
-                res.send({"error": error, "response": response, "body": body});
+                if(body.total_results >= 1) {
+                    res.send(body);
+                } else {
+                    res.status(404).json({"error": "No movies were found"});
+                }
             });
         } catch(error) {
-            res.status(500).json({"message": "error getting movies"})
+            res.status(500).json({"message": "Error getting movies"})
         }
     })();
 });
