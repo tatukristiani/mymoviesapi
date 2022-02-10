@@ -1,10 +1,9 @@
 // Kurssin muuttujat Access token json varten
-import requests from "./movieAPI/request";
+//import requests from "./movieAPI/request";
 
 const jwt = require('jsonwebtoken');
 const secret = "fOzHnFjg0FmM6O/dTVXd/4sGqxgkBdcNwNp00J+QYxm6WljQui0i1Uwk0yp70fQEVIVKNUqM8vYqYgUDWeO0w/GsjgH0QuaoyfbSoHWLrrrIFwIvQR7V7zm535HaOnHzC6QmKElDneqU1MMGPFDxepGD5TaRZ+uGVdhYg26s/azEngpf+FKNJTZYAXebx/ByAmdVhIuVIRok0NJLLZZe/njZOh7jBdcOJZq7GBedTASSdpK7CgKtplE8PwGQ8QrPhiW5besygWKuoDF90ap591+/vN1lMCEam6KfBPxi9D1GTjUMe5cjgpz34NvqP9+sXns+UkejzY5tqBdstl64VQ==";
 
-const env = require('dotenv').config();
 const url = require('url');
 const util = require('util');
 const express = require('express');
@@ -29,7 +28,7 @@ app.use(function(req,res,next) {
  */
 
 var bodyParser = require('body-parser');
-import axios from './movieAPI/axios';
+//import axios from './movieAPI/axios';
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
