@@ -67,16 +67,12 @@ app.get('/home', (request, response) => {
 
 app.get('/api/home', (req,res) => {
 
-    let movies = [];
-    let page = 1;
-
     (async () => {
         try {
-            request(requests.fetchTrending + requests.pages + page, function(error, response, body) {
+            request(requests.fetchTrending, function(error, response, body) {
                 //console.log(body);
                 //console.log('Search with year completed.');
-                movies.push(body);
-                res.send(JSON.stringify(movies));
+                res.send({"error": error, "response": response, "body": body});
             });
         } catch(error) {
             res.status(500).json({"message": "error getting movies"})
