@@ -70,11 +70,7 @@ app.get('/api/home', (req,res) => {
     (async () => {
         try {
             request(requests.fetchTrending, function(error, response, body) {
-                if(body.total_results >= 1) {
-                    res.send(body);
-                } else {
-                    res.status(404).json({"error": "No movies were found"});
-                }
+               res.send(body);
             });
         } catch(error) {
             res.status(500).json({"message": "Error getting movies"})
