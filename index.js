@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const secret = "fOzHnFjg0FmM6O/dTVXd/4sGqxgkBdcNwNp00J+QYxm6WljQui0i1Uwk0yp70fQEVIVKNUqM8vYqYgUDWeO0w/GsjgH0QuaoyfbSoHWLrrrIFwIvQR7V7zm535HaOnHzC6QmKElDneqU1MMGPFDxepGD5TaRZ+uGVdhYg26s/azEngpf+FKNJTZYAXebx/ByAmdVhIuVIRok0NJLLZZe/njZOh7jBdcOJZq7GBedTASSdpK7CgKtplE8PwGQ8QrPhiW5besygWKuoDF90ap591+/vN1lMCEam6KfBPxi9D1GTjUMe5cjgpz34NvqP9+sXns+UkejzY5tqBdstl64VQ==";
 
 //const url = require('url');
-//const util = require('util');
+const util = require('util');
 const express = require('express');
 const process = require('process');
 const { Client } = require('pg');
@@ -19,7 +19,8 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-/*
+
+/* For school and authorization (json web token)
 app.use(function(req,res,next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
@@ -50,6 +51,7 @@ app.get("/", (req,res) => {
 /**
  * Gets all movies from the database table "movie"
  */
+/*
 app.get('/home', (request, response) => {
     console.log('Home page opened');
     (async () => {
@@ -64,13 +66,20 @@ app.get('/home', (request, response) => {
 
     })();
 });
+*/
 
+// Currently show Trending movies on home page.
 app.get('/api/home', (req,res) => {
 
     (async () => {
         try {
             request(requests.fetchTrending, function(error, response, body) {
-               res.send(body);
+                let movies = JSON.parse(body).results;
+                if(movies.length >= 1) {
+                    res.send(body);
+                } else {
+                    res.send(404).json({"error": "No movies found!"})
+                }
             });
         } catch(error) {
             res.status(500).json({"message": "Error getting movies"})
@@ -114,6 +123,18 @@ app.get('/search', function(req, res) {
 
 */
 
+
+
+
+app.post('/api/movies', function(req,res) {
+    let movieData = req.body;
+
+    if(movieData !== null) {
+        res.send(movieData);
+    } else {
+        res.status(403).json({"error": "Data is null"});
+    }
+})
 
 /**
  * Authors tool for adding movies to the database.
@@ -207,7 +228,7 @@ app.post('/api/login', function(req, res) {
 /**
  * Checks if the users given username and password are indeed correct.
  */
-
+/* For school login
 app.post('/accountValidate', function(req, res) {
     const dataReceived = req.body;
     const username = dataReceived.username; // String of username
@@ -244,13 +265,14 @@ app.post('/accountValidate', function(req, res) {
         }
     })();
 });
-
+*/
 
 /**
  * Creates an account for the user.
- * Hashes the password and check the correct validation of the username/password.
+ * Hashes the password and check the correct validation of the username, password & email.
  */
 app.post('/api/register', function(req, res) {
+    // Reveice all neede data from request body.
     const dataReceived = req.body;
     const username = dataReceived.username;
     const password = dataReceived.password;
@@ -259,7 +281,7 @@ app.post('/api/register', function(req, res) {
     const isPasswordValid = validateCredential(password);
     const isEmailValid = validateEmail(email);
 
-    // 1. Validates username & password
+    // Check validations one more time.
     if(isUsernameValid && isPasswordValid && isEmailValid) {
 
         // 2. Hashes the password
@@ -273,7 +295,7 @@ app.post('/api/register', function(req, res) {
                 const checkQuery = `SELECT username FROM users WHERE username =` + `'` + username + `'`;
                 const results = await client.query(checkQuery);
 
-                // 5. If username does not exists -> save the user to database & send a boolean value of true as response.
+                // 5. If username does not exists -> save the user to database & send a 201(CREATE) status code with message.
                 if(JSON.stringify(results.rows).length < 3) {
                     const insertQuery = `INSERT INTO users(username,password,user_level,email) VALUES(` + `'` + username + `' , '` + pass + `', 'user' , '` + email + `')`;
                     await client.query(insertQuery);
@@ -443,7 +465,7 @@ app.get('/mymovies', urlencodedParser, function(req, res) {
 });
 */
 
-
+/*
 // Test routes & functions for school
 function authenticateToken(req,res,next) {
     const authHeader = req.headers['authorization']
@@ -461,13 +483,15 @@ function authenticateToken(req,res,next) {
         next()
     })
 }
-
+*/
+// Test for school
+/*
 app.post('/api/event', authenticateToken, urlencodedParser, function(req,res) {
 
     res.send("user (decoded) " + JSON.stringify(req.user));
 
 })
-
+*/
 
 const port = process.env.PORT || 4000;
 app.listen(port, ()=>{
