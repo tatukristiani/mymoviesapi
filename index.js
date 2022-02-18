@@ -232,12 +232,16 @@ app.post('/api/movies', function(req,res) {
                 let results = await client.query(sql);
                 const rows = results.rows;
 
+                if(rows.length === 0) {
+                    res.send("nolla")
+                }
                 // If a movie was found from the database -> proceed to save movie to for the user. (Save data to user_movie)
                 if (rows.length < 1) {
                     // INSERT query for adding the movie.
                     sql = `INSERT into movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid)`
                         + ` VALUES( ?, ?, ?, ?, ?, ?, ?, ?)`;
-                    await client.query(sql, [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID]);
+                    const result = await client.query(sql, [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID]);
+                    res.send(result);
                 }
 
                 // Search for usernames ID
@@ -245,14 +249,20 @@ app.post('/api/movies', function(req,res) {
                 results = await client.query(sql);
                 const userID = results.rows[0].id;
 
+                res.send(userID);
+
                 // Search for movies ID
                 sql = `SELECT id FROM movie WHERE title = ` + `'` + title + `' AND tmdbid = ` + tmdbID;
                 results = await client.query(sql);
                 const movieID = results.rows[0].id;
 
+                res.send(movieID);
+
                 // First we check if the movie is already in the user's database.
                 sql = `SELECT * FROM user_movie WHERE userid = ` + userID + ` AND movieid = ` + movieID;
                 let confirmMovieDoesntExists = await client.query(sql);
+
+                res.send(confirmMovieDoesntExists);
 
                 // If we found out that the user doesn't have this movie we save it.
                 if(confirmMovieDoesntExists.rows.length < 1) {
