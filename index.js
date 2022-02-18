@@ -286,7 +286,7 @@ app.post('/api/movies', function(req,res) {
 
                  */
             } catch (error) {
-                res.status(500).json({"message": error.message});
+                res.send({"message": error.message + "error:" + error});
             }
         })();
     } else {
