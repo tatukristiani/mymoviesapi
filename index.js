@@ -270,6 +270,7 @@ app.post('/api/movies', function(req,res) {
 
                 res.send(confirmMovieDoesntExists);
 
+                /*
                 // If we found out that the user doesn't have this movie we save it.
                 if(confirmMovieDoesntExists.rows.length < 1) {
 
@@ -281,6 +282,8 @@ app.post('/api/movies', function(req,res) {
                 else {
                     res.status(409).json({"message": "You already have " + title + " added to your movies!"});
                 }
+
+                 */
             } catch (error) {
                 res.status(500).json({"message": "Problems with the server!"});
             }
