@@ -222,7 +222,7 @@ app.post('/api/movies', function(req,res) {
         const trailerID = movie.trailerid;
         const tmdbID = movie.tmdbid;
         const date = movie.date;
-        const username = movie.savedUser;
+        const username = movie.user;
 
         // 1. Check if the movie is in database. If it's not add it there.
         (async () => {
