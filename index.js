@@ -260,7 +260,7 @@ app.post('/api/movies', function(req,res) {
                 // Search for movies ID
                 sql = `SELECT id FROM movie WHERE title=` + `'` + title + `'` + ` AND tmdbid = ` + tmdbID;
                 results = await client.query(sql);
-                let movieID = results.rows.id;
+                let movieID = results.rows[0];
                 res.send(movieID);
 
 
