@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 const secret = "fOzHnFjg0FmM6O/dTVXd/4sGqxgkBdcNwNp00J+QYxm6WljQui0i1Uwk0yp70fQEVIVKNUqM8vYqYgUDWeO0w/GsjgH0QuaoyfbSoHWLrrrIFwIvQR7V7zm535HaOnHzC6QmKElDneqU1MMGPFDxepGD5TaRZ+uGVdhYg26s/azEngpf+FKNJTZYAXebx/ByAmdVhIuVIRok0NJLLZZe/njZOh7jBdcOJZq7GBedTASSdpK7CgKtplE8PwGQ8QrPhiW5besygWKuoDF90ap591+/vN1lMCEam6KfBPxi9D1GTjUMe5cjgpz34NvqP9+sXns+UkejzY5tqBdstl64VQ==";
 
-//const url = require('url');
+const url = require('url');
 const util = require('util');
 const express = require('express');
 const process = require('process');
@@ -280,6 +280,7 @@ app.post('/api/login', function(req, res) {
                 const usernameDB = rows[0].username;
                 const passwordDB = rows[0].password;
 
+                console.log("Testing1:" + usernameDB);
                 // Compares the inserted password to the one in database.
                 bcrypt.compare(password,passwordDB, function(error,response) {
                     if(response && usernameDB === username) {
