@@ -264,6 +264,7 @@ app.post('/api/movies', function(req,res) {
                 res.send(movieID);
 
 
+                /*
                 // First we check if the movie is already in the user's database.
                 sql = `SELECT * FROM user_movie WHERE userid = ` + userID + ` AND movieid = ` + movieID;
                 let confirmMovieDoesntExists = await client.query(sql);
@@ -285,7 +286,7 @@ app.post('/api/movies', function(req,res) {
 
                  */
             } catch (error) {
-                res.status(500).json({"message": "Problems with the server!"});
+                res.status(500).json({"message": error.message});
             }
         })();
     } else {
