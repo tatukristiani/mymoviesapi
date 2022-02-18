@@ -234,6 +234,7 @@ app.post('/api/movies', function(req,res) {
 
                 // If the movie wasn't found, add it to database.
                 if (rows.length < 1) {
+                    res.send("ahaa");
                     // INSERT query for adding the movie.
                     sql = `INSERT into movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid)`
                         + ` VALUES( ?, ?, ?, ?, ?, ?, ?, ?)`;
