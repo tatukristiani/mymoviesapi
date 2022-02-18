@@ -272,7 +272,7 @@ app.post('/api/movies', function(req,res) {
                 if(confirmMovieDoesntExists.rows.length < 1) {
 
                     // Then add this movie to the user_movie table.
-                    sql = `INSERT INTO user_movie(userid,movieid) VALUES( ?, ?)`;
+                    sql = `INSERT INTO user_movie (userid, movieid) VALUES( ?, ?);`;
                     await client.query(sql,[userID,movieID]);
                     res.status(200).json({"message": title + ' successfully added to your movies!'});
                 }
