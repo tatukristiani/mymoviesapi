@@ -232,10 +232,7 @@ app.post('/api/movies', function(req,res) {
                 let results = await client.query(sql);
                 const rows = results.rows;
 
-                if(rows.length === 0) {
-                    res.send("nolla")
-                }
-                // If a movie was found from the database -> proceed to save movie to for the user. (Save data to user_movie)
+                // If the movie wasn't found, add it to database.
                 if (rows.length < 1) {
                     // INSERT query for adding the movie.
                     sql = `INSERT into movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid)`
@@ -248,8 +245,6 @@ app.post('/api/movies', function(req,res) {
                 sql = `SELECT id FROM users WHERE username=` +  `'` + username + `'`;
                 results = await client.query(sql);
                 const userID = results.rows[0].id;
-
-                res.send(userID);
 
                 // Search for movies ID
                 sql = `SELECT id FROM movie WHERE title = ` + `'` + title + `' AND tmdbid = ` + tmdbID;
