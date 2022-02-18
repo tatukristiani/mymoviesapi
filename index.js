@@ -166,13 +166,18 @@ app.post('/api/test2', function(req,res) {
     if(movieData !== null) {
        const title = movieData.title;
        const tmdbID = movieData.tmdbid;
+       const username = movieData.username;
 
         (async () => {
             try {
+                const sql = `SELECT id FROM users WHERE username=` +  `'` + username + `'`;
+                const results = await client.query(sql);
+                let userID = results.rows[0].id;
+
                 let movieIDQuery = `SELECT id FROM movie WHERE title=` + `'` + title + `'` + ` AND tmdbid = ` + tmdbID;
                 let movieIDQueryResults = await client.query(movieIDQuery);
                 let movieID = movieIDQueryResults.rows[0].id;
-                res.send({"message": "id: " + movieID})
+                res.send("movie" + movieID + " user:" + userID);
             }catch (err) {
                 res.send(err.message);
             }
