@@ -179,9 +179,9 @@ app.post('/api/test2', function(req,res) {
 })
 
 app.post('/api/test3', function(req,res) {
-    let movieData = req.body;
+    let movie = req.body;
 
-    if(movieData !== null) {
+    if(movie !== null) {
         const title = movie.title;
         const genres = movie.genres;
         const overview = movie.overview;
