@@ -178,6 +178,37 @@ app.post('/api/test2', function(req,res) {
     }
 })
 
+app.post('/api/test3', function(req,res) {
+    let movieData = req.body;
+
+    if(movieData !== null) {
+        const title = movie.title;
+        const genres = movie.genres;
+        const overview = movie.overview;
+        const posterPath = movie.posterpath;
+        const runtime = movie.runtime;
+        const trailerID = movie.trailerid;
+        const tmdbID = movie.tmdbid;
+        const date = movie.date;
+        const username = movie.savedUser;
+
+        const data = {
+            title,
+            genres,
+            overview,
+            posterPath,
+            runtime,
+            trailerID,
+            tmdbID,
+            date,
+            username
+        }
+        res.send(data);
+    }
+})
+
+
+
 // Saves movie information to database according to the user credentials.
 app.post('/api/movies', function(req,res) {
     let movie = req.body;
@@ -210,7 +241,7 @@ app.post('/api/movies', function(req,res) {
                 }
 
                 // Search for usernames ID
-                sql = `SELECT id FROM users WHERE username = ` +  `'` + username + `'`;
+                sql = `SELECT id FROM users WHERE username=` +  `'` + username + `'`;
                 results = await client.query(sql);
                 const userID = results.rows[0].id;
 
