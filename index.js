@@ -125,7 +125,7 @@ app.get('/search', function(req, res) {
 
 
 
-
+/*
 app.post('/api/movies', function(req,res) {
     let movieData = req.body;
 
@@ -133,6 +133,76 @@ app.post('/api/movies', function(req,res) {
         res.send(movieData);
     } else {
         res.status(403).json({"error": "Data is null"});
+    }
+})
+*/
+
+// Saves movie information to database according to the user credentials.
+app.post('/api/movies', function(req,res) {
+    let movie = req.body;
+
+    if(movie !== null) {
+        const title = `'` + movie.title + `'`;
+        const genres = `'` + movie.genres + `'`;
+        const overview = `'` + movie.overview + `'`;
+        const posterPath = `'` + movie.posterpath + `'`;
+        const runtime = movie.runtime;
+        const trailerID = `'` + movie.trailerid + `'`;
+        const tmdbID = movie.tmdbid;
+        const date = `'` + movie.date + `'`;
+        const username = `'` + movie.savedUser + `'`;
+
+        // 1. Check if the movie is in database. If it's not add it there.
+        (async () => {
+            try {
+                // Check if the movie is already in the database.
+                let sql = `SELECT id, title FROM movie WHERE title =` + title + ` AND tmdbid = ` + tmdbID;
+                let results = await client.query(sql);
+                const rows = results.rows;
+
+                // If a movie was found from the database -> proceed to save movie to for the user. (Save data to user_movie)
+                if (rows.length < 1 && rows[0].title !== title) {
+                    // INSERT query for adding the movie.
+                    sql = `INSERT into movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid)`
+                        + ` VALUES(` + title + `, ` + date + `, ` + tmdbID + `, `+
+                        runtime + `, ` + genres + `, ` + overview + `, ` + posterPath +
+                        `, ` + trailerID + `)`;
+                    await client.query(sql);
+                }
+
+                // Search for usernames ID
+                sql = `SELECT id FROM users WHERE username = ` + username;
+                results = await client.query(sql);
+                const userID = results.rows[0].id;
+
+                // Search for movies ID
+                sql = `SELECT id FROM movie WHERE title = ` + title + ` AND tmdbid = ` + tmdbID;
+                results = await client.query(sql);
+                const movieID = results.rows[0].id;
+
+                // First we check if the movie is already in the user's database.
+                sql = `SELECT * FROM user_movie WHERE userID = ` + userID + ` AND movieID = ` + movieID;
+                let confirmMovieDoesntExists = await client.query(sql);
+
+                // If we found out that the user doesn't have this movie we save it.
+                if(confirmMovieDoesntExists.rows.length < 1) {
+
+                    // Then add this movie to the user_movie table.
+                    sql = `INSERT INTO user_movie(userID,movieID) VALUES(` + userID +
+                        `, ` +
+                        movieID + `)`;
+                    await client.query(sql);
+                    res.status(200).json({"message": title + ' successfully added to your movies!'});
+                }
+                else {
+                    res.status(409).json({"message": "You already have " + title + " added to your movies!"});
+                }
+            } catch (error) {
+                res.status(500).json({"message": "Problems with the server!"});
+            }
+        })();
+    } else {
+        res.status(400).json({"error": "Data is null or invalid!"});
     }
 })
 
@@ -191,6 +261,8 @@ app.post('/saveDataToDb', function(req, res) {
 });
 */
 
+// Post method for login in. Currently doesn't validate the username in any way.
+// TODO: Improve validation of username / password in case of SQL injection
 app.post('/api/login', function(req, res) {
     const data = req.body;
     const username = data.username; // String of username
