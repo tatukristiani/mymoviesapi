@@ -267,9 +267,7 @@ app.post('/api/movies', function(req,res) {
                 sql = `SELECT * FROM user_movie WHERE userid = ` + userID + ` AND movieid = ` + movieID;
                 let confirmMovieDoesntExists = await client.query(sql);
 
-                res.send(confirmMovieDoesntExists);
 
-                /*
                 // If we found out that the user doesn't have this movie we save it.
                 if(confirmMovieDoesntExists.rows.length < 1) {
 
@@ -281,8 +279,6 @@ app.post('/api/movies', function(req,res) {
                 else {
                     res.status(409).json({"message": "You already have " + title + " added to your movies!"});
                 }
-
-                 */
             } catch (error) {
                 res.send({"message": error.message + "error:" + error});
             }
