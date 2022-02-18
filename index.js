@@ -268,6 +268,8 @@ app.post('/api/login', function(req, res) {
     const username = data.username; // String of username
     const password = data.password; // String of password
 
+    console.log("Testing console log");
+
     // Check from database if user is valid
     (async () => {
         try {
