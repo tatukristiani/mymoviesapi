@@ -137,6 +137,47 @@ app.post('/api/movies', function(req,res) {
 })
 */
 
+app.post('/api/test1', function(req,res) {
+    let movie = req.body;
+
+    if(movie !== null) {
+        const title = movie.title;
+        const tmdbID = movie.tmdbid;
+
+        (async () => {
+            try {
+                let sql = `SELECT id, title FROM movie WHERE title=` + `'` + title + `' AND tmdbid = ` + tmdbID;
+                let results = await client.query(sql);
+                res.send(results);
+            } catch (err) {
+                res.send(err);
+            }
+
+        })();
+
+    } else {
+        res.status(403).json({"error": "Data is null"});
+    }
+})
+
+app.post('/api/test2', function(req,res) {
+    let movieData = req.body;
+
+    if(movieData !== null) {
+        const username = movieData.savedUser;
+
+        (async () => {
+            const sql = `SELECT id FROM users WHERE username = ` +  `'` + username + `'`;
+            const results = await client.query(sql);
+            const userID = results.rows[0].id;
+            res.send({"message": "id: " + userID})
+        })();
+
+    } else {
+        res.status(403).json({"error": "Data is null"});
+    }
+})
+
 // Saves movie information to database according to the user credentials.
 app.post('/api/movies', function(req,res) {
     let movie = req.body;
@@ -156,7 +197,7 @@ app.post('/api/movies', function(req,res) {
         (async () => {
             try {
                 // Check if the movie is already in the database.
-                let sql = `SELECT id, title FROM movie WHERE title =` + title + ` AND tmdbid = ` + tmdbID;
+                let sql = `SELECT id, title FROM movie WHERE title=` + `'` + title + `' AND tmdbid = ` + tmdbID;
                 let results = await client.query(sql);
                 const rows = results.rows;
 
@@ -169,24 +210,24 @@ app.post('/api/movies', function(req,res) {
                 }
 
                 // Search for usernames ID
-                sql = `SELECT id FROM users WHERE username = ` + username;
+                sql = `SELECT id FROM users WHERE username = ` +  `'` + username + `'`;
                 results = await client.query(sql);
                 const userID = results.rows[0].id;
 
                 // Search for movies ID
-                sql = `SELECT id FROM movie WHERE title = ` + title + ` AND tmdbid = ` + tmdbID;
+                sql = `SELECT id FROM movie WHERE title = ` + `'` + title + `' AND tmdbid = ` + tmdbID;
                 results = await client.query(sql);
                 const movieID = results.rows[0].id;
 
                 // First we check if the movie is already in the user's database.
-                sql = `SELECT * FROM user_movie WHERE userID = ` + userID + ` AND movieID = ` + movieID;
+                sql = `SELECT * FROM user_movie WHERE userid = ` + userID + ` AND movieid = ` + movieID;
                 let confirmMovieDoesntExists = await client.query(sql);
 
                 // If we found out that the user doesn't have this movie we save it.
                 if(confirmMovieDoesntExists.rows.length < 1) {
 
                     // Then add this movie to the user_movie table.
-                    sql = `INSERT INTO user_movie(userID,movieID) VALUES( ?, ?)`;
+                    sql = `INSERT INTO user_movie(userid,movieid) VALUES( ?, ?)`;
                     await client.query(sql,[userID,movieID]);
                     res.status(200).json({"message": title + ' successfully added to your movies!'});
                 }
