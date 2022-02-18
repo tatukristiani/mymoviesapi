@@ -142,15 +142,15 @@ app.post('/api/movies', function(req,res) {
     let movie = req.body;
 
     if(movie !== null) {
-        const title = `'` + movie.title + `'`;
-        const genres = `'` + movie.genres + `'`;
-        const overview = `'` + movie.overview + `'`;
-        const posterPath = `'` + movie.posterpath + `'`;
+        const title = movie.title;
+        const genres = movie.genres;
+        const overview = movie.overview;
+        const posterPath = movie.posterpath;
         const runtime = movie.runtime;
-        const trailerID = `'` + movie.trailerid + `'`;
+        const trailerID = movie.trailerid;
         const tmdbID = movie.tmdbid;
-        const date = `'` + movie.date + `'`;
-        const username = `'` + movie.savedUser + `'`;
+        const date = movie.date;
+        const username = movie.savedUser;
 
         // 1. Check if the movie is in database. If it's not add it there.
         (async () => {
@@ -161,13 +161,11 @@ app.post('/api/movies', function(req,res) {
                 const rows = results.rows;
 
                 // If a movie was found from the database -> proceed to save movie to for the user. (Save data to user_movie)
-                if (rows.length < 1 && rows[0].title !== title) {
+                if (rows.length < 1) {
                     // INSERT query for adding the movie.
                     sql = `INSERT into movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid)`
-                        + ` VALUES(` + title + `, ` + date + `, ` + tmdbID + `, `+
-                        runtime + `, ` + genres + `, ` + overview + `, ` + posterPath +
-                        `, ` + trailerID + `)`;
-                    await client.query(sql);
+                        + ` VALUES( ?, ?, ?, ?, ?, ?, ?, ?)`;
+                    await client.query(sql, [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID]);
                 }
 
                 // Search for usernames ID
@@ -188,10 +186,8 @@ app.post('/api/movies', function(req,res) {
                 if(confirmMovieDoesntExists.rows.length < 1) {
 
                     // Then add this movie to the user_movie table.
-                    sql = `INSERT INTO user_movie(userID,movieID) VALUES(` + userID +
-                        `, ` +
-                        movieID + `)`;
-                    await client.query(sql);
+                    sql = `INSERT INTO user_movie(userID,movieID) VALUES( ?, ?)`;
+                    await client.query(sql,[userID,movieID]);
                     res.status(200).json({"message": title + ' successfully added to your movies!'});
                 }
                 else {
