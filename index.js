@@ -246,10 +246,15 @@ app.post('/api/movies', function(req,res) {
                 // If the movie wasn't found, add it to database.
                 if (rows.length < 1) {
                     // INSERT query for adding the movie.
+                    /*
                     sql = `INSERT into movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid)`
                         + ` VALUES( ?, ?, ?, ?, ?, ?, ?, ?)`;
                     const result = await client.query(sql, [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID]);
-                    res.send(result);
+                     */
+                    client.query('INSERT INTO movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid) ' +
+                        'VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID])
+                        .then(results => console.log(results))
+                        .catch(err => res.send(err.stack));
                 }
 
                 // Search for usernames ID
