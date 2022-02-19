@@ -129,9 +129,12 @@ app.post('/api/movies', function(req,res) {
     let movie = req.body;
 
     if(movie !== null) {
-        const title = movie.title;
+        let title = movie.title;
+        title = title.replaceAll("'", "''");
+
         const genres = movie.genres;
-        const overview = movie.overview;
+        let overview = movie.overview;
+        overview = overview.replaceAll("'", "''");
         const posterPath = movie.posterpath;
         const runtime = movie.runtime;
         const trailerID = movie.trailerid;
@@ -139,11 +142,13 @@ app.post('/api/movies', function(req,res) {
         const date = movie.date;
         const username = movie.user;
 
+
+
         // Check if the movie is in database. If it's not add it there.
         (async () => {
             try {
                 let sql;
-                let results = await client.query('SELECT id, title FROM movie WHERE title=$1$ AND tmdbid=$2$', [title, tmdbID]);
+                let results = await client.query('SELECT id, title FROM movie WHERE title=$1 AND tmdbid=$2', [title, tmdbID]);
                 /*
                 // Check if the movie is already in the database.
                 let sql = `SELECT id, title FROM movie WHERE title=` + `'` + title + `' AND tmdbid = ` + tmdbID;
@@ -156,7 +161,7 @@ app.post('/api/movies', function(req,res) {
 
                     // INSERT query for adding the movie.
                     client.query('INSERT INTO movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid) ' +
-                        'VALUES($1$, $2$, $3$, $4$, $5$, $6$, $7$, $8$)', [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID])
+                        'VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID])
                         .then(results => console.log(results))
                         .catch(err => res.send(err.stack));
                 }
@@ -167,7 +172,7 @@ app.post('/api/movies', function(req,res) {
                 let userID = results.rows[0].id;
 
                 // Search for movies ID
-                results = await client.query('SELECT id FROM movie WHERE title=$1$ AND tmdbid=$2$', [title, tmdbID]);
+                results = await client.query('SELECT id FROM movie WHERE title=$1 AND tmdbid=$2', [title, tmdbID]);
                // sql = `SELECT id FROM movie WHERE title=` + `'` + title + `'` + ` AND tmdbid = ` + tmdbID;
                 //results = await client.query(sql);
                 let movieID = results.rows[0].id;
