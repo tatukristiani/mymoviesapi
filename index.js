@@ -156,11 +156,18 @@ app.post('/api/movies', function(req,res) {
                 // If the movie wasn't found, add it to database.
                 if (rows.length < 1) {
 
+                    sql = `INSERT into movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid)`
+                        + ` VALUES( ?, ?, ?, ?, ?, ?, ?, ?)`;
+                    await client.query(sql, [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID]);
+
+                    /*
                     // INSERT query for adding the movie.
                     client.query('INSERT INTO movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid) ' +
                         'VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID])
                         .then(results => console.log(results))
                         .catch(err => res.send({"message": "Adding movie failed!", "error": err.stack}));
+
+                     */
                 }
 
                 // Search for usernames ID
@@ -182,7 +189,7 @@ app.post('/api/movies', function(req,res) {
                 // If we found out that the user doesn't have this movie we save it.
                 if(confirmMovieDoesntExists.rows.length < 1) {
 
-                    client.query('INSERT INTO user_movie(userid, movieid) VALUES($1, $2)', [userID, movieID])
+                    await client.query('INSERT INTO user_movie(userid, movieid) VALUES($1, $2)', [userID, movieID])
                         .then(() => res.status(201).json({"message": title + " successfully added to your movies!"}))
                         .catch(e => res.send({"message": "saving movie for user failed!", "error": e.stack}));
                 }
