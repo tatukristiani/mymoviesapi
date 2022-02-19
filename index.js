@@ -144,20 +144,15 @@ app.post('/api/movies', function(req,res) {
         // Check if the movie is in database. If it's not add it there.
         (async () => {
             try {
-                //let results = await client.query('SELECT id, title FROM movie WHERE title=$1 AND tmdbid=$2', [title, tmdbID]);
+                let sql;
+                let results = await client.query('SELECT id, title FROM movie WHERE title=$1 AND tmdbid=$2', [title, tmdbID]);
                 // Check if the movie is already in the database.
-                let sql = `SELECT id, title FROM movie WHERE title=` + `'` + title + `' AND tmdbid = ` + tmdbID;
-                let results = await client.query(sql);
+                //let sql = `SELECT id, title FROM movie WHERE title=` + `'` + title + `' AND tmdbid = ` + tmdbID;
+                //let results = await client.query(sql);
                 let rows = results.rows;
 
                 // If the movie wasn't found, add it to database.
                 if (rows.length < 1) {
-                    /*
-                    sql = `INSERT into movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid)`
-                        + ` VALUES( ?, ?, ?, ?, ?, ?, ?, ?)`;
-                    await client.query(sql, [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID]);
-                        */
-
                     // INSERT query for adding the movie.
                     await client.query('INSERT INTO movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid) ' +
                         'VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID])
