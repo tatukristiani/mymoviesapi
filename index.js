@@ -124,102 +124,6 @@ app.get('/search', function(req, res) {
 */
 
 
-
-/*
-app.post('/api/movies', function(req,res) {
-    let movieData = req.body;
-
-    if(movieData !== null) {
-        res.send(movieData);
-    } else {
-        res.status(403).json({"error": "Data is null"});
-    }
-})
-*/
-
-app.post('/api/test1', function(req,res) {
-    let movie = req.body;
-
-    if(movie !== null) {
-        const title = movie.title;
-        const tmdbID = movie.tmdbid;
-
-        (async () => {
-            try {
-                let sql = `SELECT id, title FROM movie WHERE title=` + `'` + title + `' AND tmdbid = ` + tmdbID;
-                let results = await client.query(sql);
-                res.send(results);
-            } catch (err) {
-                res.send(err);
-            }
-
-        })();
-
-    } else {
-        res.status(403).json({"error": "Data is null"});
-    }
-})
-
-app.post('/api/test2', function(req,res) {
-    let movieData = req.body;
-
-    if(movieData !== null) {
-       const title = movieData.title;
-       const tmdbID = movieData.tmdbid;
-       const username = movieData.username;
-
-        (async () => {
-            try {
-                const sql = `SELECT id FROM users WHERE username=` +  `'` + username + `'`;
-                const results = await client.query(sql);
-                let userID = results.rows[0].id;
-
-                let movieIDQuery = `SELECT id FROM movie WHERE title=` + `'` + title + `'` + ` AND tmdbid = ` + tmdbID;
-                let movieIDQueryResults = await client.query(movieIDQuery);
-                let movieID = movieIDQueryResults.rows[0].id;
-                res.send("movie" + movieID + " user:" + userID);
-            }catch (err) {
-                res.send(err.message);
-            }
-
-        })();
-
-    } else {
-        res.status(403).json({"error": "Data is null"});
-    }
-})
-
-app.post('/api/test3', function(req,res) {
-    let movie = req.body;
-
-    if(movie !== null) {
-        const title = movie.title;
-        const genres = movie.genres;
-        const overview = movie.overview;
-        const posterPath = movie.posterpath;
-        const runtime = movie.runtime;
-        const trailerID = movie.trailerid;
-        const tmdbID = movie.tmdbid;
-        const date = movie.date;
-        const username = movie.savedUser;
-
-        const data = {
-            title,
-            genres,
-            overview,
-            posterPath,
-            runtime,
-            trailerID,
-            tmdbID,
-            date,
-            username
-        }
-        res.send(data);
-    }
-})
-
-
-
 // Saves movie information to database according to the user credentials.
 app.post('/api/movies', function(req,res) {
     let movie = req.body;
@@ -235,7 +139,7 @@ app.post('/api/movies', function(req,res) {
         const date = movie.date;
         const username = movie.user;
 
-        // 1. Check if the movie is in database. If it's not add it there.
+        // Check if the movie is in database. If it's not add it there.
         (async () => {
             try {
                 // Check if the movie is already in the database.
@@ -245,14 +149,10 @@ app.post('/api/movies', function(req,res) {
 
                 // If the movie wasn't found, add it to database.
                 if (rows.length < 1) {
+
                     // INSERT query for adding the movie.
-                    /*
-                    sql = `INSERT into movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid)`
-                        + ` VALUES( ?, ?, ?, ?, ?, ?, ?, ?)`;
-                    const result = await client.query(sql, [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID]);
-                     */
                     client.query('INSERT INTO movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid) ' +
-                        'VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID])
+                        'VALUES($1$, $2$, $3$, $4$, $5$, $6$, $7$, $8$)', [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID])
                         .then(results => console.log(results))
                         .catch(err => res.send(err.stack));
                 }
@@ -275,17 +175,9 @@ app.post('/api/movies', function(req,res) {
                 // If we found out that the user doesn't have this movie we save it.
                 if(confirmMovieDoesntExists.rows.length < 1) {
 
-                    // ERROR COMES HERE I THINK !!!!
-                    // Then add this movie to the user_movie table.
-                    /*
-                    sql = `INSERT INTO user_movie (userid, movieid)` + ` VALUES( ?, ?)`;
-                    await client.query(sql,[userID,movieID]);
-                     */
                     client.query('INSERT INTO user_movie(userid, movieid) VALUES($1, $2)', [userID, movieID])
-                        .then(result => res.status(201).json({"message": title + " successfully added to your movies!"}))
+                        .then(() => res.status(201).json({"message": title + " successfully added to your movies!"}))
                         .catch(e => res.send(e.stack));
-
-                    //res.status(201).json({"message": title + ' successfully added to your movies!'});
                 }
                 else {
                     res.status(409).json({"message": "You already have " + title + " added to your movies!"});
@@ -361,8 +253,6 @@ app.post('/api/login', function(req, res) {
     const username = data.username; // String of username
     const password = data.password; // String of password
 
-    console.log("Testing console log");
-
     // Check from database if user is valid
     (async () => {
         try {
@@ -375,7 +265,6 @@ app.post('/api/login', function(req, res) {
                 const usernameDB = rows[0].username;
                 const passwordDB = rows[0].password;
 
-                console.log("Testing1:" + usernameDB);
                 // Compares the inserted password to the one in database.
                 bcrypt.compare(password,passwordDB, function(error,response) {
                     if(response && usernameDB === username) {
