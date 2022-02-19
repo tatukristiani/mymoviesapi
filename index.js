@@ -129,12 +129,9 @@ app.post('/api/movies', function(req,res) {
     let movie = req.body;
 
     if(movie !== null) {
-        let title = movie.title;
-        let titleQuotes =  title.replaceAll("'", "''");
-
+        const title = movie.title;
         const genres = movie.genres;
-        let overview = movie.overview;
-        let overviewQuotes = overview.replaceAll("'", "''");
+        const overview = movie.overview;
         const posterPath = movie.posterpath;
         const runtime = movie.runtime;
         const trailerID = movie.trailerid;
@@ -152,6 +149,8 @@ app.post('/api/movies', function(req,res) {
                 let sql = `SELECT id, title FROM movie WHERE title=` + `'` + title + `' AND tmdbid = ` + tmdbID;
                 let results = await client.query(sql);
                 let rows = results.rows;
+
+                res.send(rows);
 
                 // If the movie wasn't found, add it to database.
                 if (rows.length < 1) {
