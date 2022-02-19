@@ -272,9 +272,15 @@ app.post('/api/movies', function(req,res) {
 
                     // ERROR COMES HERE I THINK !!!!
                     // Then add this movie to the user_movie table.
+                    /*
                     sql = `INSERT INTO user_movie (userid, movieid)` + ` VALUES( ?, ?)`;
                     await client.query(sql,[userID,movieID]);
-                    res.status(200).json({"message": title + ' successfully added to your movies!'});
+                     */
+                    client.query('INSERT INTO user_movie(userid, movieid) VALUES($1, $2)', [userID, movieID])
+                        .then(result => res.status(201).json({"message": title + " successfully added to your movies!"}))
+                        .catch(e => res.send(e.stack));
+
+                    //res.status(201).json({"message": title + ' successfully added to your movies!'});
                 }
                 else {
                     res.status(409).json({"message": "You already have " + title + " added to your movies!"});
