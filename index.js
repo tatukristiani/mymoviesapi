@@ -168,9 +168,9 @@ app.post('/api/movies', function(req,res) {
                 let userID = results.rows[0].id;
 
                 // Search for movies ID
-                //results = await client.query('SELECT id FROM movie WHERE title=$1 AND tmdbid=$2', [title, tmdbID]);
-                sql = `SELECT id FROM movie WHERE title=` + `'` + title + `'` + ` AND tmdbid = ` + tmdbID;
-                results = await client.query(sql);
+                results = await client.query('SELECT id FROM movie WHERE title=$1 AND tmdbid=$2', [title, tmdbID]);
+                //sql = `SELECT id FROM movie WHERE title=` + `'` + title + `'` + ` AND tmdbid = ` + tmdbID;
+                //results = await client.query(sql);
                 let movieID = results.rows[0].id;
 
                 // First we check if the movie is already in the user's database.
