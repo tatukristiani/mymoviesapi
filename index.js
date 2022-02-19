@@ -142,9 +142,12 @@ app.post('/api/movies', function(req,res) {
         // Check if the movie is in database. If it's not add it there.
         (async () => {
             try {
+                let results = await client.query('SELECT id, title FROM movie WHERE title=$1$ AND tmdbid=$2$', [title, tmdbID]);
+                /*
                 // Check if the movie is already in the database.
                 let sql = `SELECT id, title FROM movie WHERE title=` + `'` + title + `' AND tmdbid = ` + tmdbID;
                 let results = await client.query(sql);
+                 */
                 let rows = results.rows;
 
                 // If the movie wasn't found, add it to database.
