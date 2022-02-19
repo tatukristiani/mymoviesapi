@@ -129,8 +129,8 @@ app.post('/api/movies', function(req,res) {
     let movie = req.body;
 
     if(movie !== null) {
-        let title = movie.title;
-        title = title.replaceAll("'", "''");
+        const title = movie.title;
+        //title = title.replaceAll("'", "''");
 
         const genres = movie.genres;
         let overview = movie.overview;
