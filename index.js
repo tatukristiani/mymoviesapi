@@ -182,13 +182,12 @@ app.post('/api/movies', function(req,res) {
                 sql = `SELECT * FROM user_movie WHERE userid=` + userID + ` AND movieid = ` + movieID;
                 let confirmMovieDoesntExists = await client.query(sql);
 
-                res.send("gefe");
                 // If we found out that the user doesn't have this movie we save it.
                 if(confirmMovieDoesntExists.rows.length < 1) {
 
                     await client.query('INSERT INTO user_movie(userid, movieid) VALUES($1, $2)', [userID, movieID])
                         .then(() => res.status(201).json({"message": title + " successfully added to your movies!"}))
-                        .catch(e => res.send({"message": "saving movie for user failed!", "error": e.stack}));
+                        .catch(e => res.send({"message": "saving movie for user failed!"}));
                 }
                 else {
                     res.status(409).json({"message": "You already have " + title + " added to your movies!"});
