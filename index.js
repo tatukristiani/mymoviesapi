@@ -178,11 +178,11 @@ app.post('/api/movies', function(req,res) {
                 results = await client.query(sql);
                 let movieID = results.rows[0].id;
 
-                res.send("hello");
                 // First we check if the movie is already in the user's database.
                 sql = `SELECT * FROM user_movie WHERE userid=` + userID + ` AND movieid = ` + movieID;
                 let confirmMovieDoesntExists = await client.query(sql);
 
+                res.send("gefe");
                 // If we found out that the user doesn't have this movie we save it.
                 if(confirmMovieDoesntExists.rows.length < 1) {
 
