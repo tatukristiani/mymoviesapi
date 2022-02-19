@@ -140,15 +140,11 @@ app.post('/api/movies', function(req,res) {
         const username = movie.user;
 
 
-
         // Check if the movie is in database. If it's not add it there.
         (async () => {
             try {
                 let sql;
                 let results = await client.query('SELECT id, title FROM movie WHERE title=$1 AND tmdbid=$2', [title, tmdbID]);
-                // Check if the movie is already in the database.
-                //let sql = `SELECT id, title FROM movie WHERE title=` + `'` + title + `' AND tmdbid = ` + tmdbID;
-                //let results = await client.query(sql);
                 let rows = results.rows;
 
                 // If the movie wasn't found, add it to database.
@@ -158,8 +154,6 @@ app.post('/api/movies', function(req,res) {
                         'VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID])
                         .then(results => console.log(results))
                         .catch(err => res.send({"message": "Adding movie failed!", "error": err.stack}));
-
-
                 }
 
                 // Search for usernames ID
@@ -169,8 +163,6 @@ app.post('/api/movies', function(req,res) {
 
                 // Search for movies ID
                 results = await client.query('SELECT id FROM movie WHERE title=$1 AND tmdbid=$2', [title, tmdbID]);
-                //sql = `SELECT id FROM movie WHERE title=` + `'` + title + `'` + ` AND tmdbid = ` + tmdbID;
-                //results = await client.query(sql);
                 let movieID = results.rows[0].id;
 
                 // First we check if the movie is already in the user's database.
@@ -192,7 +184,7 @@ app.post('/api/movies', function(req,res) {
             }
         })();
     } else {
-        res.status(400).json({"error": "Data is null or invalid!"});
+        res.status(400).json({"message": "Data is null or invalid!"});
     }
 })
 
