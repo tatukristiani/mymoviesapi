@@ -160,7 +160,7 @@ app.post('/api/movies', function(req,res) {
                     client.query('INSERT INTO movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid) ' +
                         'VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID])
                         .then(results => console.log(results))
-                        .catch(err => res.send(err.stack));
+                        .catch(err => res.send({"message": "Adding movie failed!", "error": err.stack}));
                 }
 
                 // Search for usernames ID
@@ -184,7 +184,7 @@ app.post('/api/movies', function(req,res) {
 
                     client.query('INSERT INTO user_movie(userid, movieid) VALUES($1, $2)', [userID, movieID])
                         .then(() => res.status(201).json({"message": title + " successfully added to your movies!"}))
-                        .catch(e => res.send(e.stack));
+                        .catch(e => res.send({"message": "saving movie for user failed!", "error": e.stack}));
                 }
                 else {
                     res.status(409).json({"message": "You already have " + title + " added to your movies!"});
