@@ -124,13 +124,13 @@ app.get('/search', function(req, res) {
 */
 
 // Used for searching a movie with given movie name.
-app.get('/api/movies/search', function(req, res) {
+app.get('/api/movies/search', urlencodedParser, function(req, res) {
     const urlQuery = url.parse(req.url, true).query;
     const movieName = urlQuery.name.replace(/\s+/g, "+"); // Replace all spaces with + sign.
 
     (async () => {
         try {
-            request(requests.search + movieName, function(error, response, body) {
+            await request(requests.search + movieName, function(error, response, body) {
                 let movies = JSON.parse(body).results;
                 if(movies.length >= 1) {
                     res.status(200).json(movies);
