@@ -124,7 +124,7 @@ app.get('/search', function(req, res) {
 */
 
 // Used for searching a movie with given movie name.
-app.get('api/movies/search', function(req, res) {
+app.get('/api/movies/search', function(req, res) {
     const urlQuery = url.parse(req.url, true).query;
     const movieName = urlQuery.name.replace(/\s+/g, "+"); // Replace all spaces with + sign.
 
