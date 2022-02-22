@@ -123,6 +123,27 @@ app.get('/search', function(req, res) {
 
 */
 
+// Used for searching a movie with given movie name.
+app.get('api/movies/search', function(req, res) {
+    const urlQuery = url.parse(req.url, true).query;
+    const movieName = urlQuery.name.replace(/\s+/g, "+"); // Replace all spaces with + sign.
+
+    (async () => {
+        try {
+            request(requests.search + movieName, function(error, response, body) {
+                let movies = JSON.parse(body).results;
+                if(movies.length >= 1) {
+                    res.send(body);
+                } else {
+                    res.send(404).json({"error": "No movies found with the given input!"})
+                }
+            });
+        } catch(error) {
+            res.status(500).json({"message": "Error while searching movies."})
+        }
+    })();
+});
+
 // Gets all movies from the database, related to the user requesting the movies -> returns all users watched movies.
 app.get('/api/movies', urlencodedParser, function (req, res) {
     let urlQuery = url.parse(req.url, true).query;
