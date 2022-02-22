@@ -133,7 +133,7 @@ app.get('/api/movies/search', function(req, res) {
             request(requests.search + movieName, function(error, response, body) {
                 let movies = JSON.parse(body).results;
                 if(movies.length >= 1) {
-                    res.send(body);
+                    res.status(200).json(movies);
                 } else {
                     res.send(404).json({"error": "No movies found with the given input!"})
                 }
