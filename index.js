@@ -123,6 +123,23 @@ app.get('/search', function(req, res) {
 
 */
 
+// Gets all movies from the database, related to the user requesting the movies -> returns all users watched movies.
+app.get('/api/movies', urlencodedParser, function (req, res) {
+    let urlQuery = url.parse(req.url, true).query;
+    let user = urlQuery.user;
+
+    (async () => {
+        try {
+            let query = `SELECT * FROM movie WHERE movie.id IN (SELECT movieid FROM user_movie WHERE userid IN (SELECT users.id FROM users WHERE username = $1))`;
+            let result = await client.query(query, [user]);
+            let jsonObj = result.rows;
+            res.status(200).json(jsonObj);
+        }catch(error) {
+            console.log(error);
+            res.send(error.stack);
+        }
+    })()
+})
 
 // Saves movie information to database according to the user credentials.
 app.post('/api/movies', function(req,res) {
