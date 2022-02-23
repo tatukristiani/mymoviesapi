@@ -87,41 +87,6 @@ app.get('/api/home', (req,res) => {
     })();
 });
 
-/**
- * Searches for a movie from the omdbAPI with the users given title and year(optional).
- * This function finds only 1 movie MAX.
- */
-/*
-app.get('/search', function(req, res) {
-    console.log('Searching movie from external API');
-    var q = url.parse(req.url, true).query;
-    var movieName = q.name;
-    var movieYear = parseInt(q.year);
-    console.log('Movie name: ' + movieName + ' MovieYear: ' + movieYear);
-
-    // Check if we have year input from the user, if we got one then we perform a search with it.
-    if (movieYear != null && !isNaN(movieYear) && movieYear > 0 && movieYear <
-        9999) {
-        request('http://www.omdbapi.com/?t=' + movieName + '&y=' + movieYear +
-            '&apikey=1376e1b1', function(error, response, body) {
-            console.log(body);
-            console.log('Search with year completed.');
-            res.send(body);
-        });
-    }
-
-    // If user didn't add a year to the search bar, then we don't use it.
-    else {
-        request('http://www.omdbapi.com/?t=' + movieName + '&apikey=1376e1b1',
-            function(error, response, body) {
-                //console.log(body);
-                console.log('Search without year completed!');
-                res.send(body);
-            });
-    }
-});
-
-*/
 
 // Used for searching a movie with given movie name.
 app.get('/api/movies/search', urlencodedParser, function(req, res) {
