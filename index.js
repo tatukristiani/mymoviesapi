@@ -191,6 +191,35 @@ app.post('/api/movies', function(req,res) {
     }
 })
 
+app.delete('/api/movies', urlencodedParser,function(req,res) {
+    let urlQuery = url.parse(req.url, true).query;
+    let user = urlQuery.user;
+    let movieTitle = urlQuery.title;
+    let tmdbid = urlQuery.tmdbid;
+
+    (async () => {
+
+        try {
+            // Get users id.
+            let sql = `SELECT id FROM users WHERE username=$1`;
+            let results = await client.query(sql, [user]);
+            let userID = results.rows[0].id;
+
+            // Get movie id.
+            sql = `SELECT id FROM movie WHERE title=$1 AND tmdbid=$2`;
+            results = await client.query(sql, [movieTitle, tmdbid]);
+            let movieID = results.rows[0].id;
+
+            // Remove the movie from the database.
+            sql = `DELETE FROM user_movie WHERE userid=$1 AND movieid=$2`;
+            await client.query(sql,[userID, movieID]);
+            res.status(200).json("Movie successfully removed.");
+        } catch (error) {
+            res.send({"message": error.message + "error:" + error});
+        }
+
+    })();
+})
 /**
  * Authors tool for adding movies to the database.
  */
