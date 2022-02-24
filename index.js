@@ -88,6 +88,27 @@ app.get('/api/home', (req,res) => {
 });
 
 
+// Currently show Trending movies on home page.
+app.get('/api/movies/genre', urlencodedParser, (req,res) => {
+    const urlQuery = url.parse(req.url, true).query;
+    const genre = urlQuery.genre;
+
+    (async () => {
+        try {
+            request(requests.fetchMoviesByGenre + genre, function(error, response, body) {
+                let movies = JSON.parse(body).results;
+                if(movies.length >= 1) {
+                    res.send(movies);
+                } else {
+                    res.send(404).json({"error": "No movies found!"})
+                }
+            });
+        } catch(error) {
+            res.status(500).json({"message": "Error getting movies"})
+        }
+    })();
+});
+
 // Used for searching a movie with given movie name.
 app.get('/api/movies/search', urlencodedParser, function(req, res) {
     const urlQuery = url.parse(req.url, true).query;
