@@ -76,7 +76,7 @@ app.get('/api/home', (req,res) => {
             request(requests.fetchTrending, function(error, response, body) {
                 let movies = JSON.parse(body).results;
                 if(movies.length >= 1) {
-                    res.send(body);
+                    res.send(movies);
                 } else {
                     res.send(404).json({"error": "No movies found!"})
                 }
