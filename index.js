@@ -192,12 +192,11 @@ app.post('/api/movies', function(req,res) {
 })
 
 // Deletes movie from the user_movie table which holds users saved movies.
-app.delete('/api/movies', function(req,res) {
-    let data = req.body.data;
-    //let urlQuery = url.parse(req.url, true).query;
-    let user = data.user; // Username of a user
-    let movieTitle = data.title; // Title of the movie
-    let tmdbid = data.tmdbid; // tmdbid of the movie
+app.delete('/api/movies',urlencodedParser, function(req,res) {
+    let urlQuery = url.parse(req.url, true).query;
+    let user = urlQuery.user; // Username of a user
+    let movieTitle = urlQuery.title; // Title of the movie
+    let tmdbid = urlQuery.tmdbid; // tmdbid of the movie
     res.send(user + movieTitle + tmdbid);
 
     (async () => {
