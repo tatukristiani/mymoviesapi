@@ -197,10 +197,8 @@ app.delete('/api/movies',urlencodedParser, function(req,res) {
     let user = urlQuery.user; // Username of a user
     let movieTitle = urlQuery.title; // Title of the movie
     let tmdbid = urlQuery.tmdbid; // tmdbid of the movie
-    res.send(user + movieTitle + tmdbid);
 
     (async () => {
-
         try {
             // Get users id.
             let sql = `SELECT id FROM users WHERE username=$1`;
