@@ -215,7 +215,7 @@ app.delete('/api/movies',urlencodedParser, function(req,res) {
             await client.query(sql,[userID, movieID]);
             res.status(200).json("Movie successfully removed.");
         } catch (error) {
-            res.send({"message": error.message + "error:" + error});
+            res.status(404).json({"message": "Problems removing the movie."});
         }
 
     })();
