@@ -47,27 +47,6 @@ app.get("/", (req,res) => {
     res.send("REST API STATE = ONLINE");
 })
 
-
-/**
- * Gets all movies from the database table "movie"
- */
-/*
-app.get('/home', (request, response) => {
-    console.log('Home page opened');
-    (async () => {
-        try {
-            let results = await client.query("SELECT * FROM movie");
-            let data = JSON.stringify(results.rows);
-            console.log("Data received")
-            response.send(data);
-        } catch(err) {
-            console.log("Database error!" + err);
-        }
-
-    })();
-});
-*/
-
 // Currently show Trending movies on home page.
 app.get('/api/movies/trending', urlencodedParser, (req,res) => {
     const urlQuery = url.parse(req.url, true).query;
