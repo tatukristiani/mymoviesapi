@@ -99,7 +99,7 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
     (async () => {
         try {
             while(currentPage < pages) {
-                let movies = await fetchMultipleMovies(requests.fetchMoviesByGenre, genre, currentPage, res);
+                let movies = fetchMultipleMovies(requests.fetchMoviesByGenre, genre, currentPage, res);
                 movieArray.push.apply(movieArray, movies);
                 currentPage++;
             }
@@ -120,9 +120,9 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
     })();
 });
 
-async function fetchMultipleMovies(uri, genre, page, res) {
+function fetchMultipleMovies(uri, genre, page, res) {
     try {
-        await request(uri + genre + "&page=" + page, function (error, response, body) {
+        request(uri + genre + "&page=" + page, function (error, response, body) {
             let movies = JSON.parse(body).results;
             if (movies.length >= 1) {
                 return movies;
