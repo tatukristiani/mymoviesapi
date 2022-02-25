@@ -92,24 +92,18 @@ app.get('/api/home', (req,res) => {
 app.get('/api/movies/genre', urlencodedParser, (req,res) => {
     const urlQuery = url.parse(req.url, true).query;
     const genre = urlQuery.genre;
-    const pages = 100;
-    let currentPage = 1;
-    let movieArray = [{username: "tatu"}, {username: "test"}];
+    const page = urlQuery.page;
 
     (async () => {
         try {
-            for(currentPage; currentPage < pages; currentPage++) {
-                request(requests.fetchMoviesByGenre + genre + "&page=" + currentPage, function (error, response, body) {
-                    let movies = JSON.parse(body).results;
-                    if (movies.length >= 1) {
-                        //movieArray.push.apply(movieArray,movies);
-                        movieArray.push.apply(movieArray, movies);
-                    } else {
-                        res.send(404).json({"error": "No movies found!"})
-                    }
-                });
-            }
-            res.send(movieArray);
+            request(requests.fetchMoviesByGenre + genre + "&page=" + page, function (error, response, body) {
+                let movies = JSON.parse(body).results;
+                if (movies.length >= 1) {
+                    res.send(movies);
+                } else {
+                    res.send(404).json({"error": "No movies found!"})
+                }
+            });
         } catch(error) {
             res.status(500).json({"message": "Error getting movies"})
         }
