@@ -69,11 +69,13 @@ app.get('/home', (request, response) => {
 */
 
 // Currently show Trending movies on home page.
-app.get('/api/home', (req,res) => {
+app.get('/api/movies/trending', urlencodedParser, (req,res) => {
+    const urlQuery = url.parse(req.url, true).query;
+    const page = urlQuery.page;
 
     (async () => {
         try {
-            request(requests.fetchTrending, function(error, response, body) {
+            request(requests.fetchTrending + page, function(error, response, body) {
                 let movies = JSON.parse(body).results;
                 if(movies.length >= 1) {
                     res.send(movies);
