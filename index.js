@@ -92,9 +92,17 @@ app.get('/api/home', (req,res) => {
 app.get('/api/movies/genre', urlencodedParser, (req,res) => {
     const urlQuery = url.parse(req.url, true).query;
     const genre = urlQuery.genre;
+    const pages = 100;
+    let index = 1;
+    let movieArray = [];
 
     (async () => {
         try {
+            while(index < pages) {
+                movieArray.push.apply(movieArray, await fetchMultipleMovies(requests.fetchMoviesByGenre, genre, index, res));
+            }
+            res.send(movieArray);
+            /*
             request(requests.fetchMoviesByGenre + genre, function(error, response, body) {
                 let movies = JSON.parse(body).results;
                 if(movies.length >= 1) {
@@ -103,11 +111,25 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
                     res.send(404).json({"error": "No movies found!"})
                 }
             });
+             */
         } catch(error) {
             res.status(500).json({"message": "Error getting movies"})
         }
     })();
 });
+
+async function fetchMultipleMovies(uri, genre, page, res) {
+    try {
+        await request(uri + genre + "&page=" + page, function (error, response, body) {
+            let movies = JSON.parse(body).results;
+            if (movies.length >= 1) {
+                return movies;
+            }
+        });
+    } catch (err) {
+        res.status(500).json({"message": "Error while getting movies!"})
+    }
+}
 
 // Used for searching a movie with given movie name.
 app.get('/api/movies/search', urlencodedParser, function(req, res) {
