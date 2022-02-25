@@ -99,7 +99,8 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
     (async () => {
         try {
             while(currentPage < pages) {
-                movieArray.push.apply(movieArray, await fetchMultipleMovies(requests.fetchMoviesByGenre, genre, currentPage, res));
+                let movies = await fetchMultipleMovies(requests.fetchMoviesByGenre, genre, currentPage, res);
+                movieArray.push.apply(movieArray, movies);
                 currentPage++;
             }
             res.send(movieArray);
