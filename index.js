@@ -99,6 +99,7 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
             request(requests.fetchMoviesByGenre + genre + "&page=" + page, function (error, response, body) {
                 let movies = JSON.parse(body).results;
                 if (movies.length >= 1) {
+
                     res.send(movies);
                 } else {
                     res.send(404).json({"error": "No movies found!"})
