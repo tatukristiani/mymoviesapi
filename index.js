@@ -101,31 +101,18 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
             request(requests.fetchMoviesByGenre + genre + "&page=" + currentPage, function (error, response, body) {
                 let movies = JSON.parse(body).results;
                 if (movies.length >= 1) {
-                    movieArray.push.apply(movieArray,movies);
+                    //movieArray.push.apply(movieArray,movies);
                     res.send(movies);
                 } else {
                     res.send(404).json({"error": "No movies found!"})
                 }
             });
-            res.send(movieArray);
+            //res.send(movieArray);
         } catch(error) {
             res.status(500).json({"message": "Error getting movies"})
         }
     })();
 });
-
-function fetchMultipleMovies(uri, genre, page, res) {
-    try {
-        request(uri + genre + "&page=" + page, function (error, response, body) {
-            let movies = JSON.parse(body).results;
-            if (movies.length >= 1) {
-                return movies;
-            }
-        });
-    } catch (err) {
-        res.status(500).json({"message": "Error while getting movies!"})
-    }
-}
 
 // Used for searching a movie with given movie name.
 app.get('/api/movies/search', urlencodedParser, function(req, res) {
