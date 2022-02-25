@@ -98,18 +98,15 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
 
     (async () => {
         try {
-            while(currentPage < pages) {
-                request(requests.fetchMoviesByGenre + genre + "&page=" + currentPage, function (error, response, body) {
-                    let movies = JSON.parse(body).results;
-                    if (movies.length >= 1) {
-                        movieArray.push.apply(movieArray,movies);
-                    } else {
-                        res.send(404).json({"error": "No movies found!"})
-                    }
-                });
-                currentPage++;
-            }
-             res.send(movieArray);
+            request(requests.fetchMoviesByGenre + genre + "&page=" + currentPage, function (error, response, body) {
+                let movies = JSON.parse(body).results;
+                if (movies.length >= 1) {
+                    movieArray.push.apply(movieArray,movies);
+                } else {
+                    res.send(404).json({"error": "No movies found!"})
+                }
+            });
+            res.send(movieArray);
         } catch(error) {
             res.status(500).json({"message": "Error getting movies"})
         }
