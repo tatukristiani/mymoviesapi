@@ -417,9 +417,8 @@ function validateEmail(email) {
 
 // Validates credential(username & password).
 function validateCredential(credentialToValidate) {
-    // Regex used won't accept strings that start/end with a . or _ or have two of them in a row
-    // Length of string must be at least 4 characters and MAX 20 characters.
-    let regex = "^(?=.{4,20}$)(?:[a-zA-Z\\d]+(?:(?:\\.|-|_)[a-zA-Z\\d])*)+$";
+    // Regex accepts usernames and passwords that contain 4-20 characters that contain only letters and numbers.
+    let regex = /^[a-zA-Z0-9]{4,20}$/;
     let pattern = new RegExp(regex);
     return pattern.test(credentialToValidate);
 }
