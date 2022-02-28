@@ -391,7 +391,7 @@ app.post('/api/reset-password', function(req, res) {
                         token: token
                     }
 
-                    res.send("Toimii");
+                    res.send("Toimii1");
                     // If the email was sent we update that users token attribute on database.
                     client.query('UPDATE users SET token=$1 WHERE email =$2', [data, email]);
                     type = 'success';
