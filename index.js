@@ -391,7 +391,7 @@ app.post('/forgot-password', function(req, res) {
         password: "asdasd123123"
     }
 
-    const { email } = req.body;
+    const email = req.body;
 
     // Make sure user exists in DB
     if(email !== user.email) {
