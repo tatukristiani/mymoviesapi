@@ -368,7 +368,8 @@ app.post('/api/register', function(req, res) {
 /* send reset password link in email */
 app.post('/api/reset-password', function(req, res) {
 
-    const email = req.body.data.email;
+    const body = req.body;
+    const email = body.data;
     res.send(email);
 
     (async () => {
