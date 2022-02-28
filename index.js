@@ -481,9 +481,9 @@ function sendEmail(emailAddress, usersToken) {
         from: process.env.EMAIL_USERNAME,
         to: email,
         subject: 'Reset Password Link - My Movies',
-        html: '<h1>Dear {email}</h1>' +
-            '<br><br>' +
-            '<p>You requested for reset password, kindly use this <a href="https://tatukristiani.github.io/update-password?token=' + token + '">link</a> to reset your password.</p>' +
+        html: '<h1>Dear User Of My Movies</h1>' +
+            '<br>' +
+            '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/update-password' + token + '">link</a> to reset your password.</p>' +
             '<br><p>Sincerely My Movies Team</p>'
 
     };
