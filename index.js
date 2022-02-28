@@ -382,7 +382,7 @@ app.post('/api/reset-password', function(req, res) {
 
 
             if (user) {
-                let token = jwt.sign({data: user.username}, process.env.JWT_SECRET_KEY, {algorithm: 'RS256'}, {expiresIn: '1h'});
+                let token = jwt.sign(user.username, process.env.JWT_SECRET_KEY, {expiresIn: '1h'});
                 res.send("Error 1");
                 sendEmail(email, token); // Send email to the email that was given.
                 res.send("Error 2");
