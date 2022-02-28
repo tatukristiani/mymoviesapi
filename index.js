@@ -1,6 +1,6 @@
 // New stuff for email reset
 const randomToken = require('random-token');
-
+const dotenv = require('dotenv').config();
 const url = require('url');
 const express = require('express');
 const process = require('process');
@@ -381,19 +381,15 @@ app.post('/api/reset-password', function(req, res) {
 
             // results.rows.length possibly
             if (user) {
-                res.send("email on email")
+
                 let token = randomToken.generate(20);
 
                 let sent = sendEmail(email, token); // Send email to the email that was given.
-
+                res.send(sent);
                 if (sent) {
-                    let data = {
-                        token: token
-                    }
-
 
                     // If the email was sent we update that users token attribute on database.
-                    client.query('UPDATE users SET token=$1 WHERE email =$2', [data, email]);
+                    client.query('UPDATE users SET token=$1 WHERE email =$2', [token, email]);
                     type = 'success';
                     msg = 'The reset password link has been sent to your email address';
                     res.send("Toimii");
