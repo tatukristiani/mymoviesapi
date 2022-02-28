@@ -483,7 +483,7 @@ function sendEmail(emailAddress, usersToken) {
         subject: 'Reset Password Link - My Movies',
         html: '<h1>Dear User Of My Movies</h1>' +
             '<br>' +
-            '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/update-password' + token + '">link</a> to reset your password.</p>' +
+            '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/update-password/' + token + '">link</a> to reset your password.</p>' +
             '<br><p>Sincerely My Movies Team</p>'
 
     };
