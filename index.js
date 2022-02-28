@@ -1,5 +1,4 @@
 // New stuff for email reset
-const sendEmail = require('./utils/sendEmail');
 const randomToken = require('random-token');
 
 const url = require('url');
