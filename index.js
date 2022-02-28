@@ -430,7 +430,7 @@ function validateCredential(credentialToValidate) {
 
 
 
-/*
+
 import nodemailer from "nodemailer";
 async function sendEmail(emailAddress, usersToken) {
     let send = false;
@@ -469,7 +469,7 @@ async function sendEmail(emailAddress, usersToken) {
 
     return send;
 }
-*/
+
 
 /*
 // Test routes & functions for school
