@@ -1,15 +1,17 @@
-// Kurssin muuttujat Access token json varten
-const jwt = require('jsonwebtoken');
+// New stuff for email reset
+const sendEmail = require('./utils/sendEmail');
+let randomToken = require('random-token');
 
 const url = require('url');
 const express = require('express');
 const process = require('process');
-const { Client } = require('pg');
+//const { Client } = require('pg');
 const cors = require('cors'); // For all access for all domains.
 const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
 const requests = require('./movieAPI/request');
 const bodyParser = require('body-parser');
+const {client} = require("./db");
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 
 const app = express();
@@ -17,6 +19,17 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
+const flash = require('express-flash');
+const session = require('express-session');
+
+app.use(session({
+    secret: 'This is my secret string',
+    resave: false,
+    saveUninitialized: true
+}));
+
+app.use(flash());
 
 
 /* For school and authorization (json web token)
@@ -27,7 +40,7 @@ app.use(function(req,res,next) {
 })
  */
 
-
+/*
 const client = new Client({
     user: "fcncirfhfkwocb",
     password: "16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4",
@@ -40,6 +53,7 @@ client.connect()
     .then(() => console.log("Connected successfully!"))
     .catch(error => console.log(error));
 
+*/
 
 app.get("/", (req,res) => {
     res.send("REST API STATE = ONLINE");
@@ -364,6 +378,56 @@ app.post('/api/register', function(req, res) {
     }
 });
 
+/* send reset password link in email */
+app.post('/api/reset-password', function(req, res, next) {
+
+    let email = req.body.email;
+
+    // Check if email exists.
+    client.query(`SELECT * FROM users WHERE email =$1`, [email], function(err, result) {
+        if (err) throw err;
+
+        let type = '';
+        let msg = '';
+
+        console.log(result[0]);
+
+        // results.rows.length possibly
+        if (result[0].email.length > 0) {
+
+            let token = randomToken.generate(20);
+
+             let sent = sendEmail(email, token); // Send email to the email that was given.
+
+            if (sent) {
+                let data = {
+                    token: token
+                }
+
+                // If the email was sent we update that users token attribute on database.
+                client.query('UPDATE users SET token=$1 WHERE email =$2', [data, email], function(err, result) {
+                    if(err) throw err
+                })
+
+                type = 'success';
+                msg = 'The reset password link has been sent to your email address';
+
+            } else {
+                type = 'error';
+                msg = 'Something goes to wrong. Please try again';
+            }
+
+        } else {
+            console.log('2');
+            type = 'error';
+            msg = 'The Email is not registered with us';
+
+        }
+        req.flash(type,msg);
+        res.redirect('/');
+    });
+})
+
 // Validates email, accepts simple format  xxx@yyy.zzz
 function validateEmail(email) {
     const regex = ".+\\@.+\\..+";
@@ -379,25 +443,6 @@ function validateCredential(credentialToValidate) {
     return pattern.test(credentialToValidate);
 }
 
-
-app.get('/forgot-password', function(req, res) {
-
-})
-
-app.post('/forgot-password', function(req, res) {
-    let user = {
-        id: 1,
-        email: "tatukristian2@gmail.com",
-        password: "asdasd123123"
-    }
-
-    const email = req.body;
-
-    // Make sure user exists in DB
-    if(email !== user.email) {
-        res.send("User not registered");
-    }
-})
 
 /*
 // Test routes & functions for school
