@@ -381,9 +381,9 @@ app.post('/api/reset-password', function(req, res) {
 
             // results.rows.length possibly
             if (user) {
-
+                res.send("email on email")
                 let token = randomToken.generate(20);
-                res.send("Toimii1");
+
                 let sent = sendEmail(email, token); // Send email to the email that was given.
 
                 if (sent) {
