@@ -7,7 +7,6 @@ const requests = {
     fetchTrending: BASE_URL + `/trending/movie/week?api_key=${API_KEY}&language=en-US&page=`,
     fetchTopRated: BASE_URL + `/movie/top_rated?api_key=${API_KEY}&language=en-US`,
     fetchMoviesByGenre: BASE_URL + `/discover/movie?api_key=${API_KEY}&with_genres=`, // Add genre code to end.
-    pages: `&page=`,
     search: BASE_URL + `/search/movie?api_key=${API_KEY}&query=`
 }
 

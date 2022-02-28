@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const secret = "fOzHnFjg0FmM6O/dTVXd/4sGqxgkBdcNwNp00J+QYxm6WljQui0i1Uwk0yp70fQEVIVKNUqM8vYqYgUDWeO0w/GsjgH0QuaoyfbSoHWLrrrIFwIvQR7V7zm535HaOnHzC6QmKElDneqU1MMGPFDxepGD5TaRZ+uGVdhYg26s/azEngpf+FKNJTZYAXebx/ByAmdVhIuVIRok0NJLLZZe/njZOh7jBdcOJZq7GBedTASSdpK7CgKtplE8PwGQ8QrPhiW5besygWKuoDF90ap591+/vN1lMCEam6KfBPxi9D1GTjUMe5cjgpz34NvqP9+sXns+UkejzY5tqBdstl64VQ==";
 
 const url = require('url');
-const util = require('util');
 const express = require('express');
 const process = require('process');
 const { Client } = require('pg');
@@ -27,7 +26,6 @@ app.use(function(req,res,next) {
     next();
 })
  */
-
 
 
 const client = new Client({
@@ -164,8 +162,8 @@ app.post('/api/movies', function(req,res) {
                 }
 
                 // Search for usernames ID
-                sql = `SELECT id FROM users WHERE username=` +  `'` + username + `'`;
-                results = await client.query(sql);
+                sql = `SELECT id FROM users WHERE username=$1`;
+                results = await client.query(sql,[username]);
                 let userID = results.rows[0].id;
 
                 // Search for movies ID
@@ -173,8 +171,8 @@ app.post('/api/movies', function(req,res) {
                 let movieID = results.rows[0].id;
 
                 // First we check if the movie is already in the user's database.
-                sql = `SELECT * FROM user_movie WHERE userid=` + userID + ` AND movieid = ` + movieID;
-                let confirmMovieDoesntExists = await client.query(sql);
+                sql = `SELECT * FROM user_movie WHERE userid=$1 AND movieid =$2`
+                let confirmMovieDoesntExists = await client.query(sql, [userID, movieID]);
 
                 // If we found out that the user doesn't have this movie we save it.
                 if(confirmMovieDoesntExists.rows.length < 1) {
@@ -224,6 +222,7 @@ app.delete('/api/movies',urlencodedParser, function(req,res) {
 
     })();
 })
+
 /**
  * Authors tool for adding movies to the database.
  */
@@ -289,8 +288,8 @@ app.post('/api/login', function(req, res) {
     // Check from database if user is valid
     (async () => {
         try {
-            const checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + username + `'`;
-            const results = await client.query(checkQuery);
+            const checkQuery = `SELECT username, password FROM users WHERE username =$1`;
+            const results = await client.query(checkQuery,[username]);
             const rows = results.rows;
 
             // Should give 1 row of data if user is registered.
@@ -314,48 +313,6 @@ app.post('/api/login', function(req, res) {
         }
     })();
 });
-
-/**
- * Checks if the users given username and password are indeed correct.
- */
-/* For school login
-app.post('/accountValidate', function(req, res) {
-    const dataReceived = req.body;
-    const username = dataReceived.username; // String of username
-    const password = dataReceived.password; // String of password
-
-    // Check from database if user is valid
-    (async () => {
-        try {
-            const checkQuery = `SELECT username, password FROM users WHERE username =` + `'` + username + `'`;
-            const results = await client.query(checkQuery);
-            const rows = results.rows;
-
-            // Should give 1 row of data if user is registered.
-            if(rows.length > 0) {
-                const usernameDB = rows[0].username;
-                const passwordDB = rows[0].password;
-
-                // Compares the inserted password to the one in database.
-                bcrypt.compare(password,passwordDB, function(error,response) {
-                    if(response && usernameDB == username) {
-                        const accessToken = jwt.sign({username: username}, secret, {expiresIn: "1h"}); // Access Token
-                        //res.send(true);
-                        res.status(202).json({accessToken: accessToken}); // Access Token
-                    } else {
-                        res.send(false);
-                    }
-                })
-            } else {
-                res.send(false);
-            }
-        } catch (error) {
-            console.log(error);
-            res.send(false);
-        }
-    })();
-});
-*/
 
 /**
  * Creates an account for the user.
@@ -382,13 +339,13 @@ app.post('/api/register', function(req, res) {
         (async () => {
             try {
                 // 4. Checks if the username already exists.
-                const checkQuery = `SELECT username FROM users WHERE username =` + `'` + username + `'`;
-                const results = await client.query(checkQuery);
+                const checkQuery = `SELECT username FROM users WHERE username =$1`;
+                const results = await client.query(checkQuery, [username]);
 
                 // 5. If username does not exists -> save the user to database & send a 201(CREATE) status code with message.
                 if(JSON.stringify(results.rows).length < 3) {
-                    const insertQuery = `INSERT INTO users(username,password,user_level,email) VALUES(` + `'` + username + `' , '` + pass + `', 'user' , '` + email + `')`;
-                    await client.query(insertQuery);
+                    const insertQuery = `INSERT INTO users(username,password,user_level,email) VALUES($1, $2, $3)`;
+                    await client.query(insertQuery, [username, pass, email]);
                     res.status(201).json({"message": "Account was successfully created!"})
                 }
 
@@ -424,135 +381,6 @@ function validateCredential(credentialToValidate) {
 }
 
 
-
-/**
- * Saves the movies data to the users database. Finds the movies data from the external API.
- */
-/*
-app.post('/saveMovieToDb', urlencodedParser, function(req, res) {
-    console.log("Saving movie to users database.");
-
-    var q = url.parse(req.url, true).query;
-
-    let movieName = q.name;
-    let movieYear = parseInt(q.year);
-    let username = q.user;
-    let uri = 'http://www.omdbapi.com/?t=' + movieName + '&y=' + movieYear +
-        '&apikey=1376e1b1';
-    let jsonObj;
-
-    // Variables for saving the movie to database.
-    let name;
-    let year;
-    let imageID;
-    let runtimeToFloat;
-    let genre;
-    let director;
-    let actor;
-    let plot;
-    let poster;
-
-    // We get the movies information from the API
-    request(uri, function(error, response, body) {
-        //console.log('Server response: ' + body);
-        jsonObj = JSON.parse(body);
-
-        let jsonPlot = jsonObj.Plot.replace(/'/g, '');
-        let jsonTitle = jsonObj.Title.replace(/'/g,'');
-
-        // Variables for saving the movie to database.
-        name = `'` + jsonTitle + `'`;
-        year = jsonObj.Year;
-        imageID = `'` + jsonObj.imdbID + `'`;
-        runtimeToFloat = parseFloat(jsonObj.Runtime).toFixed(2);
-        genre = `'` + jsonObj.Genre + `'`;
-        director = `'` + jsonObj.Director + `'`;
-        actor = `'` + jsonObj.Actors + `'`;
-        plot = `'` + jsonPlot + `'`;
-        poster = `'` + jsonObj.Poster + `'`;
-
-        let searchUser = `'` + username + `'`;
-        let userID; // For the users ID.
-        let movieID; // For the movies ID.
-
-        // Check if the movie is in database. If it's not add it.
-        (async () => {
-            try {
-                // Check if the movie is already in the database.
-                let sql = `SELECT * FROM movie WHERE name =` + name + ` AND year = ` + year;
-                let result = await client.query(sql);
-                let rows = result.rows;
-
-                // If the movie is not in database, we save it there.
-                if (rows.length < 1) {
-                    // Add movie to database
-                    sql = `INSERT into movie(name,year,imageID,runtimeMin,genre,director,actors,plot,poster)`
-                        + ` VALUES(` + name + `, ` + year + `, ` + imageID + `, `+
-                        runtimeToFloat + `, ` + genre + `, ` + director + `, ` + actor +
-                        `, ` + plot + `, ` + poster + `)`;
-                    await client.query(sql);
-                }
-
-                // Search for usernames ID
-                sql = `SELECT id FROM users WHERE username = ` + searchUser;
-                result = await client.query(sql);
-                userID = result.rows[0].id;
-
-                // Search for movies ID
-                sql = `SELECT id FROM movie WHERE name = ` + name + ` AND year = ` +
-                    year;
-                result = await client.query(sql);
-                movieID = result.rows[0].id;
-
-                // First we check if the movie is already in the users database.
-                sql = `SELECT * FROM user_movie WHERE userID = ` + userID + ` AND movieID = ` + movieID;
-                let confirmMovieDoesntExists = await client.query(sql);
-
-                // If we found out that the user doesn't have this movie we save it.
-                if(confirmMovieDoesntExists.rows.length < 1) {
-
-                    // Then add this movie to the user_movie table.
-                    sql = `INSERT INTO user_movie(userID,movieID) VALUES(` + userID +
-                        `, ` +
-                        movieID + `)`;
-                    await client.query(sql);
-                    res.send(movieName + ' successfully added to your movies!');
-                }
-                else {
-                    res.send("You already have " + movieName + " added to your movies.");
-                }
-            } catch (error) {
-                console.log(error);
-                res.send('Couldn\'t add ' + movieName + ' to your movies.');
-            }
-        })();
-    });
-});
-
-*/
-
-
-/**
- * Finds all movies that the user has on the database.
- */
-/*
-app.get('/mymovies', urlencodedParser, function(req, res) {
-    var q = url.parse(req.url, true).query;
-    let user = `'` + q.user + `'`;
-
-    (async () => {
-        try {
-            let sql = `SELECT * FROM movie WHERE movie.id IN (SELECT movieID FROM user_movie WHERE userID IN (SELECT users.id FROM users WHERE username = ` + user + `))`;
-            let result = await client.query(sql);
-            let jsonObj = result.rows;
-            res.send(jsonObj);
-        }catch(error) {
-            console.log(error);
-            res.send(false);
-        }
-    })()
-});
-*/
 
 /*
 // Test routes & functions for school
