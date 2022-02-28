@@ -368,14 +368,15 @@ app.post('/api/register', function(req, res) {
 /* send reset password link in email */
 app.post('/api/reset-password', function(req, res) {
 
-    const body = req.body;
-    res.send(body);
+    const email = req.body.email;
 
     (async () => {
         try {
             // Check if email exists.
             let results = await client.query(`SELECT * FROM users WHERE email =$1`, [email]);
             let user = results.rows;
+
+            res.send(user);
 
             let type = '';
             let msg = '';
