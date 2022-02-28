@@ -379,7 +379,7 @@ app.post('/api/reset-password', function(req, res) {
             let type = '';
             let msg = '';
 
-
+            res.send("user" + user);
             // results.rows.length possibly
             if (user.length > 1) {
 
