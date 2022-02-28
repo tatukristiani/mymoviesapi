@@ -383,17 +383,19 @@ app.post('/api/reset-password', function(req, res) {
             // results.rows.length possibly
             if (user) {
                 let token = randomToken.generate(20);
+                res.send("Error 1");
                 sendEmail(email, token); // Send email to the email that was given.
-
+                res.send("Error 2");
                 // If the email was sent we update that users token attribute on database.
                 client.query(`UPDATE users SET token=$1 WHERE email=$2`, [token, email]);
+                res.send("Error 3");
                 type = 'success';
                 msg = 'The reset password link has been sent to your email address';
             } else {
                 type = 'error';
                 msg = 'The Email is not registered with us';
             }
-            res.send(200).json({type, msg})
+            res.send(200).json({"Response": type, msg})
         } catch (err) {
             res.send("There was an error");
         }
