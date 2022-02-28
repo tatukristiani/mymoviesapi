@@ -431,7 +431,7 @@ function validateCredential(credentialToValidate) {
 
 
 
-import nodemailer from "nodemailer";
+const nodemailer = require('nodemailer');
 async function sendEmail(emailAddress, usersToken) {
     let send = false;
 
