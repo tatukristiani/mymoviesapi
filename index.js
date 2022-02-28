@@ -382,7 +382,8 @@ app.post('/api/reset-password', function(req, res) {
 
 
             let data = {
-                email: user.email
+                email: user.email,
+                username: user.username
             }
             if (user) {
                 let token = jwt.sign(data, process.env.JWT_SECRET_KEY);
@@ -395,58 +396,49 @@ app.post('/api/reset-password', function(req, res) {
                 type = 'error';
                 msg = 'The Email is not registered with us';
             }
-            res.send(200).json({"Response": type, msg})
+            const message = {
+                type: type,
+                msg: msg
+            }
+            res.status(200).json(message);
         } catch (err) {
-            res.send("There was an error");
+            res.send("There was an error.");
         }
     })();
 });
 
 /* update password to database */
-app.post('/api/update-password', function(req, res, next) {
+app.post('/api/update-password', authenticateToken, function(req, res, next) {
+    const token = req.body.token;
+    const password = req.body.password;
 
-    let token = req.body.token;
-    let password = req.body.password;
+    (async () => {
+        try {
+            let results = await client.query(`SELECT * FROM users WHERE token=$1`, [token]);
+            let user = results.rows[0];
 
-    client.query('SELECT * FROM users WHERE token ="' + token + '"', function(err, result) {
-        if (err) throw err;
+            let type = '';
+            let msg = '';
 
-        let type
-        let msg
-
-        if (result.length > 0) {
-
-            let saltRounds = 10;
-
-            // var hash = bcrypt.hash(password, saltRounds);
-
-            bcrypt.genSalt(saltRounds, function(err, salt) {
-                bcrypt.hash(password, salt, function(err, hash) {
-
-                    let data = {
-                        password: hash
-                    }
-
-                    client.query('UPDATE users SET ? WHERE email ="' + result[0].email + '"', data, function(err, result) {
-                        if(err) throw err
-
-                    });
-
-                });
-            });
-
-            type = 'success';
-            msg = 'Your password has been updated successfully';
-
-        } else {
-
-            console.log('2');
-            type = 'success';
-            msg = 'Invalid link; please try again';
-
+            if (user) {
+                let hashedPass = bcrypt.hashSync(password, 12);
+                await client.query(`UPDATE users SET password=$1 WHERE token=$2`, [hashedPass, token]);
+                type = 'success';
+                msg = 'Your password has been updated successfully';
+            } else {
+                type = 'error';
+                msg = 'Invalid credentials or something else went wrong!';
+            }
+            const message = {
+                type: type,
+                msg: msg
+            }
+            res.status(200).json(message);
+        }catch (err) {
+            res.send("Error while updating password, sorry about this.")
         }
-    });
-})
+    })();
+});
 
 
 // Validates email, accepts simple format  xxx@yyy.zzz
@@ -498,7 +490,7 @@ function sendEmail(emailAddress, usersToken) {
 }
 
 
-/*
+
 // Test routes & functions for school
 function authenticateToken(req,res,next) {
     const authHeader = req.headers['authorization']
@@ -506,7 +498,7 @@ function authenticateToken(req,res,next) {
 
     if (token == null) return res.sendStatus(401)
 
-    jwt.verify(token, secret, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
         console.log(err)
 
         if (err) return res.sendStatus(403)
@@ -516,7 +508,7 @@ function authenticateToken(req,res,next) {
         next()
     })
 }
-*/
+
 // Test for school
 /*
 app.post('/api/event', authenticateToken, urlencodedParser, function(req,res) {
