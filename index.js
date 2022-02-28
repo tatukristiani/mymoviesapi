@@ -380,17 +380,17 @@ function validateCredential(credentialToValidate) {
 }
 
 
-let user = {
-    id: 1,
-    email: "tatukristian2@gmail.com",
-    password: "asdasd123123"
-}
-
 app.get('/forgot-password', function(req, res) {
 
 })
 
 app.post('/forgot-password', function(req, res) {
+    let user = {
+        id: 1,
+        email: "tatukristian2@gmail.com",
+        password: "asdasd123123"
+    }
+
     const { email } = req.body;
 
     // Make sure user exists in DB
