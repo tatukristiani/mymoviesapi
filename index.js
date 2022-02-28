@@ -374,16 +374,13 @@ app.post('/api/reset-password', function(req, res) {
         try {
             // Check if email exists.
             let results = await client.query(`SELECT * FROM users WHERE email =$1`, [email]);
-            let user = results.rows;
-
-            res.send(user);
+            let user = results.rows[0];
 
             let type = '';
             let msg = '';
 
-            res.send("user" + user);
             // results.rows.length possibly
-            if (user.length > 1) {
+            if (user) {
 
                 let token = randomToken.generate(20);
 
