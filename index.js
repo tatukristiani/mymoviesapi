@@ -1,5 +1,5 @@
 // New stuff for email reset
-const randomToken = require('random-token');
+const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
 const url = require('url');
 const express = require('express');
@@ -380,9 +380,9 @@ app.post('/api/reset-password', function(req, res) {
             let type = '';
             let msg = '';
 
-            // results.rows.length possibly
+
             if (user) {
-                let token = randomToken.generate(20);
+                let token = jwt.sign({data: user.username}, process.env.JWT_SECRET_KEY, {algorithm: 'RS256'}, {expiresIn: '1h'});
                 res.send("Error 1");
                 sendEmail(email, token); // Send email to the email that was given.
                 res.send("Error 2");
