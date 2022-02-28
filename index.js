@@ -383,7 +383,7 @@ app.post('/api/reset-password', function(req, res) {
             if (user) {
 
                 let token = randomToken.generate(20);
-
+                res.send("Toimii1");
                 let sent = sendEmail(email, token); // Send email to the email that was given.
 
                 if (sent) {
@@ -391,7 +391,7 @@ app.post('/api/reset-password', function(req, res) {
                         token: token
                     }
 
-                    res.send("Toimii1");
+
                     // If the email was sent we update that users token attribute on database.
                     client.query('UPDATE users SET token=$1 WHERE email =$2', [data, email]);
                     type = 'success';
