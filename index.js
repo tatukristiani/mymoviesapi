@@ -366,7 +366,7 @@ app.post('/api/register', function(req, res) {
     }
 });
 
-/* send reset password link in email */
+/* send reset password link in to email */
 app.post('/api/reset-password', function(req, res) {
 
     const email = req.body.email;
@@ -381,8 +381,11 @@ app.post('/api/reset-password', function(req, res) {
             let msg = '';
 
 
+            let data = {
+                email: user.email
+            }
             if (user) {
-                let token = jwt.sign({data: user.username}, process.env.JWT_SECRET_KEY);
+                let token = jwt.sign(data, process.env.JWT_SECRET_KEY);
                 sendEmail(email, token); // Send email to the email that was given.
                 // If the email was sent we update that users token attribute on database.
                 client.query(`UPDATE users SET token=$1 WHERE email=$2`, [token, email]);
@@ -399,6 +402,53 @@ app.post('/api/reset-password', function(req, res) {
     })();
 });
 
+/* update password to database */
+app.post('/api/update-password', function(req, res, next) {
+
+    let token = req.body.token;
+    let password = req.body.password;
+
+    client.query('SELECT * FROM users WHERE token ="' + token + '"', function(err, result) {
+        if (err) throw err;
+
+        let type
+        let msg
+
+        if (result.length > 0) {
+
+            let saltRounds = 10;
+
+            // var hash = bcrypt.hash(password, saltRounds);
+
+            bcrypt.genSalt(saltRounds, function(err, salt) {
+                bcrypt.hash(password, salt, function(err, hash) {
+
+                    let data = {
+                        password: hash
+                    }
+
+                    client.query('UPDATE users SET ? WHERE email ="' + result[0].email + '"', data, function(err, result) {
+                        if(err) throw err
+
+                    });
+
+                });
+            });
+
+            type = 'success';
+            msg = 'Your password has been updated successfully';
+
+        } else {
+
+            console.log('2');
+            type = 'success';
+            msg = 'Invalid link; please try again';
+
+        }
+    });
+})
+
+
 // Validates email, accepts simple format  xxx@yyy.zzz
 function validateEmail(email) {
     const regex = ".+\\@.+\\..+";
@@ -413,9 +463,6 @@ function validateCredential(credentialToValidate) {
     let pattern = new RegExp(regex);
     return pattern.test(credentialToValidate);
 }
-
-
-
 
 function sendEmail(emailAddress, usersToken) {
 
@@ -434,7 +481,10 @@ function sendEmail(emailAddress, usersToken) {
         from: process.env.EMAIL_USERNAME,
         to: email,
         subject: 'Reset Password Link - My Movies',
-        html: '<p>You requested for reset password, kindly use this <a href="https://tatukristiani.github.io/reset-password?token=' + token + '">link</a> to reset your password</p>'
+        html: '<h1>Dear {email}</h1>' +
+            '<br><br>' +
+            '<p>You requested for reset password, kindly use this <a href="https://tatukristiani.github.io/update-password?token=' + token + '">link</a> to reset your password.</p>' +
+            '<br><p>Sincerely My Movies Team</p>'
 
     };
 
