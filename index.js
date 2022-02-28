@@ -408,7 +408,7 @@ app.post('/api/reset-password', function(req, res) {
 });
 
 /* update password to database */
-app.post('/api/update-password', authenticateToken, function(req, res, next) {
+app.post('/api/update-password', function(req, res, next) {
     const token = req.body.token;
     const password = req.body.password;
 
@@ -489,34 +489,6 @@ function sendEmail(emailAddress, usersToken) {
     });
 }
 
-
-
-// Test routes & functions for school
-function authenticateToken(req,res,next) {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-
-    if (token == null) return res.sendStatus(401)
-
-    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
-        console.log(err)
-
-        if (err) return res.sendStatus(403)
-
-        req.user = user
-
-        next()
-    })
-}
-
-// Test for school
-/*
-app.post('/api/event', authenticateToken, urlencodedParser, function(req,res) {
-
-    res.send("user (decoded) " + JSON.stringify(req.user));
-
-})
-*/
 
 const port = process.env.PORT || 4000;
 app.listen(port, ()=>{
