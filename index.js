@@ -11,6 +11,7 @@ const bcrypt = require('bcryptjs'); // Password hash crypt.
 const requests = require('./movieAPI/request');
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({extended: false});
+const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(express.json());
@@ -381,23 +382,13 @@ app.post('/api/reset-password', function(req, res) {
 
             // results.rows.length possibly
             if (user) {
-
                 let token = randomToken.generate(20);
+                sendEmail(email, token); // Send email to the email that was given.
 
-                let sent = sendEmail(email, token); // Send email to the email that was given.
-                res.send(sent);
-                if (sent) {
-
-                    // If the email was sent we update that users token attribute on database.
-                    client.query('UPDATE users SET token=$1 WHERE email =$2', [token, email]);
-                    type = 'success';
-                    msg = 'The reset password link has been sent to your email address';
-                    res.send("Toimii");
-                } else {
-                    type = 'error';
-                    msg = 'Something goes to wrong. Please try again';
-                }
-
+                // If the email was sent we update that users token attribute on database.
+                client.query(`UPDATE users SET token=$1 WHERE email=$2`, [token, email]);
+                type = 'success';
+                msg = 'The reset password link has been sent to your email address';
             } else {
                 type = 'error';
                 msg = 'The Email is not registered with us';
@@ -427,17 +418,13 @@ function validateCredential(credentialToValidate) {
 
 
 
-const nodemailer = require('nodemailer');
-async function sendEmail(emailAddress, usersToken) {
-    let send = false;
+function sendEmail(emailAddress, usersToken) {
 
     let email = emailAddress;
     let token = usersToken;
 
     let mail = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
+        service: 'gmail',
         auth: {
             user: process.env.EMAIL_USERNAME, // Your email id
             pass: process.env.EMAIL_PASSWORD // Your password
@@ -445,25 +432,20 @@ async function sendEmail(emailAddress, usersToken) {
     });
 
     let mailOptions = {
-        from: 'mymovies.noreply@gmail.com',
+        from: process.env.EMAIL_USERNAME,
         to: email,
         subject: 'Reset Password Link - My Movies',
         html: '<p>You requested for reset password, kindly use this <a href="https://tatukristiani.github.io/reset-password?token=' + token + '">link</a> to reset your password</p>'
 
     };
 
-    await mail.sendMail(mailOptions, function (error, info) {
+    mail.sendMail(mailOptions, function (error, info) {
         if (error) {
-            console.log(1)
+            console.log(error);
         } else {
-            console.log(0)
+            console.log("Email sent: " + info.response);
         }
-    }).then(r => {
-        console.log(r);
-        return send;
     });
-
-    return send;
 }
 
 
