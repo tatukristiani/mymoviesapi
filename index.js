@@ -369,7 +369,7 @@ app.post('/api/register', function(req, res) {
 app.post('/api/reset-password', function(req, res) {
 
     const body = req.body;
-    const email = body.data;
+    const email = body.data.email;
     res.send(email);
 
     (async () => {
