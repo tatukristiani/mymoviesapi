@@ -19,17 +19,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-const flash = require('express-flash');
-const session = require('express-session');
-
-app.use(session({
-    secret: 'This is my secret string',
-    resave: false,
-    saveUninitialized: true
-}));
-
-app.use(flash());
-
 
 /* For school and authorization (json web token)
 app.use(function(req,res,next) {
@@ -378,54 +367,52 @@ app.post('/api/register', function(req, res) {
 });
 
 /* send reset password link in email */
-app.post('/api/reset-password', function(req, res, next) {
+app.post('/api/reset-password', function(req, res) {
 
-    let email = req.body.data.email;
+    const email = req.body.data.email;
 
-    // Check if email exists.
-    client.query(`SELECT * FROM users WHERE email =$1`, [email], function(err, result) {
-        if (err) throw err;
+    (async () => {
+        try {
+            // Check if email exists.
+            let results = await client.query(`SELECT * FROM users WHERE email =$1`, [email]);
+            let user = results.rows;
 
-        let type = '';
-        let msg = '';
+            let type = '';
+            let msg = '';
 
-        console.log(result[0]);
 
-        // results.rows.length possibly
-        if (result[0].email.length > 0) {
+            // results.rows.length possibly
+            if (user.length > 1) {
 
-            let token = randomToken.generate(20);
+                let token = randomToken.generate(20);
 
-             let sent = sendEmail(email, token); // Send email to the email that was given.
+                let sent = sendEmail(email, token); // Send email to the email that was given.
 
-            if (sent) {
-                let data = {
-                    token: token
+                if (sent) {
+                    let data = {
+                        token: token
+                    }
+
+                    // If the email was sent we update that users token attribute on database.
+                    client.query('UPDATE users SET token=$1 WHERE email =$2', [data, email]);
+                    type = 'success';
+                    msg = 'The reset password link has been sent to your email address';
+
+                } else {
+                    type = 'error';
+                    msg = 'Something goes to wrong. Please try again';
                 }
-
-                // If the email was sent we update that users token attribute on database.
-                client.query('UPDATE users SET token=$1 WHERE email =$2', [data, email], function(err, result) {
-                    if(err) throw err
-                })
-
-                type = 'success';
-                msg = 'The reset password link has been sent to your email address';
 
             } else {
                 type = 'error';
-                msg = 'Something goes to wrong. Please try again';
+                msg = 'The Email is not registered with us';
             }
-
-        } else {
-            console.log('2');
-            type = 'error';
-            msg = 'The Email is not registered with us';
-
+            res.send(200).json({type, msg})
+        } catch (err) {
+            res.send("There was an error");
         }
-        req.flash(type,msg);
-        res.redirect('http://localhost:3000/forgot-password');
-    });
-})
+    })();
+});
 
 // Validates email, accepts simple format  xxx@yyy.zzz
 function validateEmail(email) {

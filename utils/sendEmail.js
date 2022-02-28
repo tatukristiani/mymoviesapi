@@ -2,7 +2,7 @@
 /* Template for sending email to the given email & add the token to the link on the email for security*/
 import nodemailer from "nodemailer";
 
-function sendEmail(emailAddress, usersToken) {
+async function sendEmail(emailAddress, usersToken) {
     let send = false;
 
     let email = emailAddress;
@@ -26,7 +26,7 @@ function sendEmail(emailAddress, usersToken) {
 
     };
 
-    mail.sendMail(mailOptions, function (error, info) {
+    await mail.sendMail(mailOptions, function (error, info) {
         if (error) {
             console.log(1)
         } else {
@@ -34,7 +34,7 @@ function sendEmail(emailAddress, usersToken) {
         }
     }).then(r => {
         console.log(r);
-        send = true;
+        return send;
     });
 
     return send;
