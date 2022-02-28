@@ -387,7 +387,6 @@ app.post('/api/reset-password', function(req, res) {
                 res.send("Error 2");
                 // If the email was sent we update that users token attribute on database.
                 client.query(`UPDATE users SET token=$1 WHERE email=$2`, [token, email]);
-                res.send("Error 3");
                 type = 'success';
                 msg = 'The reset password link has been sent to your email address';
             } else {
