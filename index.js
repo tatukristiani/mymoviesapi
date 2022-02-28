@@ -1,6 +1,5 @@
 // Kurssin muuttujat Access token json varten
 const jwt = require('jsonwebtoken');
-const secret = "fOzHnFjg0FmM6O/dTVXd/4sGqxgkBdcNwNp00J+QYxm6WljQui0i1Uwk0yp70fQEVIVKNUqM8vYqYgUDWeO0w/GsjgH0QuaoyfbSoHWLrrrIFwIvQR7V7zm535HaOnHzC6QmKElDneqU1MMGPFDxepGD5TaRZ+uGVdhYg26s/azEngpf+FKNJTZYAXebx/ByAmdVhIuVIRok0NJLLZZe/njZOh7jBdcOJZq7GBedTASSdpK7CgKtplE8PwGQ8QrPhiW5besygWKuoDF90ap591+/vN1lMCEam6KfBPxi9D1GTjUMe5cjgpz34NvqP9+sXns+UkejzY5tqBdstl64VQ==";
 
 const url = require('url');
 const express = require('express');
@@ -18,6 +17,7 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
 
 /* For school and authorization (json web token)
 app.use(function(req,res,next) {
@@ -279,7 +279,6 @@ app.post('/saveDataToDb', function(req, res) {
 */
 
 // Post method for login in. Currently doesn't validate the username in any way.
-// TODO: Improve validation of username / password in case of SQL injection
 app.post('/api/login', function(req, res) {
     const data = req.body;
     const username = data.username; // String of username
@@ -381,6 +380,24 @@ function validateCredential(credentialToValidate) {
 }
 
 
+let user = {
+    id: 1,
+    email: "tatukristian2@gmail.com",
+    password: "asdasd123123"
+}
+
+app.get('/forgot-password', function(req, res) {
+
+})
+
+app.post('/forgot-password', function(req, res) {
+    const { email } = req.body;
+
+    // Make sure user exists in DB
+    if(email !== user.email) {
+        res.send("User not registered");
+    }
+})
 
 /*
 // Test routes & functions for school
