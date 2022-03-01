@@ -19,7 +19,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-
 /* For school and authorization (json web token)
 app.use(function(req,res,next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -425,6 +424,9 @@ app.post('/api/update-password', function(req, res, next) {
                 await client.query(`UPDATE users SET password=$1 WHERE token=$2`, [hashedPass, token]);
                 type = 'success';
                 msg = 'Your password has been updated successfully';
+
+                // Remove the token from the database.
+                await client.query(`UPDATE users SET token=null WHERE username=$1`, [user.username]);
             } else {
                 type = 'error';
                 msg = 'Invalid credentials or something else went wrong!';
