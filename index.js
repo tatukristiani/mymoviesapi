@@ -384,7 +384,11 @@ app.post('/api/reset-password', function(req, res) {
             }
             res.status(200).json(message);
         } catch (err) {
-            res.send("There was an error.");
+            const response = {
+                type: 'error',
+                msg: 'There was an error with the database,'
+            }
+            res.send(response);
         }
     })();
 });
