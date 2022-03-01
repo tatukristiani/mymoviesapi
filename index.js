@@ -143,11 +143,11 @@ app.get('/api/movies/search', urlencodedParser, function(req, res) {
                 if(movies.length >= 1) {
                     res.status(200).json(movies);
                 } else {
-                    res.status(404).json({"error": "No movies found with the given input!"})
+                    res.send({"message": "No movies found with the given input!"})
                 }
             });
         } catch(error) {
-            res.status(500).json({"message": "Error while searching movies."})
+            res.send({"message": "Error while searching movies."})
         }
     })();
 });
