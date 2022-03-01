@@ -138,7 +138,7 @@ app.get('/api/movies/search', urlencodedParser, function(req, res) {
 
     (async () => {
         try {
-            request(requests.search + movieName, function(error, response, body) {
+            await request(requests.search + movieName, function(error, response, body) {
                 let movies = JSON.parse(body).results;
                 if(movies.length >= 1) {
                     res.status(200).json(movies);
