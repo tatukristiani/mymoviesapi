@@ -46,6 +46,26 @@ app.get("/", (req,res) => {
     res.send("REST API STATE = ONLINE");
 })
 
+app.get('/api/users', urlencodedParser, function(req,res) {
+    const urlQuery = url.parse(req.url, true).query;
+    let username = urlQuery.username;
+
+    (async () => {
+        try {
+            let results = await client.query(`SELECT username, email FROM users WHERE username=$1`, [username]);
+            let user = results.rows[0];
+
+            if (user) {
+                res.status(200).json(user);
+            } else {
+                res.status(404).json({"message": "User not found"});
+            }
+        }catch (err) {
+            res.status(500).json({"message":"Problems with the database."})
+        }
+
+    })();
+})
 // Currently show Trending movies on home page.
 app.get('/api/movies/trending', urlencodedParser, (req,res) => {
     const urlQuery = url.parse(req.url, true).query;
@@ -224,60 +244,6 @@ app.delete('/api/movies',urlencodedParser, function(req,res) {
     })();
 })
 
-/**
- * Authors tool for adding movies to the database.
- */
-/*
-app.post('/saveDataToDb', function(req, res) {
-
-    // get JSON-object from the http-body
-    let jsonObj = req.body;
-
-    // Check if there is something to be added.
-    if (!util.isNull(jsonObj)) {
-
-        // All variables except numbers have semi-colons added for sql purposes. ex. String must be type -> 'String', this is not allowed -> String.
-        let name = `'` + jsonObj.Title + `'`;
-        let year = jsonObj.Year;
-        let imageID = `'` + jsonObj.imdbID + `'`;
-
-        // Movies runtime must be converted from string to a float.
-        let runtimeToFloat = parseFloat(jsonObj.Runtime).toFixed(2);
-        let runtimeMin;
-
-        // We want to double check that the value is a number.
-        if (isNaN(runtimeToFloat)) {
-            runtimeMin = 0.00;
-        } else {
-            runtimeMin = runtimeToFloat;
-        }
-
-        let genre = `'` + jsonObj.Genre + `'`;
-        let director = `'` + jsonObj.Director + `'`;
-        let actor = `'` + jsonObj.Actors + `'`;
-        let plot = `'` + jsonObj.Plot + `'`;
-        let poster = `'` + jsonObj.Poster + `'`;
-
-        // IIFE, insert the data to database. Send response to client according to success/failure.
-        (async () => {
-            try {
-                let sql = `INSERT INTO movie(name, year, imageID, runtimemin, genre, director, actors, plot, poster)` +
-                    ` VALUES(` + name + `, ` + year + `, ` + imageID + `, `
-                    + runtimeMin + `, ` + genre + `, ` + director + `, `
-                    + actor + `, ` + plot + `, ` + poster + `)`;
-                await client.query(sql);
-
-                res.send('Succesfully saved data to database');
-
-            } catch (error) {
-                console.log(error);
-                res.send('Couldn\'t save data to database');
-
-            }
-        })();
-    }
-});
-*/
 
 // Post method for login in. Currently doesn't validate the username in any way.
 app.post('/api/login', function(req, res) {
