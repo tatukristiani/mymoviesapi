@@ -19,14 +19,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-/* For school and authorization (json web token)
-app.use(function(req,res,next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    next();
-})
- */
-
 
 const client = new Client({
     user: "fcncirfhfkwocb",
@@ -46,6 +38,7 @@ app.get("/", (req,res) => {
     res.send("REST API STATE = ONLINE");
 })
 
+// Get users username and email according to the given username.
 app.get('/api/users', urlencodedParser, function(req,res) {
     const urlQuery = url.parse(req.url, true).query;
     let username = urlQuery.username;
@@ -67,6 +60,7 @@ app.get('/api/users', urlencodedParser, function(req,res) {
     })();
 })
 
+// Updates users username and email.
 app.post('/api/users', function(req,res){
     let data = req.body;
 
@@ -92,7 +86,7 @@ app.post('/api/users', function(req,res){
 })
 
 
-// Currently show Trending movies on home page.
+// Returns movies from trending(TMDB API), can specify the page since tmdb api only provides data queries of single page at a time.
 app.get('/api/movies/trending', urlencodedParser, (req,res) => {
     const urlQuery = url.parse(req.url, true).query;
     const page = urlQuery.page;
@@ -114,7 +108,7 @@ app.get('/api/movies/trending', urlencodedParser, (req,res) => {
 });
 
 
-// Currently show Trending movies on home page.
+// Return movies by genre, page is also needed to fetch these movies.
 app.get('/api/movies/genre', urlencodedParser, (req,res) => {
     const urlQuery = url.parse(req.url, true).query;
     const genre = urlQuery.genre;
@@ -354,7 +348,7 @@ app.post('/api/register', function(req, res) {
     }
 });
 
-/* send reset password link in to email */
+// Sends a reset password link through email for the user.
 app.post('/api/reset-password', function(req, res) {
 
     const email = req.body.email;
@@ -395,7 +389,7 @@ app.post('/api/reset-password', function(req, res) {
     })();
 });
 
-/* update password to database */
+// Updates the password that needed resetting.
 app.post('/api/update-password', function(req, res, next) {
     const token = req.body.token;
     const password = req.body.password;
@@ -439,7 +433,7 @@ function validateEmail(email) {
     return pattern.test(email);
 }
 
-// Validates credential(username & password).
+// Validates credential(username & password). Length must be between 4-20.
 function validateCredential(credentialToValidate) {
     // Regex accepts usernames and passwords that contain 4-20 characters that contain only letters and numbers.
     let regex = /^[a-zA-Z0-9]{4,20}$/;
