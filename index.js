@@ -344,8 +344,8 @@ app.post('/api/register', function(req, res) {
 
                 // 5. If username does not exists -> save the user to database & send a 201(CREATE) status code with message.
                 if(JSON.stringify(results.rows).length < 3) {
-                    const insertQuery = `INSERT INTO users(username,password,user_level,email) VALUES($1, $2, $3)`;
-                    await client.query(insertQuery, [username, pass, email]);
+                    const insertQuery = `INSERT INTO users(username,password,user_level,email,token) VALUES($1, $2, $3, $4)`;
+                    await client.query(insertQuery, [username, pass, email, null]);
                     res.status(201).json({"message": "Account was successfully created!"})
                 }
 
