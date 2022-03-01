@@ -66,6 +66,26 @@ app.get('/api/users', urlencodedParser, function(req,res) {
 
     })();
 })
+
+app.post('/api/users', function(req,res){
+    let data = req.body;
+
+    let newUsername = data.newUsername;
+    let username = data.username;
+    let email = data.email;
+
+    (async () => {
+        try {
+            await client.query(`UPDATE users SET username=$1, email=$2 WHERE username=$3`, [newUsername,email,username]);
+            res.status(200).json({"message": "Successfully updated user credentials!"})
+        }catch (err) {
+            res.status(500).json({"message": "Error while trying to update user credentials."});
+        }
+    })();
+
+})
+
+
 // Currently show Trending movies on home page.
 app.get('/api/movies/trending', urlencodedParser, (req,res) => {
     const urlQuery = url.parse(req.url, true).query;
