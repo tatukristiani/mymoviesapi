@@ -341,15 +341,14 @@ app.post('/api/register', function(req, res) {
                 const checkQuery = `SELECT username FROM users WHERE username =$1`;
                 const results = await client.query(checkQuery, [username]);
 
+                res.send("Here 1");
                 // 5. If username does not exists -> save the user to database & send a 201(CREATE) status code with message.
                 if(results.rows.length < 1) {
                     const insertQuery = `INSERT INTO users(username,password,user_level,email) VALUES($1, $2, $3)`;
                     await client.query(insertQuery, [username, pass, email]);
+                    res.send("Here 2");
                     res.status(201).json({"message": "Account was successfully created!"})
-                }
-
-                // 6. If the username is taken sends a string of information about it as response.
-                else {
+                } else {
                     res.status(403).json({"error": "The username is already taken. Pick another one."});
                 }
             } catch (error) {
