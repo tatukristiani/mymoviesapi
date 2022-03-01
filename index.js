@@ -341,7 +341,6 @@ app.post('/api/register', function(req, res) {
                 const checkQuery = `SELECT username FROM users WHERE username =$1`;
                 const results = await client.query(checkQuery, [username]);
 
-                res.send("Here 1");
                 // 5. If username does not exists -> save the user to database & send a 201(CREATE) status code with message.
                 if(results.rows.length < 1) {
                     const insertQuery = `INSERT INTO users(username,password,user_level,email) VALUES($1, $2, $3)`;
