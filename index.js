@@ -332,8 +332,7 @@ app.post('/api/register', function(req, res) {
     if(isUsernameValid && isPasswordValid && isEmailValid) {
 
         // 2. Hashes the password
-        const hashPass = bcrypt.hashSync(password, 12);
-        const pass = hashPass; // String of password for db
+        const pass = bcrypt.hashSync(password, 12); // String of password for db
 
         // 3. Check if username already exists and acts accordingly.
         (async () => {
@@ -343,7 +342,7 @@ app.post('/api/register', function(req, res) {
                 const results = await client.query(checkQuery, [username]);
 
                 // 5. If username does not exists -> save the user to database & send a 201(CREATE) status code with message.
-                if(JSON.stringify(results.rows).length < 3) {
+                if(results.rows.length < 1) {
                     const insertQuery = `INSERT INTO users(username,password,user_level,email,token) VALUES($1, $2, $3, $4)`;
                     await client.query(insertQuery, [username, pass, email, null]);
                     res.status(201).json({"message": "Account was successfully created!"})
