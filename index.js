@@ -324,6 +324,7 @@ app.post('/api/register', function(req, res) {
     const username = dataReceived.username;
     const password = dataReceived.password;
     const email = dataReceived.email;
+    const userLevel = 'user';
     const isUsernameValid = validateCredential(username);
     const isPasswordValid = validateCredential(password);
     const isEmailValid = validateEmail(email);
@@ -343,9 +344,8 @@ app.post('/api/register', function(req, res) {
 
                 // 5. If username does not exists -> save the user to database & send a 201(CREATE) status code with message.
                 if(results.rows.length < 1) {
-                    const insertQuery = `INSERT INTO users(username,password,user_level,email) VALUES($1, $2, $3)`;
-                    await client.query(insertQuery, [username, pass, email]);
-                    res.send("Here 2");
+                    const insertQuery = `INSERT INTO users(username,password,user_level,email) VALUES($1, $2, $3, $4)`;
+                    await client.query(insertQuery, [username, pass, userLevel, email]);
                     res.status(201).json({"message": "Account was successfully created!"})
                 } else {
                     res.status(403).json({"error": "The username is already taken. Pick another one."});
