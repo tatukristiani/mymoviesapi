@@ -24,7 +24,7 @@ const options = {
             version: "1.0.0",
             description: "API for getting movie data and to communicate with the database of the My Movies software",
             contact: {
-                name: "Tatu Pulkkinen",
+                name: "Creator",
                 email: "mymovies.noreply@gmail.com"
             },
             servers: ["https://moviesoftwareapi.herokuapp.com"]
@@ -62,12 +62,13 @@ app.get("/", (req,res) => {
     res.send("REST API STATE = ONLINE");
 })
 
-// Get users username and email according to the given username.
+
+// Routes
 /**
  * @swagger
- * /api/users
+ * /api/users:
  *  get:
- *      description: Used to get users username and email with given username.
+ *      description: Used to get users username and email with given username
  *      responses:
  *          '200':
  *              description: Success
