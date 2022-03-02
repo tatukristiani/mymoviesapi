@@ -13,11 +13,34 @@ const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 const nodemailer = require('nodemailer');
 
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: 'My Movies API',
+            version: "1.0.0",
+            description: "API for getting movie data and to communicate with the database of the My Movies software",
+            contact: {
+                email: "mymovies.noreply@gmail.com"
+            },
+            servers: ["https://moviesoftwareapi.herokuapp.com"]
+        }
+    },
+    apis:['index.js']
+}
+
+const swaggerDocs = swaggerJsDoc(options);
+
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
+app.use('/api/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
 const client = new Client({
