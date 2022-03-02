@@ -24,6 +24,7 @@ const options = {
             version: "1.0.0",
             description: "API for getting movie data and to communicate with the database of the My Movies software",
             contact: {
+                name: "Tatu Pulkkinen",
                 email: "mymovies.noreply@gmail.com"
             },
             servers: ["https://moviesoftwareapi.herokuapp.com"]
@@ -62,6 +63,19 @@ app.get("/", (req,res) => {
 })
 
 // Get users username and email according to the given username.
+/**
+ * @swagger
+ * /api/users
+ *  get:
+ *      description: Used to get users username and email with given username.
+ *      responses:
+ *          '200':
+ *              description: Success
+ *          '404':
+ *              description: User not found
+ *          '500':
+ *              description: Database problems
+ */
 app.get('/api/users', urlencodedParser, function(req,res) {
     const urlQuery = url.parse(req.url, true).query;
     let username = urlQuery.username;
