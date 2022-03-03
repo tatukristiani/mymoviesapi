@@ -117,8 +117,6 @@ app.get("/", (req,res) => {
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               items:
  *                 $ref: '#/components/schemas/Users'
  *
  *       404:
