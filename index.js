@@ -58,58 +58,69 @@ client.connect()
     .catch(error => console.log(error));
 
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Users:
+ *       type: object
+ *       required:
+ *         - username
+ *         - email
+ *       properties:
+ *         username:
+ *           type: string
+ *           description: Users username
+ *         email:
+ *           type: string
+ *           description: Users email address
+ *       example:
+ *         username: exampleUsername
+ *         email: example@email.com
+ *
+ */
+
 
 app.get("/", (req,res) => {
     res.send("REST API STATE = ONLINE");
 })
 
 
+
 // Routes
 /**
  * @swagger
  * /api/users:
- *  get:
- *      tags:
- *      - "users"
- *      summary: "Retrieve users username and email address"
- *      parameters:
- *          - in: query
- *            name: username
- *            description: "String value of a username"
- *            required: true
- *            schema:
- *              type: string
- *              example: tatukristian
+ *   get:
+ *     summary: "Retrieve users username and email address"
+ *     responses:
+ *       '200':
+ *         description: Successfully updated user credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *                 $ref: '#/components/schemas/Users'
  *
- *      responses:
- *          '200':
- *              description: Successfully updated user credentials
- *              content:
- *                application/json:
- *                  schema:
- *                    type: object
- *                    example: {
- *                      username: "username",
- *                      email: "test.test@email.com"
- *                    }
- *          '404':
- *            description: Invalid credentials!
- *            content:
- *              application/json:
- *                schema:
- *                  type: object
+ *       '404':
+ *          description: Invalid credentials!
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
  *                  example: {
  *                    message: "User not found"
  *                 }
- *          '500':
- *             description: Error while trying to update user credentials.
- *             content:
- *               application/json:
- *                 schema:
- *                   type: object
- *                   example: {
- *                     message: "Problems with the database."
- *                   }
+ *       '500':
+ *          description: Error while trying to update user credentials.
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                  example: {
+ *                    message: "Problems with the database."
+ *                  }
+ *
  */
 app.get('/api/users', urlencodedParser, function(req,res) {
     const urlQuery = url.parse(req.url, true).query;
