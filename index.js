@@ -82,7 +82,12 @@ client.connect()
  *       example:
  *         username: username
  *         email: example@email.com
- *
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
  *     Movies:
  *       type: array
  *       items:
@@ -298,6 +303,7 @@ app.post('/api/users', function(req,res){
  *         name: page
  *         schema:
  *           type: integer
+ *           example: 1
  *         required: true
  *         description: Page number
  *     responses:
