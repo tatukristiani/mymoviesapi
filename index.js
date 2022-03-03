@@ -16,13 +16,14 @@ const nodemailer = require('nodemailer');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
+// Documentation: https://swagger.io/specification/#infoObject
 const options = {
     definition: {
         openapi: "3.0.0",
         info: {
             title: 'My Movies API',
             version: "1.0.0",
-            description: "API for getting movie data and to communicate with the database of the My Movies software",
+            description: "This is sample of the REST API server that runs on heroku. Here you can view all the available routes for the API",
             contact: {
                 name: "Creator",
                 email: "mymovies.noreply@gmail.com"
@@ -68,14 +69,47 @@ app.get("/", (req,res) => {
  * @swagger
  * /api/users:
  *  get:
- *      description: Used to get users username and email with given username
+ *      tags:
+ *      - "users"
+ *      summary: "Retrieve users username and email address"
+ *      parameters:
+ *          - in: query
+ *            name: username
+ *            description: "String value of a username"
+ *            required: true
+ *            schema:
+ *              type: string
+ *              example: tatukristian
+ *
  *      responses:
  *          '200':
- *              description: Success
+ *              description: Successfully updated user credentials
+ *              content:
+ *                application/json:
+ *                  schema:
+ *                    type: object
+ *                    example: {
+ *                      username: "username",
+ *                      email: "test.test@email.com"
+ *                    }
  *          '404':
- *              description: User not found
+ *            description: Invalid credentials!
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  example: {
+ *                    message: "User not found"
+ *                 }
  *          '500':
- *              description: Database problems
+ *             description: Error while trying to update user credentials.
+ *             content:
+ *               application/json:
+ *                 schema:
+ *                   type: object
+ *                   example: {
+ *                     message: "Problems with the database."
+ *                   }
  */
 app.get('/api/users', urlencodedParser, function(req,res) {
     const urlQuery = url.parse(req.url, true).query;
