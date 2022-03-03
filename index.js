@@ -159,16 +159,16 @@ app.get('/api/users', urlencodedParser, function(req,res) {
 *   post:
 *     summary: Updates users username and email
 *     tags: [Users]
-*     parameters:
-*       - in: query
-*         name: body
-*         schema:
-*           type: object
-*           example: {
-*             newUsername: newUsername,
-*             username: username,
-*             email: test@email.com
-*           }
+*     requestBody:
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             example: {
+*                 newUsername: newUsername,
+*                 username: username,
+*                 email: test@email.com
+*             }
 *         required: true
 *         description: Object with users old username, new username and email
 *     responses:
