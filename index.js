@@ -57,7 +57,7 @@ client.connect()
     .then(() => console.log("Connected successfully!"))
     .catch(error => console.log(error));
 
-
+// Swagger schemas
 /**
  * @swagger
  * components:
@@ -81,7 +81,7 @@ client.connect()
  *
  */
 
-
+// Swagger Tags
 /**
  * @swagger
  * tags:
@@ -100,12 +100,12 @@ app.get("/", (req,res) => {
 // Routes
 /**
  * @swagger
- * /api/users{username}:
+ * /api/users:
  *   get:
  *     summary: Retrieve users username and email address with username
  *     tags: [Users]
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: username
  *         schema:
  *           type: string
