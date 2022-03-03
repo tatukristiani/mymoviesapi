@@ -198,10 +198,14 @@ app.post('/api/users', function(req,res){
     if(validEmail && validUsername) {
         (async () => {
             try {
-                const result = await client.query(`SELECT username FROM users WHERE username=$1`, [newUsername]);
+                let result = await client.query(`SELECT username FROM users WHERE username=$1`, [newUsername]);
                 if(result.rows.length < 1) {
-                    await client.query(`UPDATE users SET username=$1, email=$2 WHERE username=$3`, [newUsername, email, username]);
-                    res.status(200).json({"message": "Successfully updated user credentials!"});
+                    result = await client.query(`SELECT username FROM users WHERE username=$1`, [username]);
+                    if(result.rows.length > 0) {
+                        await client.query(`UPDATE users SET username=$1, email=$2 WHERE username=$3`, [newUsername, email, username]);
+                        res.status(200).json({"message": "Successfully updated user credentials!"});
+                    }
+                    res.status(404).json({"message": "Invalid credentials!"});
                 } else {
                     res.status(409).json({"message": "Please choose another username!"});
                 }
