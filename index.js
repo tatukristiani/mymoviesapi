@@ -31,7 +31,7 @@ const options = {
         },
         servers: [
             {
-                "url": "https://thisIsNotArealServer.com",
+                "url": "https://moviesoftwareapi.herokuapp.com/",
                 "description": "No real server in use, for database security reasons"
             }
         ]
@@ -491,7 +491,7 @@ app.get('/api/movies/search', urlencodedParser, function(req, res) {
  *           example: ExampleUsername
  *     responses:
  *       200:
- *         description: Users movies fetched successfully!
+ *         description: Users movies fetched successfully! Note! There can be zero or more objects.
  *         content:
  *           application/json:
  *             schema:
