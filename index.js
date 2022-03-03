@@ -29,9 +29,9 @@ const options = {
                 email: "mymovies.noreply@gmail.com"
             },
             servers: ["https://moviesoftwareapi.herokuapp.com"]
-        }
+        },
+        supportedSubmitMethods: ['get']
     },
-    supportedSubmitMethods: ['get'],
     apis:['index.js']
 }
 
@@ -181,8 +181,8 @@ app.get('/api/users', urlencodedParser, function(req,res) {
 *          description: Error while trying to update user credentials.
 *       400:
 *          description: Error on the passed information!
-*
-*
+*       404:
+*          description: Invalid credentials!
 *
 */
 
