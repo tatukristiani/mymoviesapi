@@ -329,7 +329,7 @@ app.get('/api/movies/trending', urlencodedParser, (req,res) => {
                 if(movies.length >= 1) {
                     res.status(200).json(movies);
                 } else {
-                    res.send(404).json({"error": "No movies found!"})
+                    res.status(404).json({"error": "No movies found!"})
                 }
             });
         } catch(error) {
