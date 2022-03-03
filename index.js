@@ -87,53 +87,53 @@ client.connect()
  *       type: array
  *       items:
  *         type: object
- *       properties:
- *         adult:
- *           type: boolean
- *         backdrop_path:
- *           type: string
- *         media_type:
- *           type: string
- *         id:
- *           type: integer
- *         genre_ids:
- *           type: array
- *         original_language:
- *           type: string
- *         original_title:
- *           type: string
- *         overview:
- *           type: string
- *         popularity:
- *           type: number
- *         poster_path:
- *           type: string
- *         release_date:
- *           type: string
- *         title:
- *           type: string
- *         video:
- *           type: boolean
- *         vote_average:
- *           type: number
- *         vote_count:
- *           type: number
- *       example:
- *         adult: false
- *         backdrop_path: "/iQFcwSGbZXMkeyKrxbPnwnRo5fl.jpg"
- *         media_type: "movie"
- *         id: 634649
- *         genre_ids: [28,12,878]
- *         original_language: "en"
- *         original_title: "Spider-Man: No Way Home"
- *         overview: "Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man."
- *         popularity:  5596.919
- *         poster_path: "/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg"
- *         release_date: "2021-12-15"
- *         title: "Spider-Man: No Way Home"
- *         video:  false
- *         vote_average: 8.3
- *         vote_count: 8613
+ *         properties:
+ *           adult:
+ *             type: boolean
+ *           backdrop_path:
+ *             type: string
+ *           media_type:
+ *             type: string
+ *           id:
+ *             type: integer
+ *           genre_ids:
+ *             type: array
+ *           original_language:
+ *             type: string
+ *           original_title:
+ *             type: string
+ *           overview:
+ *             type: string
+ *           popularity:
+ *             type: number
+ *           poster_path:
+ *             type: string
+ *           release_date:
+ *             type: string
+ *           title:
+ *             type: string
+ *           video:
+ *             type: boolean
+ *           vote_average:
+ *             type: number
+ *           vote_count:
+ *             type: number
+ *         example:
+ *           adult: false
+ *           backdrop_path: "/iQFcwSGbZXMkeyKrxbPnwnRo5fl.jpg"
+ *           media_type: "movie"
+ *           id: 634649
+ *           genre_ids: [28,12,878]
+ *           original_language: "en"
+ *           original_title: "Spider-Man: No Way Home"
+ *           overview: "Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man."
+ *           popularity:  5596.919
+ *           poster_path: "/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg"
+ *           release_date: "2021-12-15"
+ *           title: "Spider-Man: No Way Home"
+ *           video:  false
+ *           vote_average: 8.3
+ *           vote_count: 8613
  *
  *
  *
