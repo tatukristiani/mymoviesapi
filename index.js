@@ -558,7 +558,6 @@ app.get('/api/movies', urlencodedParser, function (req, res) {
     })()
 })
 
-// Saves movie information to database according to the user credentials.
 
 /**
  * @swagger
@@ -719,7 +718,7 @@ app.delete('/api/movies',urlencodedParser, function(req,res) {
  * @swagger
  * /api/login:
  *   post:
- *     summary: Route for authenticating user credentials on sing in
+ *     summary: Route for authenticating user credentials when logging in
  *     tags: [Authentication]
  *     requestBody:
  *       content:
@@ -783,10 +782,45 @@ app.post('/api/login', function(req, res) {
     })();
 });
 
+
 /**
- * Creates an account for the user.
- * Hashes the password and check the correct validation of the username, password & email.
+ * @swagger
+ * /api/register:
+ *   post:
+ *     summary: Registers an account with the given credentials.
+ *     tags: [Authentication]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - username
+ *              - password
+ *              - email
+ *            properties:
+ *              username:
+ *                type: string
+ *                example: "ExampleUsername"
+ *              password:
+ *                type: string
+ *                example: "ExamplePassword123"
+ *              email:
+ *                type: string
+ *                example: "example@email.com"
+ *
+ *     responses:
+ *       201:
+ *         description: Account was successfully created!
+ *
+ *       403:
+ *         description: Account can't be created with the given data, reason might be invalid or taken.
+ *
+ *       500:
+ *         description: Problems with the database.
+ *
  */
+
 app.post('/api/register', function(req, res) {
     // Reveice all neede data from request body.
     const dataReceived = req.body;
@@ -832,6 +866,34 @@ app.post('/api/register', function(req, res) {
 });
 
 // Sends a reset password link through email for the user.
+
+/**
+ * @swagger
+ * /api/reset-password:
+ *   post:
+ *     summary: Sends a reset password link through email for the user on success.
+ *     tags: [Authentication]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - email
+ *            properties:
+ *              email:
+ *                type: string
+ *                example: "example@email.com"
+ *
+ *     responses:
+ *       200:
+ *         description: Email is sent only if the account exist.
+ *
+ *       500:
+ *         description: Problems with the database.
+ *
+ */
+
 app.post('/api/reset-password', function(req, res) {
 
     const email = req.body.email;
@@ -870,12 +932,44 @@ app.post('/api/reset-password', function(req, res) {
                 type: 'error',
                 msg: 'There was an error with the database,'
             }
-            res.send(response);
+            res.status(500).json(response);
         }
     })();
 });
 
 // Updates the password that needed resetting.
+
+/**
+ * @swagger
+ * /api/update-password:
+ *   post:
+ *     summary: Registers an account with the given credentials.
+ *     tags: [Authentication]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - token
+ *              - password
+ *            properties:
+ *              token:
+ *                type: string
+ *                example: "UAJUIOJauhJIHNyhgb8uyah87d78HJSD70A38998HJB89B"
+ *              password:
+ *                type: string
+ *                example: "NewUpdatedPasswordExample123"
+ *
+ *     responses:
+ *       200:
+ *         description: Password has been changed if the needed credentials match.
+ *
+ *       500:
+ *         description: Error when trying to update password.
+ *
+ */
+
 app.post('/api/update-password', function(req, res, next) {
     const token = req.body.token;
     const password = req.body.password;
@@ -906,7 +1000,7 @@ app.post('/api/update-password', function(req, res, next) {
             }
             res.status(200).json(message);
         }catch (err) {
-            res.send("Error while updating password, sorry about this.")
+            res.status(500).json("Error while updating password, sorry about this.")
         }
     })();
 });
