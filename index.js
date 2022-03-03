@@ -135,8 +135,39 @@ client.connect()
  *           vote_average: 8.3
  *           vote_count: 8613
  *
- *
- *
+ *     UserMovies:
+ *       type: array
+ *       items:
+ *         type: object
+ *         properties:
+ *           id:
+ *             type: integer
+ *           title:
+ *             type: string
+ *           date:
+ *             type: string
+ *           tmdbid:
+ *             type: integer
+ *           runtime:
+ *             type: integer
+ *           genres:
+ *             type: string
+ *           overview:
+ *             type: string
+ *           poster_path:
+ *             type: string
+ *           trailerid:
+ *             type: string
+ *         example:
+ *           id: 1
+ *           title: "Spider-Man: No Way Home"
+ *           date: "2021-12-15"
+ *           tmdbid: 634649
+ *           runtime: 148
+ *           genres: "Action, Adventure, Science Fiction"
+ *           overview: "Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man."
+ *           poster_path: "/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg"
+ *           trailerid: "WgU7P6o-GkM"
  */
 
 // Swagger Tags
@@ -190,8 +221,6 @@ app.get("/", (req,res) => {
  *       500:
  *          description: Problems with the database.
  *
- *
- *
  */
 
 app.get('/api/users', urlencodedParser, function(req,res) {
@@ -215,7 +244,6 @@ app.get('/api/users', urlencodedParser, function(req,res) {
     })();
 })
 
-// Updates users username and email.
 
 /**
 * @swagger
@@ -286,8 +314,6 @@ app.post('/api/users', function(req,res){
 })
 
 
-// Returns movies from trending(TMDB API), can specify the page since tmdb api only provides data queries of single page at a time.
-
 /**
  * @swagger
  * /api/movies/trending:
@@ -316,8 +342,6 @@ app.post('/api/users', function(req,res){
  *       500:
  *          description: Error getting movies
  *
- *
- *
  */
 
 app.get('/api/movies/trending', urlencodedParser, (req,res) => {
@@ -341,8 +365,6 @@ app.get('/api/movies/trending', urlencodedParser, (req,res) => {
 });
 
 
-// Return movies by genre, page is also needed to fetch these movies.
-
 /**
  * @swagger
  * /api/movies/genre:
@@ -351,14 +373,14 @@ app.get('/api/movies/trending', urlencodedParser, (req,res) => {
  *     tags: [Movies]
  *     parameters:
  *       - in: query
- *         name: Genre
+ *         name: genre
  *         required: true
  *         description: Genre code
  *         schema:
  *           type: integer
  *           example: 28
  *       - in: query
- *         name: Page
+ *         name: page
  *         required: true
  *         description: Page number
  *         schema:
@@ -377,8 +399,6 @@ app.get('/api/movies/trending', urlencodedParser, (req,res) => {
  *
  *       500:
  *          description: Error getting movies
- *
- *
  *
  */
 
@@ -403,7 +423,37 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
     })();
 });
 
-// Used for searching a movie with given movie name.
+
+/**
+ * @swagger
+ * /api/movies/search:
+ *   get:
+ *     summary: Search a movie by its title.
+ *     tags: [Movies]
+ *     parameters:
+ *       - in: query
+ *         name: name
+ *         required: true
+ *         description: Movie title / Movie name
+ *         schema:
+ *           type: string
+ *           example: "Joker"
+ *     responses:
+ *       200:
+ *         description: Found search results. NOTE! The resulted objects title would have the search parameter in the title. Current example is just an example!
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: '#/components/schemas/Movies'
+ *       204:
+ *          description: No movies found with the given input!
+ *
+ *
+ *       500:
+ *          description: Error while searching movies.
+ *
+ */
+
 app.get('/api/movies/search', urlencodedParser, function(req, res) {
     const urlQuery = url.parse(req.url, true).query;
     const movieName = urlQuery.name.replace(/\s+/g, "+"); // Replace all spaces with + sign.
@@ -415,16 +465,40 @@ app.get('/api/movies/search', urlencodedParser, function(req, res) {
                 if(movies.length >= 1) {
                     res.status(200).json(movies);
                 } else {
-                    res.send({"message": "No movies found with the given input!"})
+                    res.status(204).json({"message": "No movies found with the given input!"});
                 }
             });
         } catch(error) {
-            res.send({"message": "Error while searching movies."})
+            res.status(500).json({"message": "Error while searching movies."});
         }
     })();
 });
 
-// Gets all movies from the database, related to the user requesting the movies -> returns all users watched movies.
+
+/**
+ * @swagger
+ * /api/movies:
+ *   get:
+ *     summary: Fetch all movies that the user has saved to database.
+ *     tags: [Movies]
+ *     parameters:
+ *       - in: query
+ *         name: user
+ *         required: true
+ *         description: Username of the user
+ *         schema:
+ *           type: string
+ *           example: ExampleUsername
+ *     responses:
+ *       200:
+ *         description: Users movies fetched successfully!
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: '#/components/schemas/UserMovies'
+ *
+ */
+
 app.get('/api/movies', urlencodedParser, function (req, res) {
     let urlQuery = url.parse(req.url, true).query;
     let user = urlQuery.user;
