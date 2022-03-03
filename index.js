@@ -100,13 +100,20 @@ app.get("/", (req,res) => {
 // Routes
 /**
  * @swagger
- * /api/users:
+ * /api/users{username}:
  *   get:
- *     summary: Retrieve users username and email address
+ *     summary: Retrieve users username and email address with username
  *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Users username
  *     responses:
  *       200:
- *         description: Successfully updated user credentials
+ *         description: Successfully retrieved users username & email
  *         content:
  *           application/json:
  *             schema:
