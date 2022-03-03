@@ -169,8 +169,8 @@ app.get('/api/users', urlencodedParser, function(req,res) {
 *                 username: username,
 *                 email: test@email.com
 *             }
-*         required: true
-*         description: Object with users old username, new username and email
+*       required: true
+*       description: Object with users old username, new username and email
 *     responses:
 *       200:
 *         description: Successfully updated user credentials!
