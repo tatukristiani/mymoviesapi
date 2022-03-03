@@ -192,7 +192,10 @@ app.post('/api/users', function(req,res){
     let username = data.username;
     let email = data.email;
 
-    if(validateEmail(email) && validateCredential(newUsername)) {
+    const validEmail = validateEmail(email);
+    const validUsername = validateCredential(newUsername);
+
+    if(validEmail && validUsername) {
         (async () => {
             try {
                 const result = await client.query(`SELECT username FROM users WHERE username=$1`, [newUsername]);
@@ -206,7 +209,7 @@ app.post('/api/users', function(req,res){
                 res.status(500).json({"message": "Error while trying to update user credentials."});
             }
         })();
-    } else if(validateEmail(email)){
+    } else if(validEmail){
         res.status(400).json({"message":"Username must be 4-20 characters & can't start or end with a . or _ or have two of them in a row!"});
     } else {
         res.status(400).json({"message":"Email address must be a valid email! i.e. example@email.com"});
