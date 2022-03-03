@@ -84,7 +84,9 @@ client.connect()
  *         email: example@email.com
  *
  *     Movies:
- *       type: object
+ *       type: array
+ *       items:
+ *         type: object
  *       properties:
  *         adult:
  *           type: boolean
