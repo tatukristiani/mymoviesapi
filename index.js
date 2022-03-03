@@ -573,12 +573,14 @@ app.get('/api/movies', urlencodedParser, function (req, res) {
  *            $ref: '#/components/schemas/UserMoviesPost'
  *
  *     responses:
- *       200:
- *         description: Return an array of movie objects. If the username doesn't exist, then the array is empty.
- *         content:
- *           application/json:
- *             schema:
- *                 $ref: '#/components/schemas/UserMovies'
+ *       201:
+ *         description: Movie successfully added to your movies!
+ *
+ *       409:
+ *         description: User already has this movie in their database.
+ *
+ *       400:
+ *         description: There is some type of problem with the given data.
  *
  */
 app.post('/api/movies', function(req,res) {
@@ -644,7 +646,44 @@ app.post('/api/movies', function(req,res) {
     }
 })
 
-// Deletes movie from the user_movie table which holds users saved movies.
+
+/**
+ * @swagger
+ * /api/movies:
+ *   delete:
+ *     summary: Deletes specified movie from the users database.
+ *     tags: [Movies]
+ *     parameters:
+ *     - in: query
+ *         name: user
+ *         required: true
+ *         description: Username
+ *         schema:
+ *           type: string
+ *           example: ExampleUsername
+ *       - in: query
+ *         name: title
+ *         required: true
+ *         description: Title of the movie
+ *         schema:
+ *           type: string
+ *           example: "Joker"
+ *       - in: query
+ *         name: tmdbid
+ *         required: true
+ *         description: tmdbid number
+ *         schema:
+ *           type: integer
+ *           example: 573484
+ *
+ *     responses:
+ *       200:
+ *         description: Movie successfully removed.
+ *
+ *       404:
+ *         description: Problems removing the movie.
+ *
+ */
 app.delete('/api/movies',urlencodedParser, function(req,res) {
     let urlQuery = url.parse(req.url, true).query;
     let user = urlQuery.user; // Username of a user
