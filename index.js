@@ -90,6 +90,8 @@ client.connect()
  *           type: boolean
  *         backdrop_path:
  *           type: string
+ *         media_type:
+ *           type: string
  *         id:
  *           type: integer
  *         genre_ids:
@@ -117,6 +119,7 @@ client.connect()
  *       example:
  *         adult: false
  *         backdrop_path: "/iQFcwSGbZXMkeyKrxbPnwnRo5fl.jpg"
+ *         media_type: "movie"
  *         id: 634649
  *         genre_ids: [28,12,878]
  *         original_language: "en"
@@ -299,7 +302,7 @@ app.post('/api/users', function(req,res){
  *         description: Page number
  *     responses:
  *       200:
- *         description: Successfully retrieve movies
+ *         description: Successfully retrieved movies NOTE! Example output array has 1 object, normally there would be many!
  *         content:
  *           application/json:
  *             schema:
@@ -337,6 +340,40 @@ app.get('/api/movies/trending', urlencodedParser, (req,res) => {
 
 
 // Return movies by genre, page is also needed to fetch these movies.
+
+/**
+ * @swagger
+ * /api/movies/genre:
+ *   get:
+ *     summary: Retrieve movies by genre
+ *     tags: [Movies]
+ *     parameters:
+ *       - in: query
+ *         name: Genre and page
+ *         required: true
+ *         description: Genre and page number needed
+ *         type: array
+ *         items:
+ *           type: integer
+ *         collectionFormat: multi
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved movies NOTE! Example output array has 1 object, normally there would be many!
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: '#/components/schemas/Movies'
+ *       404:
+ *          description: No movies found!
+ *
+ *
+ *       500:
+ *          description: Error getting movies
+ *
+ *
+ *
+ */
+
 app.get('/api/movies/genre', urlencodedParser, (req,res) => {
     const urlQuery = url.parse(req.url, true).query;
     const genre = urlQuery.genre;
@@ -347,8 +384,7 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
             request(requests.fetchMoviesByGenre + genre + "&page=" + page, function (error, response, body) {
                 let movies = JSON.parse(body).results;
                 if (movies.length >= 1) {
-
-                    res.send(movies);
+                    res.status(200).json(movies);
                 } else {
                     res.send(404).json({"error": "No movies found!"})
                 }
