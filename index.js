@@ -714,7 +714,41 @@ app.delete('/api/movies',urlencodedParser, function(req,res) {
 })
 
 
-// Post method for login in. Currently doesn't validate the username in any way.
+
+/**
+ * @swagger
+ * /api/login:
+ *   post:
+ *     summary: Route for authenticating user credentials on sing in
+ *     tags: [Authentication]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - username
+ *              - password
+ *            properties:
+ *              username:
+ *                type: string
+ *                example: "ExampleUsername"
+ *              password:
+ *                type: string
+ *                example: "ExamplePassword123"
+ *
+ *     responses:
+ *       200:
+ *         description: User credentials authenticated.
+ *
+ *       401:
+ *         description: Invalid credentials.
+ *
+ *       500:
+ *         description: Problems with the database.
+ *
+ */
+
 app.post('/api/login', function(req, res) {
     const data = req.body;
     const username = data.username; // String of username
