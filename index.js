@@ -82,6 +82,15 @@ client.connect()
  */
 
 
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Requests for user information.
+ *
+ */
+
+
 app.get("/", (req,res) => {
     res.send("REST API STATE = ONLINE");
 })
@@ -94,6 +103,7 @@ app.get("/", (req,res) => {
  * /api/users:
  *   get:
  *     summary: Retrieve users username and email address
+ *     tags: [Users]
  *     responses:
  *       200:
  *         description: Successfully updated user credentials
@@ -105,11 +115,11 @@ app.get("/", (req,res) => {
  *                 $ref: '#/components/schemas/Users'
  *
  *       404:
- *          description: Invalid credentials!
+ *          description: User not found!
  *
  *
  *       500:
- *          description: Error while trying to update user credentials.
+ *          description: Problems with the database.
  *
  *
  *
