@@ -28,10 +28,10 @@ const options = {
                 name: "Creator",
                 email: "mymovies.noreply@gmail.com"
             },
-            servers: ["https://moviesoftwareapi.herokuapp.com"],
-            supportedSubmitMethods: ["get"]
+            servers: ["https://moviesoftwareapi.herokuapp.com"]
         }
     },
+    supportedSubmitMethods: ['get'],
     apis:['index.js']
 }
 
