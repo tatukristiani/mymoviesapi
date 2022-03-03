@@ -28,9 +28,11 @@ const options = {
                 name: "Creator",
                 email: "mymovies.noreply@gmail.com"
             },
-            servers: ["https://moviesoftwareapi.herokuapp.com"]
-        },
-        supportedSubmitMethods: ['get']
+            servers: [{
+                url: "https://thisIsNotArealServer.com",
+                description: "Real server is not used so that it's not possible to mess around with the database information."
+            }]
+        }
     },
     apis:['index.js']
 }
