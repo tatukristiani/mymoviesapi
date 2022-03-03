@@ -168,6 +168,48 @@ client.connect()
  *           overview: "Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man."
  *           poster_path: "/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg"
  *           trailerid: "WgU7P6o-GkM"
+ *
+ *     UserMoviesPost:
+ *       type: object
+ *       required:
+ *         - title
+ *         - tmdbid
+ *         - posterpath
+ *         - date
+ *         - runtime
+ *         - overview
+ *         - trailerid
+ *         - genres
+ *         - user
+ *       properties:
+ *         title:
+ *           type: string
+ *         tmdbid:
+ *           type: integer
+ *         posterpath:
+ *           type: string
+ *         date:
+ *           type: string
+ *         runtime:
+ *           type: integer
+ *         overview:
+ *           type: string
+ *         trailerid:
+ *           type: string
+ *         genres:
+ *           type: string
+ *         user:
+ *           type: string
+ *       example:
+ *         title: "Joker"
+ *         tmdbid: 367365
+ *         posterpath: "/4jdsfujewgfj333f3.jpg"
+ *         date: "2021-12-15"
+ *         runtime: 156
+ *         overview: "Overview of Joker movie"
+ *         trailerid: "whU79sj_fh"
+ *         genres: "Drama, Action, Horror"
+ *         user: "RandomUsername"
  */
 
 // Swagger Tags
@@ -491,7 +533,7 @@ app.get('/api/movies/search', urlencodedParser, function(req, res) {
  *           example: ExampleUsername
  *     responses:
  *       200:
- *         description: Users movies fetched successfully! Note! There can be zero or more objects.
+ *         description: Return an array of movie objects. If the username doesn't exist, then the array is empty.
  *         content:
  *           application/json:
  *             schema:
@@ -517,6 +559,28 @@ app.get('/api/movies', urlencodedParser, function (req, res) {
 })
 
 // Saves movie information to database according to the user credentials.
+
+/**
+ * @swagger
+ * /api/movies:
+ *   post:
+ *     summary: Saves movie information to database according to the user credentials.
+ *     tags: [Movies]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *            $ref: '#/components/schemas/UserMoviesPost'
+ *
+ *     responses:
+ *       200:
+ *         description: Return an array of movie objects. If the username doesn't exist, then the array is empty.
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: '#/components/schemas/UserMovies'
+ *
+ */
 app.post('/api/movies', function(req,res) {
     let movie = req.body;
 
