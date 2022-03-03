@@ -23,15 +23,20 @@ const options = {
         info: {
             title: 'My Movies API',
             version: "1.0.0",
-            description: "This is sample of the REST API server that runs on heroku. Here you can view all the available routes for the API",
+            description: "This is a sample of the REST API server that runs on heroku. Here you can view all the available routes for the API",
             contact: {
                 name: "Creator",
                 email: "mymovies.noreply@gmail.com"
             },
-            servers: [{
-                url: "https://thisIsNotArealServer.com",
-                description: "Real server is not used so that it's not possible to mess around with the database information."
-            }]
+            servers: [
+                    {
+                        "url": "https://thisIsNotArealServer.com",
+                        "description": "No real server in use, for database security reasons"
+                    }
+                ]
+
+
+
         }
     },
     apis:['index.js']
