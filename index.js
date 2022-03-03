@@ -105,19 +105,11 @@ app.get("/", (req,res) => {
  *
  *       '404':
  *          description: Invalid credentials!
- *          content:
- *            application/json:
- *              schema:
- *                type: string
- *                  example: message: User not found
+ *
  *
  *       '500':
  *          description: Error while trying to update user credentials.
- *          content:
- *            application/json:
- *              schema:
- *                type: string
- *                example: message: Problems with the database.
+ *
  *
  *
  */
