@@ -80,8 +80,59 @@ client.connect()
  *           type: string
  *           description: Users email address
  *       example:
- *         username: exampleUsername
+ *         username: username
  *         email: example@email.com
+ *     Movies:
+ *       type: array
+ *       items:
+ *         type: object
+ *         properties:
+ *           adult:
+ *             type: boolean
+ *           backdrop_path:
+ *             type: string
+ *           genre_ids:
+ *             type: array
+ *             items:
+ *               type: integer
+ *           id:
+ *             type: integer
+ *           original_language:
+ *             type: string
+ *           original_title:
+ *             type: string
+ *           overview:
+ *             type: string
+ *           popularity:
+ *             type: number
+ *           poster_path:
+ *             type: string
+ *           release_date:
+ *             type: string
+ *           title:
+ *             type: string
+ *           video:
+ *             type: boolean
+ *           vote_average:
+ *             type: number
+ *           vote_count:
+ *             type: number
+ *         example:
+ *           adult: false
+ *           backdrop_path: /iQFcwSGbZXMkeyKrxbPnwnRo5fl.jpg
+ *           genre_ids: [28,12,878]
+ *           id: 634649
+ *           original_language: en
+ *           original_title: Spider-Man: No Way Home
+ *           overview: Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man.
+ *           popularity:  5596.919
+ *           poster_path: /1g0dhYtq4irTY1GPXvft6k4YLjm.jpg
+ *           release_date: 2021-12-15
+ *           title: Spider-Man: No Way Home
+ *           video:  false
+ *           vote_average: 8.3
+ *           vote_count: 8613
+ *
  *
  *
  */
@@ -92,6 +143,12 @@ client.connect()
  * tags:
  *   name: Users
  *   description: Requests for user information.
+ *
+ *   name: Movies
+ *   description: Requests for movies
+ *
+ *   name: Authentication
+ *   description: Requests involving authentication
  *
  */
 
@@ -228,6 +285,39 @@ app.post('/api/users', function(req,res){
 
 
 // Returns movies from trending(TMDB API), can specify the page since tmdb api only provides data queries of single page at a time.
+
+/**
+ * @swagger
+ * /api/movies/trending:
+ *   get:
+ *     summary: Retrieve trending movies
+ *     tags: [Movies]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Page number
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved users username & email
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: '#/components/schemas/Movies'
+ *
+ *       404:
+ *          description: No movies found!
+ *
+ *
+ *       500:
+ *          description: Error getting movies
+ *
+ *
+ *
+ */
+
 app.get('/api/movies/trending', urlencodedParser, (req,res) => {
     const urlQuery = url.parse(req.url, true).query;
     const page = urlQuery.page;
@@ -237,7 +327,7 @@ app.get('/api/movies/trending', urlencodedParser, (req,res) => {
             request(requests.fetchTrending + page, function(error, response, body) {
                 let movies = JSON.parse(body).results;
                 if(movies.length >= 1) {
-                    res.send(movies);
+                    res.status(200).json(movies);
                 } else {
                     res.send(404).json({"error": "No movies found!"})
                 }
