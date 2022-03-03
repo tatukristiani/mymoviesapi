@@ -31,7 +31,7 @@ const options = {
         },
         servers: [
             {
-                "url": "https://moviesoftwareapi.herokuapp.com/",
+                "url": "https://notRealServerInUseSorry",
                 "description": "No real server in use, for database security reasons"
             }
         ]
