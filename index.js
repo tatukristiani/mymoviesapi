@@ -95,24 +95,26 @@ app.get("/", (req,res) => {
  *   get:
  *     summary: Retrieve users username and email address
  *     responses:
- *       '200':
+ *       200:
  *         description: Successfully updated user credentials
  *         content:
  *           application/json:
  *             schema:
  *               type: object
+ *               items:
  *                 $ref: '#/components/schemas/Users'
  *
- *       '404':
+ *       404:
  *          description: Invalid credentials!
  *
  *
- *       '500':
+ *       500:
  *          description: Error while trying to update user credentials.
  *
  *
  *
  */
+
 app.get('/api/users', urlencodedParser, function(req,res) {
     const urlQuery = url.parse(req.url, true).query;
     let username = urlQuery.username;
