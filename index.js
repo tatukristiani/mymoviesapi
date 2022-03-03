@@ -351,13 +351,19 @@ app.get('/api/movies/trending', urlencodedParser, (req,res) => {
  *     tags: [Movies]
  *     parameters:
  *       - in: query
- *         name: Genre and page
+ *         name: Genre
  *         required: true
- *         description: Genre and page number needed
- *         type: array
- *         items:
+ *         description: Genre code
+ *         schema:
  *           type: integer
- *         collectionFormat: multi
+ *           example: 28
+ *       - in: query
+ *         name: Page
+ *         required: true
+ *         description: Page number
+ *         schema:
+ *           type: integer
+ *           example: 1
  *     responses:
  *       200:
  *         description: Successfully retrieved movies NOTE! Example output array has 1 object, normally there would be many!
