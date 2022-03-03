@@ -78,6 +78,7 @@ client.connect()
  *         username: exampleUsername
  *         email: example@email.com
  *
+ *
  */
 
 
@@ -92,7 +93,7 @@ app.get("/", (req,res) => {
  * @swagger
  * /api/users:
  *   get:
- *     summary: "Retrieve users username and email address"
+ *     summary: Retrieve users username and email address
  *     responses:
  *       '200':
  *         description: Successfully updated user credentials
@@ -107,19 +108,17 @@ app.get("/", (req,res) => {
  *          content:
  *            application/json:
  *              schema:
- *                type: object
- *                  example: {
- *                    message: "User not found"
- *                 }
+ *                type: string
+ *                  example: message: User not found
+ *
  *       '500':
  *          description: Error while trying to update user credentials.
  *          content:
  *            application/json:
  *              schema:
- *                type: object
- *                  example: {
- *                    message: "Problems with the database."
- *                  }
+ *                type: string
+ *                example: message: Problems with the database.
+ *
  *
  */
 app.get('/api/users', urlencodedParser, function(req,res) {
