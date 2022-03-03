@@ -28,16 +28,13 @@ const options = {
                 name: "Creator",
                 email: "mymovies.noreply@gmail.com"
             },
-            servers: [
-                    {
-                        "url": "https://thisIsNotArealServer.com",
-                        "description": "No real server in use, for database security reasons"
-                    }
-                ]
-
-
-
-        }
+        },
+        servers: [
+            {
+                "url": "https://thisIsNotArealServer.com",
+                "description": "No real server in use, for database security reasons"
+            }
+        ]
     },
     apis:['index.js']
 }
