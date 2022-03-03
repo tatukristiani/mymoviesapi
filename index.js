@@ -92,6 +92,8 @@ client.connect()
  *           type: string
  *         id:
  *           type: integer
+ *         genre_ids:
+ *           type: array
  *         original_language:
  *           type: string
  *         original_title:
@@ -116,6 +118,7 @@ client.connect()
  *         adult: false
  *         backdrop_path: "/iQFcwSGbZXMkeyKrxbPnwnRo5fl.jpg"
  *         id: 634649
+ *         genre_ids: [28,12,878]
  *         original_language: "en"
  *         original_title: "Spider-Man: No Way Home"
  *         overview: "Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man."
