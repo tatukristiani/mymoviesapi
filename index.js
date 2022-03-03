@@ -82,12 +82,7 @@ client.connect()
  *       example:
  *         username: username
  *         email: example@email.com
- */
-
-/**
- * @swagger
- * components:
- *   schemas:
+ *
  *     Movies:
  *       type: array
  *       items:
@@ -97,10 +92,6 @@ client.connect()
  *           type: boolean
  *         backdrop_path:
  *           type: string
- *         genre_ids:
- *           type: array
- *           items:
- *             type: integer
  *         id:
  *           type: integer
  *         original_language:
@@ -126,7 +117,6 @@ client.connect()
  *       example:
  *         adult: false
  *         backdrop_path: /iQFcwSGbZXMkeyKrxbPnwnRo5fl.jpg
- *         genre_ids: [28,12,878]
  *         id: 634649
  *         original_language: en
  *         original_title: Spider-Man: No Way Home
