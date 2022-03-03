@@ -152,6 +152,39 @@ app.get('/api/users', urlencodedParser, function(req,res) {
 })
 
 // Updates users username and email.
+
+/**
+* @swagger
+* /api/users:
+*   post:
+*     summary: Updates users username and email
+*     tags: [Users]
+*     parameters:
+*       - in: query
+*         name: body
+*         schema:
+*           type: object
+*           example: {
+*             newUsername: newUsername,
+*             username: username,
+*             email: test@email.com
+*           }
+*         required: true
+*         description: Object with users old username, new username and email
+*     responses:
+*       200:
+*         description: Successfully updated user credentials!
+*       409:
+*          description: Please choose another username!
+*       500:
+*          description: Error while trying to update user credentials.
+*       400:
+*          description: Error on the passed information!
+*
+*
+*
+*/
+
 app.post('/api/users', function(req,res){
     let data = req.body;
 
@@ -162,8 +195,13 @@ app.post('/api/users', function(req,res){
     if(validateEmail(email) && validateCredential(newUsername)) {
         (async () => {
             try {
-                await client.query(`UPDATE users SET username=$1, email=$2 WHERE username=$3`, [newUsername, email, username]);
-                res.status(200).json({"message": "Successfully updated user credentials!"})
+                const result = await client.query(`SELECT username FROM users WHERE username=$1`, [newUsername]);
+                if(result.rows.length < 1) {
+                    await client.query(`UPDATE users SET username=$1, email=$2 WHERE username=$3`, [newUsername, email, username]);
+                    res.status(200).json({"message": "Successfully updated user credentials!"});
+                } else {
+                    res.status(409).json({"message": "Please choose another username!"});
+                }
             } catch (err) {
                 res.status(500).json({"message": "Error while trying to update user credentials."});
             }
