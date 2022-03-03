@@ -654,7 +654,7 @@ app.post('/api/movies', function(req,res) {
  *     summary: Deletes specified movie from the users database.
  *     tags: [Movies]
  *     parameters:
- *     - in: query
+ *       - in: query
  *         name: user
  *         required: true
  *         description: Username
