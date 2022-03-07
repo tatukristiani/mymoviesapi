@@ -829,7 +829,7 @@ app.post('/api/register', function(req, res) {
     const email = dataReceived.email;
     const userLevel = 'user';
     const isUsernameValid = validateCredential(username);
-    const isPasswordValid = validateCredential(password);
+    const isPasswordValid = validatePassword(password);
     const isEmailValid = validateEmail(email);
 
     // Check validations one more time.
@@ -1013,12 +1013,16 @@ function validateEmail(email) {
     return pattern.test(email);
 }
 
-// Validates credential(username & password). Length must be between 4-20.
+// Validates username. Length must be between 4-20.
 function validateCredential(credentialToValidate) {
-    // Regex accepts usernames and passwords that contain 4-20 characters that contain only letters and numbers.
+    // Regex accepts usernames that contain 4-20 characters that contain only letters and numbers.
     let regex = /^[a-zA-Z0-9]{4,20}$/;
     let pattern = new RegExp(regex);
     return pattern.test(credentialToValidate);
+}
+
+function validatePassword(password) {
+    return password.length >= 4 && password.length <= 20;
 }
 
 function sendEmail(emailAddress, usersToken) {
