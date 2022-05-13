@@ -931,7 +931,7 @@ app.post('/api/reset-password', function(req, res) {
                 // If the email was sent we update that users token attribute on database.
                 client.query(`UPDATE users SET token=$1 WHERE email=$2`, [token, email]);
                 type = 'success';
-                msg = 'The reset password link has been sent to your email address';
+                msg = 'Email successfully sent to' + email + ". Copy the Token from that email to reset your password.";
             } else {
                 type = 'error';
                 msg = 'The Email is not registered with us';
@@ -1062,25 +1062,16 @@ async function sendEmail(emailAddress, usersToken) {
         const mailOptions = {
             from: 'My Movies <process.env.EMAIL_USERNAME>',
             to: email,
-            subject: 'Reset Password Link - My Movies',
+            subject: 'Password reset - My Movies',
             html: '<h1>Dear User Of My Movies</h1>' +
                 '<br>' +
-                '<p>You requested for reset password, kindly use this <a href="https://tatukristiani.github.io/update-password/' + token + '">link</a> to reset your password.</p>' +
+                '<p>Request for a password reset was made for this account on My Movies. Please use the Token provided here to reset your password.</p>' +
+                '<p>Token:' + token + '</p>' +
                 '<br><p>Sincerely My Movies Team</p>'
-
         };
 
         const result = await mail.sendMail(mailOptions);
         return result;
-        /*
-        mail.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log("Email sent: " + info.response);
-            }
-        });
-         */
     } catch(error) {
         return error;
     }
