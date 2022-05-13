@@ -12,6 +12,15 @@ const requests = require('./movieAPI/request');
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
+
+const CLIENT_ID = '612069027869-t5bqovbq134udrrn8n8h2sbbkj5i3vam.apps.googleusercontent.com';
+const CLIENT_SECRET = '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';
+const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+const REFRESH_TOKEN = '1//044NIk04F759_CgYIARAAGAQSNwF-L9IrotZCrb2GJV0cUSnHQityHQ_zXR9dOoZPC5maeDdgkx6wqrnnkRKt3-apPlIo2_4WTsg';
+
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -913,7 +922,12 @@ app.post('/api/reset-password', function(req, res) {
                     username: user.username
                 }
                 let token = jwt.sign(data, process.env.JWT_SECRET_KEY);
-                sendEmail(email, token); // Send email to the email that was given.
+
+                // Send email to the email that was given.
+                await sendEmail(email, token)
+                    .then((result) => console.log("Email sent...", result))
+                    .catch((error) => console.log(error.message));
+
                 // If the email was sent we update that users token attribute on database.
                 client.query(`UPDATE users SET token=$1 WHERE email=$2`, [token, email]);
                 type = 'success';
@@ -1025,37 +1039,51 @@ function validatePassword(password) {
     return password.length >= 4 && password.length <= 20;
 }
 
-function sendEmail(emailAddress, usersToken) {
+async function sendEmail(emailAddress, usersToken) {
 
-    let email = emailAddress;
-    let token = usersToken;
+    try {
+        const accessToken = await oAuth2Client.getAccessToken();
 
-    let mail = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USERNAME, // Your email id
-            pass: process.env.EMAIL_PASSWORD // Your password
-        }
-    });
+        let email = emailAddress;
+        let token = usersToken;
 
-    let mailOptions = {
-        from: process.env.EMAIL_USERNAME,
-        to: email,
-        subject: 'Reset Password Link - My Movies',
-        html: '<h1>Dear User Of My Movies</h1>' +
-            '<br>' +
-            '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/update-password/' + token + '">link</a> to reset your password.</p>' +
-            '<br><p>Sincerely My Movies Team</p>'
+        const mail = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: process.env.EMAIL_USERNAME,
+                clientId: CLIENT_ID,
+                clientSecret: CLIENT_SECRET,
+                refreshToken: REFRESH_TOKEN,
+                accessToken: accessToken
+            }
+        });
 
-    };
+        const mailOptions = {
+            from: 'My Movies <process.env.EMAIL_USERNAME>',
+            to: email,
+            subject: 'Reset Password Link - My Movies',
+            html: '<h1>Dear User Of My Movies</h1>' +
+                '<br>' +
+                '<p>You requested for reset password, kindly use this <a href="https://tatukristiani.github.io/update-password/' + token + '">link</a> to reset your password.</p>' +
+                '<br><p>Sincerely My Movies Team</p>'
 
-    mail.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log("Email sent: " + info.response);
-        }
-    });
+        };
+
+        const result = await mail.sendMail(mailOptions);
+        return result;
+        /*
+        mail.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("Email sent: " + info.response);
+            }
+        });
+         */
+    } catch(error) {
+        return error;
+    }
 }
 
 
