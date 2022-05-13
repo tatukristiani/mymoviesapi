@@ -931,7 +931,7 @@ app.post('/api/reset-password', function(req, res) {
                 // If the email was sent we update that users token attribute on database.
                 client.query(`UPDATE users SET token=$1 WHERE email=$2`, [token, email]);
                 type = 'success';
-                msg = 'Email successfully sent to' + email + ". Copy the Token from that email to reset your password.";
+                msg = 'Email successfully sent to ' + email + ". \nCopy the Token from that email to reset your password.\nYou'll be redirected to another page.";
             } else {
                 type = 'error';
                 msg = 'The Email is not registered with us';
@@ -1000,7 +1000,7 @@ app.post('/api/update-password', function(req, res, next) {
                 let hashedPass = bcrypt.hashSync(password, 12);
                 await client.query(`UPDATE users SET password=$1 WHERE token=$2`, [hashedPass, token]);
                 type = 'success';
-                msg = 'Your password has been updated successfully';
+                msg = 'Your password has been updated successfully.';
 
                 // Remove the token from the database.
                 await client.query(`UPDATE users SET token=null WHERE username=$1`, [user.username]);
