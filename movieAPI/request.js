@@ -1,4 +1,4 @@
-const API_KEY  = `ac4ead2bbde49f3cb342413c09f6d25a`;
+const API_KEY = process.env.API_KEY;
 const BASE_URL = `https://api.themoviedb.org/3`;
 
 /* Action code = 28, Comedy code = 35, Horror code = 27, Romance code = 10749, Docs code 99*/

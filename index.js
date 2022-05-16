@@ -14,13 +14,9 @@ const urlencodedParser = bodyParser.urlencoded({extended: false});
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 
-const CLIENT_ID = '612069027869-t5bqovbq134udrrn8n8h2sbbkj5i3vam.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
-const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
-const REFRESH_TOKEN = '1//044NIk04F759_CgYIARAAGAQSNwF-L9IrotZCrb2GJV0cUSnHQityHQ_zXR9dOoZPC5maeDdgkx6wqrnnkRKt3-apPlIo2_4WTsg';
 
-const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URI);
+oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
 
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -1052,9 +1048,9 @@ async function sendEmail(emailAddress, usersToken) {
             auth: {
                 type: 'OAuth2',
                 user: process.env.EMAIL_USERNAME,
-                clientId: CLIENT_ID,
-                clientSecret: CLIENT_SECRET,
-                refreshToken: REFRESH_TOKEN,
+                clientId: process.env.CLIENT_ID,
+                clientSecret: process.env.CLIENT_SECRET,
+                refreshToken: process.env.REFRESH_TOKEN,
                 accessToken: accessToken
             }
         });
