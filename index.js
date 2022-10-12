@@ -10,14 +10,14 @@ const request = require('request'); // For external API calls.
 const bcrypt = require('bcryptjs'); // Password hash crypt.
 const requests = require('./movieAPI/request');
 const bodyParser = require('body-parser');
-const urlencodedParser = bodyParser.urlencoded({extended: false});
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 
-
+/*
 const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URI);
 oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
-
+*/
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
@@ -41,7 +41,7 @@ const options = {
             }
         ]
     },
-    apis:['index.js']
+    apis: ['index.js']
 }
 
 const swaggerDocs = swaggerJsDoc(options);
@@ -49,12 +49,13 @@ const swaggerDocs = swaggerJsDoc(options);
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use('/api/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-
+/*
+// Database connection
 const client = new Client({
     user: "fcncirfhfkwocb",
     password: "16f2e54ffe015bf368889c50d4574bbf7028dc1bfa4e9d4b436c0caf129ec1f4",
@@ -66,6 +67,7 @@ const client = new Client({
 client.connect()
     .then(() => console.log("Connected successfully!"))
     .catch(error => console.log(error));
+*/
 
 // Swagger schemas
 /**
@@ -233,7 +235,7 @@ client.connect()
  */
 
 
-app.get("/", (req,res) => {
+app.get("/", (req, res) => {
     res.send("REST API STATE = ONLINE");
 })
 
@@ -270,7 +272,7 @@ app.get("/", (req,res) => {
  *
  */
 
-app.get('/api/users', urlencodedParser, function(req,res) {
+app.get('/api/users', urlencodedParser, function (req, res) {
     const urlQuery = url.parse(req.url, true).query;
     let username = urlQuery.username;
 
@@ -282,10 +284,10 @@ app.get('/api/users', urlencodedParser, function(req,res) {
             if (user) {
                 res.status(200).json(user);
             } else {
-                res.status(404).json({"message": "User not found"});
+                res.status(404).json({ "message": "User not found" });
             }
-        }catch (err) {
-            res.status(500).json({"message":"Problems with the database."})
+        } catch (err) {
+            res.status(500).json({ "message": "Problems with the database." })
         }
 
     })();
@@ -324,7 +326,7 @@ app.get('/api/users', urlencodedParser, function(req,res) {
 *
 */
 
-app.post('/api/users', function(req,res){
+app.post('/api/users', function (req, res) {
     let data = req.body;
 
     let newUsername = data.newUsername;
@@ -334,28 +336,28 @@ app.post('/api/users', function(req,res){
     const validEmail = validateEmail(email);
     const validUsername = validateCredential(newUsername);
 
-    if(validEmail && validUsername) {
+    if (validEmail && validUsername) {
         (async () => {
             try {
                 let result = await client.query(`SELECT username FROM users WHERE username=$1`, [newUsername]);
-                if(result.rows.length < 1) {
+                if (result.rows.length < 1) {
                     result = await client.query(`SELECT username FROM users WHERE username=$1`, [username]);
-                    if(result.rows.length > 0) {
+                    if (result.rows.length > 0) {
                         await client.query(`UPDATE users SET username=$1, email=$2 WHERE username=$3`, [newUsername, email, username]);
-                        res.status(200).json({"message": "Successfully updated user credentials!"});
+                        res.status(200).json({ "message": "Successfully updated user credentials!" });
                     }
-                    res.status(404).json({"message": "Invalid credentials!"});
+                    res.status(404).json({ "message": "Invalid credentials!" });
                 } else {
-                    res.status(409).json({"message": "Please choose another username!"});
+                    res.status(409).json({ "message": "Please choose another username!" });
                 }
             } catch (err) {
-                res.status(500).json({"message": "Error while trying to update user credentials."});
+                res.status(500).json({ "message": "Error while trying to update user credentials." });
             }
         })();
-    } else if(validEmail){
-        res.status(400).json({"message":"Username must be 4-20 characters & can't start or end with a . or _ or have two of them in a row!"});
+    } else if (validEmail) {
+        res.status(400).json({ "message": "Username must be 4-20 characters & can't start or end with a . or _ or have two of them in a row!" });
     } else {
-        res.status(400).json({"message":"Email address must be a valid email! i.e. example@email.com"});
+        res.status(400).json({ "message": "Email address must be a valid email! i.e. example@email.com" });
     }
 
 })
@@ -391,22 +393,22 @@ app.post('/api/users', function(req,res){
  *
  */
 
-app.get('/api/movies/trending', urlencodedParser, (req,res) => {
+app.get('/api/movies/trending', urlencodedParser, (req, res) => {
     const urlQuery = url.parse(req.url, true).query;
     const page = urlQuery.page;
 
     (async () => {
         try {
-            request(requests.fetchTrending + page, function(error, response, body) {
+            request(requests.fetchTrending + page, function (error, response, body) {
                 let movies = JSON.parse(body).results;
-                if(movies.length >= 1) {
+                if (movies.length >= 1) {
                     res.status(200).json(movies);
                 } else {
-                    res.status(404).json({"error": "No movies found!"})
+                    res.status(404).json({ "error": "No movies found!" })
                 }
             });
-        } catch(error) {
-            res.status(500).json({"message": "Error getting movies"})
+        } catch (error) {
+            res.status(500).json({ "message": "Error getting movies" })
         }
     })();
 });
@@ -449,7 +451,7 @@ app.get('/api/movies/trending', urlencodedParser, (req,res) => {
  *
  */
 
-app.get('/api/movies/genre', urlencodedParser, (req,res) => {
+app.get('/api/movies/genre', urlencodedParser, (req, res) => {
     const urlQuery = url.parse(req.url, true).query;
     const genre = urlQuery.genre;
     const page = urlQuery.page;
@@ -461,11 +463,11 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
                 if (movies.length >= 1) {
                     res.status(200).json(movies);
                 } else {
-                    res.send(404).json({"error": "No movies found!"})
+                    res.send(404).json({ "error": "No movies found!" })
                 }
             });
-        } catch(error) {
-            res.status(500).json({"message": "Error getting movies"})
+        } catch (error) {
+            res.status(500).json({ "message": "Error getting movies" })
         }
     })();
 });
@@ -501,22 +503,22 @@ app.get('/api/movies/genre', urlencodedParser, (req,res) => {
  *
  */
 
-app.get('/api/movies/search', urlencodedParser, function(req, res) {
+app.get('/api/movies/search', urlencodedParser, function (req, res) {
     const urlQuery = url.parse(req.url, true).query;
     const movieName = urlQuery.name.replace(/\s+/g, "+"); // Replace all spaces with + sign.
 
     (async () => {
         try {
-            await request(requests.search + movieName, function(error, response, body) {
+            await request(requests.search + movieName, function (error, response, body) {
                 let movies = JSON.parse(body).results;
-                if(movies.length >= 1) {
+                if (movies.length >= 1) {
                     res.status(200).json(movies);
                 } else {
-                    res.status(204).json({"message": "No movies found with the given input!"});
+                    res.status(204).json({ "message": "No movies found with the given input!" });
                 }
             });
-        } catch(error) {
-            res.status(500).json({"message": "Error while searching movies."});
+        } catch (error) {
+            res.status(500).json({ "message": "Error while searching movies." });
         }
     })();
 });
@@ -556,7 +558,7 @@ app.get('/api/movies', urlencodedParser, function (req, res) {
             let result = await client.query(query, [user]);
             let jsonObj = result.rows;
             res.status(200).json(jsonObj);
-        }catch(error) {
+        } catch (error) {
             console.log(error);
             res.send(error.stack);
         }
@@ -587,10 +589,10 @@ app.get('/api/movies', urlencodedParser, function (req, res) {
  *         description: There is some type of problem with the given data.
  *
  */
-app.post('/api/movies', function(req,res) {
+app.post('/api/movies', function (req, res) {
     let movie = req.body;
 
-    if(movie !== null) {
+    if (movie !== null) {
         const title = movie.title;
         const genres = movie.genres;
         const overview = movie.overview;
@@ -615,12 +617,12 @@ app.post('/api/movies', function(req,res) {
                     await client.query('INSERT INTO movie(title, date, tmdbid, runtime, genres, overview, poster_path, trailerid) ' +
                         'VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [title, date, tmdbID, runtime, genres, overview, posterPath, trailerID])
                         .then(results => console.log(results))
-                        .catch(err => res.send({"message": "Adding movie failed!", "error": err.stack}));
+                        .catch(err => res.send({ "message": "Adding movie failed!", "error": err.stack }));
                 }
 
                 // Search for usernames ID
                 sql = `SELECT id FROM users WHERE username=$1`;
-                results = await client.query(sql,[username]);
+                results = await client.query(sql, [username]);
                 let userID = results.rows[0].id;
 
                 // Search for movies ID
@@ -632,21 +634,21 @@ app.post('/api/movies', function(req,res) {
                 let confirmMovieDoesntExists = await client.query(sql, [userID, movieID]);
 
                 // If we found out that the user doesn't have this movie we save it.
-                if(confirmMovieDoesntExists.rows.length < 1) {
+                if (confirmMovieDoesntExists.rows.length < 1) {
 
                     await client.query('INSERT INTO user_movie(userid, movieid) VALUES($1, $2)', [userID, movieID])
-                        .then(() => res.status(201).json({"message": title + " successfully added to your movies!"}))
-                        .catch(e => res.send({"message": "saving movie for user failed!"}));
+                        .then(() => res.status(201).json({ "message": title + " successfully added to your movies!" }))
+                        .catch(e => res.send({ "message": "saving movie for user failed!" }));
                 }
                 else {
-                    res.status(409).json({"message": "You already have " + title + " added to your movies!"});
+                    res.status(409).json({ "message": "You already have " + title + " added to your movies!" });
                 }
             } catch (error) {
-                res.send({"message": error.message + "error:" + error});
+                res.send({ "message": error.message + "error:" + error });
             }
         })();
     } else {
-        res.status(400).json({"message": "Data is null or invalid!"});
+        res.status(400).json({ "message": "Data is null or invalid!" });
     }
 })
 
@@ -688,7 +690,7 @@ app.post('/api/movies', function(req,res) {
  *         description: Problems removing the movie.
  *
  */
-app.delete('/api/movies',urlencodedParser, function(req,res) {
+app.delete('/api/movies', urlencodedParser, function (req, res) {
     let urlQuery = url.parse(req.url, true).query;
     let user = urlQuery.user; // Username of a user
     let movieTitle = urlQuery.title; // Title of the movie
@@ -708,10 +710,10 @@ app.delete('/api/movies',urlencodedParser, function(req,res) {
 
             // Remove the movie from the database.
             sql = `DELETE FROM user_movie WHERE userid=$1 AND movieid=$2`;
-            await client.query(sql,[userID, movieID]);
+            await client.query(sql, [userID, movieID]);
             res.status(200).json("Movie successfully removed.");
         } catch (error) {
-            res.status(404).json({"message": "Problems removing the movie."});
+            res.status(404).json({ "message": "Problems removing the movie." });
         }
 
     })();
@@ -753,7 +755,7 @@ app.delete('/api/movies',urlencodedParser, function(req,res) {
  *
  */
 
-app.post('/api/login', function(req, res) {
+app.post('/api/login', function (req, res) {
     const data = req.body;
     const username = data.username; // String of username
     const password = data.password; // String of password
@@ -762,27 +764,27 @@ app.post('/api/login', function(req, res) {
     (async () => {
         try {
             const checkQuery = `SELECT username, password FROM users WHERE username =$1`;
-            const results = await client.query(checkQuery,[username]);
+            const results = await client.query(checkQuery, [username]);
             const rows = results.rows;
 
             // Should give 1 row of data if user is registered.
-            if(rows.length > 0) {
+            if (rows.length > 0) {
                 const usernameDB = rows[0].username;
                 const passwordDB = rows[0].password;
 
                 // Compares the inserted password to the one in database.
-                bcrypt.compare(password,passwordDB, function(error,response) {
-                    if(response && usernameDB === username) {
-                        res.status(200).json({"message": "User credentials authenticated."});
+                bcrypt.compare(password, passwordDB, function (error, response) {
+                    if (response && usernameDB === username) {
+                        res.status(200).json({ "message": "User credentials authenticated." });
                     } else {
-                        res.status(401).json({"error": "Invalid credentials."});
+                        res.status(401).json({ "error": "Invalid credentials." });
                     }
                 })
             } else {
-                res.status(401).json({"error": "Invalid credentials."});
+                res.status(401).json({ "error": "Invalid credentials." });
             }
         } catch (error) {
-            res.status(500).json({"error": error.message});
+            res.status(500).json({ "error": error.message });
         }
     })();
 });
@@ -826,7 +828,7 @@ app.post('/api/login', function(req, res) {
  *
  */
 
-app.post('/api/register', function(req, res) {
+app.post('/api/register', function (req, res) {
     // Reveice all neede data from request body.
     const dataReceived = req.body;
     const username = dataReceived.username;
@@ -838,7 +840,7 @@ app.post('/api/register', function(req, res) {
     const isEmailValid = validateEmail(email);
 
     // Check validations one more time.
-    if(isUsernameValid && isPasswordValid && isEmailValid) {
+    if (isUsernameValid && isPasswordValid && isEmailValid) {
 
         // 2. Hashes the password
         const pass = bcrypt.hashSync(password, 12); // String of password for db
@@ -851,22 +853,22 @@ app.post('/api/register', function(req, res) {
                 const results = await client.query(checkQuery, [username]);
 
                 // 5. If username does not exists -> save the user to database & send a 201(CREATE) status code with message.
-                if(results.rows.length < 1) {
+                if (results.rows.length < 1) {
                     const insertQuery = `INSERT INTO users(username,password,user_level,email) VALUES($1, $2, $3, $4)`;
                     await client.query(insertQuery, [username, pass, userLevel, email]);
-                    res.status(201).json({"message": "Account was successfully created!"})
+                    res.status(201).json({ "message": "Account was successfully created!" })
                 } else {
-                    res.status(403).json({"error": "The username is already taken. Pick another one."});
+                    res.status(403).json({ "error": "The username is already taken. Pick another one." });
                 }
             } catch (error) {
-                res.status(500).json({"error": error.message});
+                res.status(500).json({ "error": error.message });
             }
         })();
 
-    } else if(!isEmailValid){
-        res.status(403).json({"error": "Email address must be a valid email! i.e. example@email.com"});
+    } else if (!isEmailValid) {
+        res.status(403).json({ "error": "Email address must be a valid email! i.e. example@email.com" });
     } else {
-        res.status(403).json({"error": "Username/Password must be 4-20 characters in length, they can't start or end with a . or _ or have two of them in a row!"});
+        res.status(403).json({ "error": "Username/Password must be 4-20 characters in length, they can't start or end with a . or _ or have two of them in a row!" });
     }
 });
 
@@ -899,7 +901,7 @@ app.post('/api/register', function(req, res) {
  *
  */
 
-app.post('/api/reset-password', function(req, res) {
+app.post('/api/reset-password', function (req, res) {
 
     const email = req.body.email;
 
@@ -980,7 +982,7 @@ app.post('/api/reset-password', function(req, res) {
  *
  */
 
-app.post('/api/update-password', function(req, res, next) {
+app.post('/api/update-password', function (req, res, next) {
     const token = req.body.token;
     const password = req.body.password;
 
@@ -1009,7 +1011,7 @@ app.post('/api/update-password', function(req, res, next) {
                 msg: msg
             }
             res.status(200).json(message);
-        }catch (err) {
+        } catch (err) {
             res.status(500).json("Error while updating password, sorry about this.")
         }
     })();
@@ -1068,13 +1070,14 @@ async function sendEmail(emailAddress, usersToken) {
 
         const result = await mail.sendMail(mailOptions);
         return result;
-    } catch(error) {
+    } catch (error) {
         return error;
     }
 }
 
 
 const port = process.env.PORT || 4000;
-app.listen(port, ()=>{
-    console.log('Listening at port https://moviesoftwareapi.herokuapp.com:%s', port);
+app.listen(port, () => {
+    //console.log('Listening at port https://moviesoftwareapi.herokuapp.com:%s', port);
+    console.log('Listening at port https://localhost:%s', port);
 });
