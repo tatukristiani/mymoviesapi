@@ -13,6 +13,7 @@ const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
+const axios = require('axios');
 
 /*
 const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URI);
@@ -397,16 +398,40 @@ app.get('/api/movies/trending', urlencodedParser, (req, res) => {
     const urlQuery = url.parse(req.url, true).query;
     const page = urlQuery.page;
 
+    let lastPageNumber = page * 7;
+    let firstPageNumber = lastPageNumber - 7 + 1;
+    let moviesList = []; // Movies to return
+    let requestList = []; // Pre configured list of requests
+
+    // Create the 7 requests needed to get 140 movies.
+    for (let i = 0; i < 7; i++) {
+        const request = axios.get(`${requests.fetchTrending}${firstPageNumber + i}`);
+        requestList.push(request);
+    }
+
     (async () => {
         try {
-            request(requests.fetchTrending + page, function (error, response, body) {
-                let movies = JSON.parse(body).results;
-                if (movies.length >= 1) {
-                    res.status(200).json(movies);
-                } else {
-                    res.status(404).json({ "error": "No movies found!" })
-                }
-            });
+            axios.all(requestList)
+                .then(axios.spread((...responses) => {
+                    responses.forEach(response => {
+                        Array.prototype.push.apply(moviesList, response.data.results);
+                    });
+
+                    // Remove movies with no poster path.
+                    moviesList = moviesList.filter(movie => {
+                        if (movie.poster_path != null) {
+                            return movie;
+                        }
+                    })
+
+                    // Remove duplicates
+                    let uniqueMovies = [...new Map(moviesList.map((m) => [m.id, m])).values()];
+
+                    res.status(200).json(uniqueMovies);
+                })).catch(errors => {
+                    console.log(errors);
+                    res.status(404);
+                })
         } catch (error) {
             res.status(500).json({ "message": "Error getting movies" })
         }
@@ -456,16 +481,40 @@ app.get('/api/movies/genre', urlencodedParser, (req, res) => {
     const genre = urlQuery.genre;
     const page = urlQuery.page;
 
+    let lastPageNumber = page * 7;
+    let firstPageNumber = lastPageNumber - 7 + 1;
+    let moviesList = []; // Movies to return
+    let requestList = []; // Pre configured list of requests
+
+    // Create the 7 requests needed to get 140 movies.
+    for (let i = 0; i < 7; i++) {
+        const request = axios.get(`${requests.fetchMoviesByGenre + genre + "&page="}${firstPageNumber + i}`);
+        requestList.push(request);
+    }
+
     (async () => {
         try {
-            request(requests.fetchMoviesByGenre + genre + "&page=" + page, function (error, response, body) {
-                let movies = JSON.parse(body).results;
-                if (movies.length >= 1) {
-                    res.status(200).json(movies);
-                } else {
-                    res.send(404).json({ "error": "No movies found!" })
-                }
-            });
+            axios.all(requestList)
+                .then(axios.spread((...responses) => {
+                    responses.forEach(response => {
+                        Array.prototype.push.apply(moviesList, response.data.results);
+                    });
+
+                    // Remove movies with no poster path.
+                    moviesList = moviesList.filter(movie => {
+                        if (movie.poster_path != null) {
+                            return movie;
+                        }
+                    })
+
+                    // Remove duplicates
+                    let uniqueMovies = [...new Map(moviesList.map((m) => [m.id, m])).values()];
+
+                    res.status(200).json(uniqueMovies);
+                })).catch(errors => {
+                    console.log(errors);
+                    res.status(404);
+                })
         } catch (error) {
             res.status(500).json({ "message": "Error getting movies" })
         }
